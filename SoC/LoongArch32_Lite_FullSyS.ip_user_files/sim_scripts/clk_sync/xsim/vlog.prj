@@ -1,7 +1,0 @@
-verilog xil_defaultlib --include "../../../ipstatic" \
-"../../../../LoongArch32_Lite_FullSyS.srcs/sources_1/ip/clk_sync/clk_sync_clk_wiz.v" \
-"../../../../LoongArch32_Lite_FullSyS.srcs/sources_1/ip/clk_sync/clk_sync.v" \
-
-verilog xil_defaultlib "glbl.v"
-
-nosort

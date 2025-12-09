@@ -53,7 +53,7 @@ static void load_entry() {
 	fseek(fp, 0, SEEK_END);
 	file_size = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
-	ret = fread((void *)(hw_mem + ((ENTRY_START + 0x400000) & 0x7FFFFFFF)), file_size, 1, fp); // load .data segment to memory address 0x00400000
+	ret = fread((void *)(hw_mem + ((ENTRY_START + 0x10000) & 0x7FFFFFFF)), file_size, 1, fp); // load .data segment to memory address 0x00010000
 
 	fclose(fp);
 }
