@@ -2,6 +2,7 @@
 #include <readline/readline.h>
 #include <stdlib.h>
 
+#include "../include/memory/memory.h"
 #include "expr.h"
 #include "monitor.h"
 #include "temu.h"
@@ -103,12 +104,21 @@ static int cmd_x(char** args) {
         return 0;
     }
     int n;
-    sscanf(args[0], "%d", &n);
-    char* expr_str = NULL;
-    expr_str = args[1];
-    int val;
-    bool success;
-    val = expr(expr_str, success);
+    if (sscanf(args[0], "%d", &n) != 1 || n <= 0) {
+        printf("Invalid count.\n");
+        return 0;
+    }
+    char* expr_str = args[1];
+    bool success = false;
+    uint32_t addr = expr(expr_str, &success);
+    if (!success) {
+        printf("Bad expression: %s\n", expr_str);
+        return 0;
+    }
+    for (int i = 0; i < n; i++) {
+        uint32_t curr_addr = addr + 4 * i;
+        printf("0x%08x: 0x%08x\n", curr_addr, mem_read(curr_addr, 4));
+    }
     return 0;
 }
 
@@ -137,13 +147,10 @@ void ui_mainloop() {
             change to list format
         */
         char* args = cmd + strlen(cmd) + 1;
-        char* arg_list[10] = {NULL};  // 1. 初始化数组，确保未使用的位置为 NULL
+        char* arg_list[2] = {NULL};
         int i = 0;
-        char* arg = strtok(args, " ");
-        while (arg != NULL && i < 10) {  // 2. 防止数组越界
-            arg_list[i++] = arg;         // 3. 递增索引 i
-            arg = strtok(NULL, " ");
-        }
+        arg_list[0] = strtok(args, " ");
+        arg_list[1] = arg_list[0] + strlen(arg_list[0]) + 1;
 
         for (i = 0; i < NR_CMD; i++) {
             if (strcmp(cmd, cmd_table[i].name) == 0) {
