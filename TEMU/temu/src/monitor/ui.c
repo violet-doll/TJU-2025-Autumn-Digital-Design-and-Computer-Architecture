@@ -1,6 +1,7 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "../include/memory/memory.h"
 #include "expr.h"
@@ -65,7 +66,7 @@ static struct {
 
 static int cmd_help(char** args) {
     /* extract the first argument */
-    char* arg = strtok(NULL, " ");
+    char* arg = args[0];
     int i;
 
     if (arg == NULL) {
@@ -134,24 +135,25 @@ static int cmd_si(char** args) {
 void ui_mainloop() {
     while (1) {
         char* str = rl_gets();
+        if (str == NULL) {
+            continue;
+        }
 
-        /* extract the first token as the command */
         char* cmd = strtok(str, " ");
         if (cmd == NULL) {
             continue;
         }
-        /* treat the remaining string as the arguments,
-         * which may need further parsing
-         */
-        /*
-            change to list format
-        */
-        char* args = cmd + strlen(cmd) + 1;
-        char* arg_list[2] = {NULL};
-        int i = 0;
-        arg_list[0] = strtok(args, " ");
-        arg_list[1] = arg_list[0] + strlen(arg_list[0]) + 1;
 
+        enum { MAX_ARGS = 16 };
+        char* arg_list[MAX_ARGS];
+        int argc = 0;
+        char* token = NULL;
+        while (argc < MAX_ARGS - 1 && (token = strtok(NULL, " ")) != NULL) {
+            arg_list[argc++] = token;
+        }
+        arg_list[argc] = NULL;
+
+        int i;
         for (i = 0; i < NR_CMD; i++) {
             if (strcmp(cmd, cmd_table[i].name) == 0) {
                 if (cmd_table[i].handler(arg_list) < 0) {
