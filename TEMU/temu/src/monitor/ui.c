@@ -46,6 +46,10 @@ static int cmd_x(char** args);
 
 static int cmd_si(char** args);
 
+static int cmd_w(char** args);
+
+static int cmd_d(char** args);
+
 static struct {
     char* name;
     char* description;
@@ -59,7 +63,8 @@ static struct {
     {"si", "Single step execution", cmd_si},
 
     /* TODO: Add more commands */
-
+    {"w", "Set watchpoint: w EXPR", cmd_w},
+    {"d", "Delete watchpoint: d N", cmd_d},
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
@@ -93,8 +98,9 @@ static int cmd_info(char** args) {
         return 0;
     } else if (strcmp(args[0], "r") == 0) {
         display_reg();
-    } else if (strcmp(args[0], "x") == 0) {
+    } else if (strcmp(args[0], "w") == 0) {
         // todo: watchpoints
+        list_watchpoint();
     }
     return 0;
 }
@@ -129,6 +135,31 @@ static int cmd_si(char** args) {
         sscanf(args[0], "%d", &steps);
     }
     cpu_exec(steps);
+    return 0;
+}
+
+static int cmd_w(char** args){
+    if(args[0] == NULL){
+        printf("Usage: w EXPR\n");
+        return 0;
+    }
+    WP* wp = new_wp(args[0]);
+    if(wp == NULL)
+        printf("Set watchpoint failed.\n");
+    return 0;
+}
+
+static int cmd_d(char** args){
+    if(args[0] == NULL){
+        printf("Usage: d N\n");
+        return 0;
+    }
+    int no;
+    if(sscanf(args[0], "%d", &no) != 1){
+        printf("Invalid watchpoint number.\n");
+        return 0;
+    }
+    free_wp(no);
     return 0;
 }
 

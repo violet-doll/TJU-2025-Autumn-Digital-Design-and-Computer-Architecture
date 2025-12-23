@@ -29,6 +29,11 @@ uint32_t isa_reg_str2val(const char* s, bool* success) {
         return cpu.pc;
     }
 
+    // 新增：处理常用别名
+    if(strcmp(s, "$at") == 0){
+        return cpu.gpr[1]._32;
+    }
+
     // 2. 遍历通用寄存器
     for (i = 0; i < 32; i++) {
         if (strcmp(s, regfile[i]) == 0) {
