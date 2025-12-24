@@ -1,6 +1,6 @@
 include loongarch_sc/src/Makefile.testcase
 
-.PHONY: run clean
+.PHONY: run clean clean-temu loongarch_sc
 
 ifndef INCLUDE_DIR
 INCLUDE_DIR := ./temu/include
@@ -31,15 +31,25 @@ export	INCLUDE_DIR
 export	SRC_DIR
 export	BUILD_DIR
 
+SC_DIR := ./loongarch_sc
+
 # ********************
 # Rules of Compilation
 # ********************
+
+.PHONY: all
+all:
+	$(MAKE) clean
+	$(MAKE) $(BUILD_DIR)$(TEMU_TARGET)
 
 $(BUILD_DIR)$(TEMU_TARGET): 
 	@mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) -o $@ $(SRCS) $(LDFLAGS)
 
-run: $(BUILD_DIR)$(TEMU_TARGET)
+loongarch_sc:
+	$(MAKE) -C $(SC_DIR)
+
+run: loongarch_sc $(BUILD_DIR)$(TEMU_TARGET)
 	@./$(BUILD_DIR)$(TEMU_TARGET) $(USER_PROGRAM)
 
 clean-temu:
@@ -47,7 +57,7 @@ clean-temu:
 
 clean:
 	rm -f -r $(BUILD_DIR)
-	rm -f -r ./loongarch_sc/build
+	$(MAKE) -C $(SC_DIR) clean
 	rm -f log.txt
 	rm -f *.bin
 

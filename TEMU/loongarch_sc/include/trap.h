@@ -1,2 +1,2 @@
-#define HIT_GOOD_TRAP \
-	.word 0x80000000
+#define HIT_GOOD_TRAP .word 0x80000000
+#define HIT_BAD_TRAP .word 0x80000001
