@@ -23,3 +23,10 @@ make_helper(lu12i_w) {
     sprintf(assembly, "lu12i.w\t%s,\t0x%04x", REG_NAME(op_dest->reg),
             op_src2->imm);
 }
+
+make_helper(pcaddu12i) {
+    decode_i20_type(instr);
+    reg_w(op_dest->reg) = cpu.pc + (op_src2->val << 12);
+    sprintf(assembly, "pcaddu12i\t%s,\t0x%04x", REG_NAME(op_dest->reg),
+            op_src2->imm);
+}

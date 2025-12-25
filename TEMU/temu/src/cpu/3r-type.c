@@ -24,6 +24,13 @@ static void decode_3r_type(uint32_t instr) {
     op_dest->reg = instr & 0x0000001F;
 }
 
+make_helper(add_w) {
+    decode_3r_type(instr);
+    reg_w(op_dest->reg) = (op_src1->val + op_src2->val);
+    sprintf(assembly, "add.w\t%s,\t%s,\t%s", REG_NAME(op_dest->reg),
+            REG_NAME(op_src1->reg), REG_NAME(op_src2->reg));
+}
+
 make_helper(or) {
     decode_3r_type(instr);
     // 访问寄存器的 32 位值
@@ -32,9 +39,11 @@ make_helper(or) {
             REG_NAME(op_src1->reg), REG_NAME(op_src2->reg));
 }
 
-make_helper(add_w) {
+make_helper(srl_w) {
     decode_3r_type(instr);
-    reg_w(op_dest->reg) = (op_src1->val + op_src2->val);
-    sprintf(assembly, "add.w\t%s,\t%s,\t%s", REG_NAME(op_dest->reg),
+    // 移位量是 rk 的低 5 位
+    uint32_t shift = op_src2->val & 0x1F;
+    reg_w(op_dest->reg) = (op_src1->val >> shift);
+    sprintf(assembly, "srl.w\t%s,\t%s,\t%s", REG_NAME(op_dest->reg),
             REG_NAME(op_src1->reg), REG_NAME(op_src2->reg));
 }

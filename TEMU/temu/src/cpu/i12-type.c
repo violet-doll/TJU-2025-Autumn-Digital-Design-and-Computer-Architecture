@@ -1,3 +1,4 @@
+#include "../include/memory/memory.h"
 #include "helper.h"
 #include "monitor.h"
 #include "reg.h"
@@ -62,5 +63,33 @@ make_helper(andi) {
     decode_ui12_type(instr);
     reg_w(op_dest->reg) = op_src1->val & op_src2->val;
     sprintf(assembly, "andi\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg),
+            REG_NAME(op_src1->reg), op_src2->imm);
+}
+
+make_helper(st_b) {
+    decode_si12_type(instr);
+    uint32_t addr = op_src1->val + op_src2->val;
+    uint8_t data = reg_w(op_dest->reg) & 0xFF;
+    mem_write(addr, 1, data);
+    sprintf(assembly, "st.b\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg),
+            REG_NAME(op_src1->reg), op_src2->imm);
+}
+
+make_helper(ld_b) {
+    decode_si12_type(instr);
+    uint32_t addr = op_src1->val + op_src2->val;
+    // 符号拓展：8 -> 32
+    int8_t data = mem_read(addr, 1);
+    reg_w(op_dest->reg) = (int32_t)data;
+    sprintf(assembly, "ld.b\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg),
+            REG_NAME(op_src1->reg), op_src2->imm);
+}
+
+make_helper(ld_w) {
+    decode_si12_type(instr);
+    uint32_t addr = op_src1->val + op_src2->val;
+    uint32_t data = mem_read(addr, 4);
+    reg_w(op_dest->reg) = data;
+    sprintf(assembly, "ld.w\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg),
             REG_NAME(op_src1->reg), op_src2->imm);
 }

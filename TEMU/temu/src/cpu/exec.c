@@ -3,6 +3,7 @@
 
 typedef void (*op_fun)(uint32_t);
 static make_helper(_2byte_esc);
+static make_helper(_group_0A);
 
 Operands ops_decoded;
 uint32_t instr;
@@ -61,9 +62,15 @@ uint32_t instr;
         return concat(opcode_table_, name)[ops_decoded.opcode3](pc);        \
     }
 
-/* 0x00 */
+// 前 6 位为 0A(00 1010) 时，新增查找表
+// 共四条指令：st.b，st.w，ld.b，ld.w
+op_fun group_0A_table[16] = {
+    /* 0x0 */ ld_b, inv, ld_w, inv,
+    /* 0x4 */ st_b, inv, inv,  inv,
+    /* 0x8 */ inv,  inv, inv,  inv,
+    /* 0xC */ inv,  inv, inv,  inv};
 
-// 3R指令
+// 前 10 位都为 0，来到 3R 指令
 make_group(_group1_3R, inv, inv, inv, inv, /* 0x00  */
            inv, inv, inv, inv,             /* 0x04  */
            inv, inv, inv, inv,             /* 0x08  */
@@ -75,7 +82,7 @@ make_group(_group1_3R, inv, inv, inv, inv, /* 0x00  */
            add_w, inv, inv, inv,           /* 0x20  */
            inv, inv, inv, inv,             /* 0x24  */
            inv, inv, or, inv,              /* 0x28  */
-           inv, inv, inv, inv,             /* 0x2c  */
+           inv, inv, inv, srl_w,           /* 0x2c  */
            inv, inv, inv, inv,             /* 0x30  */
            inv, inv, inv, inv,             /* 0x34  */
            inv, inv, inv, inv,             /* 0x38  */
@@ -101,22 +108,22 @@ make_group(_group1_3R, inv, inv, inv, inv, /* 0x00  */
 
     // 根据指令前 6 位执行对应的指令函数
     op_fun opcode_table[64] = {
-        /* 0x00 */ _2byte_esc, inv,     inv, inv,
-        /* 0x04 */ inv,        lu12i_w, inv, inv,
-        /* 0x08 */ inv,        inv,     inv, inv,
-        /* 0x0c */ inv,        inv,     inv, inv,
-        /* 0x10 */ inv,        inv,     inv, inv,
-        /* 0x14 */ inv,        inv,     inv, inv,
-        /* 0x18 */ inv,        inv,     inv, inv,
-        /* 0x1c */ inv,        inv,     inv, inv,
-        /* 0x20 */ temu_trap,  inv,     inv, inv,
-        /* 0x24 */ inv,        inv,     inv, inv,
-        /* 0x28 */ inv,        inv,     inv, inv,
-        /* 0x2c */ inv,        inv,     inv, inv,
-        /* 0x30 */ inv,        inv,     inv, inv,
-        /* 0x34 */ inv,        inv,     inv, inv,
-        /* 0x38 */ inv,        inv,     inv, inv,
-        /* 0x3c */ inv,        inv,     inv, inv};
+        /* 0x00 */ _2byte_esc, inv,     inv,       inv,
+        /* 0x04 */ inv,        lu12i_w, inv,       pcaddu12i,
+        /* 0x08 */ inv,        inv,     _group_0A, inv,
+        /* 0x0c */ inv,        inv,     inv,       inv,
+        /* 0x10 */ inv,        inv,     inv,       inv,
+        /* 0x14 */ inv,        inv,     beq,       inv,
+        /* 0x18 */ inv,        inv,     inv,       inv,
+        /* 0x1c */ inv,        inv,     inv,       inv,
+        /* 0x20 */ temu_trap,  inv,     inv,       inv,
+        /* 0x24 */ inv,        inv,     inv,       inv,
+        /* 0x28 */ inv,        inv,     inv,       inv,
+        /* 0x2c */ inv,        inv,     inv,       inv,
+        /* 0x30 */ inv,        inv,     inv,       inv,
+        /* 0x34 */ inv,        inv,     inv,       inv,
+        /* 0x38 */ inv,        inv,     inv,       inv,
+        /* 0x3c */ inv,        inv,     inv,       inv};
 
 // 前 6 位为 0，来到拓展指令表查看 25 ~ 22 位
 op_fun _2byte_opcode_table[16] = {
@@ -134,4 +141,9 @@ make_helper(exec) {
 static make_helper(_2byte_esc) {
     ops_decoded.opcode2 = ((instr << 6) & 0xF0000000) >> 28;
     _2byte_opcode_table[ops_decoded.opcode2](pc);
+}
+
+static make_helper(_group_0A) {
+    ops_decoded.opcode2 = (instr >> 22) & 0xF;
+    group_0A_table[ops_decoded.opcode2](pc);
 }

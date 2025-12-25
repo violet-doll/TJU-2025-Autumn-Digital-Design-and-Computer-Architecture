@@ -3,7 +3,8 @@
 
 #include "helper.h"
 
-make_helper(or);
 make_helper(add_w);
+make_helper(or);
+make_helper(srl_w);
 
 #endif
