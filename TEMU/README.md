@@ -20,3 +20,6 @@
 · (3). 如果需要重新编译测试程序和temu仿真器源代码，请在TEMU工程根目录下输入“make clean”，然后重复前两步。
 
 · (4). 如果只想编译temu仿真器源代码，请在TEMU工程根目录下输入“make clean-temu”，然后再输入“make run”即可。
+
+make gui
+./build/temu-gui loongarch_sc/build/add_w --gui

@@ -11,7 +11,11 @@
 #include <assert.h>
 #include <string.h>
 
+#ifndef __cplusplus
 typedef uint8_t bool;
+#define false 0
+#define true 1
+#endif
 
 #pragma pack (1)
 typedef union {
@@ -21,8 +25,5 @@ typedef union {
 	uint8_t _1;
 } unalign;
 #pragma pack ()
-
-#define false 0
-#define true 1
 
 #endif
