@@ -1,72 +1,100 @@
-#include "temu.h"
+#include <stdlib.h>
 
+#include "temu.h"
 #define ENTRY_START 0x80000000
 
-char *exec_file;
+extern uint8_t* hw_mem;
+char* exec_file;
 
 void init_regex();
 void init_wp_pool();
 void init_ddr3();
 
-FILE *log_fp = NULL;
+FILE* log_fp = NULL;
+FILE* trace_fp = NULL;
+
+static void close_monitor() {
+    if (trace_fp != NULL) {
+        fclose(trace_fp);
+        trace_fp = NULL;
+    }
+
+    if (log_fp != NULL) {
+        fclose(log_fp);
+        log_fp = NULL;
+    }
+}
 
 static void init_log() {
-	log_fp = fopen("log.txt", "w");
-	Assert(log_fp, "Can not open 'log.txt'");
+    log_fp = fopen("log.txt", "w");
+    Assert(log_fp, "Can not open 'log.txt'");
+
+    trace_fp = fopen("trace.txt", "w");
+    Assert(trace_fp, "Can not open 'trace.txt'");
+
+    if (trace_fp != NULL) {
+        fprintf(trace_fp, "%-8s    %-2s   %-8s\n", "PC", "Reg", "Value");
+        fprintf(trace_fp, "--------------------------\n");
+    }
 }
 
 static void welcome() {
-	printf("Welcome to TEMU!\nThe executable is %s.\nFor help, type \"help\"\n",
-			exec_file);
+    printf("Welcome to TEMU!\nThe executable is %s.\nFor help, type \"help\"\n",
+           exec_file);
 }
 
-void init_monitor(int argc, char *argv[]) {
-	/* Perform some global initialization */
+void init_monitor(int argc, char* argv[]) {
+    /* Perform some global initialization */
 
-	/* Open the log file. */
-	exec_file = argv[1];
-	init_log();
+    /* Open the log file. */
+    exec_file = argv[1];
+    init_log();
 
-	/* Compile the regular expressions. */
-	init_regex();
+    /* Compile the regular expressions. */
+    init_regex();
 
-	/* Initialize the watchpoint pool. */
-	init_wp_pool();
+    /* Initialize the watchpoint pool. */
+    init_wp_pool();
 
-	/* Display welcome message. */
-	welcome();
+    /* Display welcome message. */
+    welcome();
+
+    atexit(close_monitor);
 }
 
 static void load_entry() {
-	int ret;
+    int ret;
 
-	FILE *fp = fopen("inst.bin", "rb");
-	Assert(fp, "Can not open 'inst.bin'");
-	fseek(fp, 0, SEEK_END);
-	size_t file_size = ftell(fp);
-	fseek(fp, 0, SEEK_SET);
-	ret = fread((void *)(hw_mem + (ENTRY_START & 0x7FFFFFFF)), file_size, 1, fp);  // load .text segment to memory address 0x00000000
-	assert(ret == 1);
+    FILE* fp = fopen("inst.bin", "rb");
+    Assert(fp, "Can not open 'inst.bin'");
+    fseek(fp, 0, SEEK_END);
+    size_t file_size = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+    ret = fread((void*)(hw_mem + (ENTRY_START & 0x7FFFFFFF)), file_size, 1,
+                fp);  // load .text segment to memory address 0x00000000
+    assert(ret == 1);
 
-	fp = fopen("data.bin", "rb");
-	Assert(fp, "Can not open 'data.bin'");
-	fseek(fp, 0, SEEK_END);
-	file_size = ftell(fp);
-	fseek(fp, 0, SEEK_SET);
-	ret = fread((void *)(hw_mem + ((ENTRY_START + 0x10000) & 0x7FFFFFFF)), file_size, 1, fp); // load .data segment to memory address 0x00010000
+    fp = fopen("data.bin", "rb");
+    Assert(fp, "Can not open 'data.bin'");
+    fseek(fp, 0, SEEK_END);
+    file_size = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+    ret = fread((void*)(hw_mem + ((ENTRY_START + 0x10000) & 0x7FFFFFFF)),
+                file_size, 1,
+                fp);  // load .data segment to memory address 0x00010000
 
-	fclose(fp);
+    fclose(fp);
 }
 
 void restart() {
-	/* Perform some initialization to restart a program */
+    /* Perform some initialization to restart a program */
 
-	/* Read the entry code into memory. */
-	load_entry();
+    /* Read the entry code into memory. */
+    load_entry();
 
-	/* Set the initial instruction pointer. */
-	cpu.pc = ENTRY_START;
+    /* Set the initial instruction pointer. */
+    cpu.pc = ENTRY_START;
 
-	/* Initialize DRAM. */
-	init_ddr3();
+    /* Initialize DRAM. */
+    init_ddr3();
 }

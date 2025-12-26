@@ -58,6 +58,6 @@ clean-temu:
 clean:
 	rm -f -r $(BUILD_DIR)
 	$(MAKE) -C $(SC_DIR) clean
-	rm -f log.txt
+	rm -f log.txt trace.txt
 	rm -f *.bin
 

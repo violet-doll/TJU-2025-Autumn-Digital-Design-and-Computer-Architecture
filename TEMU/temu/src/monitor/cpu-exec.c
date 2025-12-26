@@ -57,6 +57,14 @@ void cpu_exec(volatile uint32_t n) {
         exec(pc);
         cpu.pc += 4;
 
+        // Golden Trace
+        if (trace_fp != NULL) {
+            if (assembly[0] != 'b' && strncmp(assembly, "st", 2) != 0 &&
+                ops_decoded.dest.type == OP_TYPE_REG)
+                fprintf(trace_fp, TRACE_FORMAT, pc, op_dest->reg,
+                        reg_w(op_dest->reg));
+        }
+
 #ifdef DEBUG
         print_bin_instr(pc_temp);
         strcat(asm_buf, assembly);
@@ -67,16 +75,10 @@ void cpu_exec(volatile uint32_t n) {
 #endif
 
         /* TODO: check watchpoints here. */
-        if (check_watchpoints()) {
-            temu_state = STOP;
-        }
+        if (check_watchpoints()) temu_state = STOP;
 
-        if (temu_state != RUNNING) {
-            return;
-        }
+        if (temu_state != RUNNING) return;
     }
 
-    if (temu_state == RUNNING) {
-        temu_state = STOP;
-    }
+    if (temu_state == RUNNING) temu_state = STOP;
 }
