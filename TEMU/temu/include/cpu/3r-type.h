@@ -6,5 +6,6 @@
 make_helper(add_w);
 make_helper(or);
 make_helper(srl_w);
+make_helper(xor);
 
 #endif

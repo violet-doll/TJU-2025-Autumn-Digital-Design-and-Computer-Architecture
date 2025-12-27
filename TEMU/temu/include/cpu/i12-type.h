@@ -9,5 +9,7 @@ make_helper(andi);
 make_helper(st_b);
 make_helper(ld_b);
 make_helper(ld_w);
+make_helper(st_w);
+make_helper(sltui);
 
 #endif

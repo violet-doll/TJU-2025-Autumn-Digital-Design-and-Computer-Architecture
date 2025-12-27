@@ -47,3 +47,9 @@ make_helper(srl_w) {
     sprintf(assembly, "srl.w\t%s,\t%s,\t%s", REG_NAME(op_dest->reg),
             REG_NAME(op_src1->reg), REG_NAME(op_src2->reg));
 }
+
+make_helper(exec_xor){
+    decode_3r_type(instr);
+    reg_w(op_dest->reg) = op_src1->val ^ op_src2->val;
+    sprintf(assembly, "xor\t%s,\t%s,\t%s", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), REG_NAME(op_src2->reg));
+}

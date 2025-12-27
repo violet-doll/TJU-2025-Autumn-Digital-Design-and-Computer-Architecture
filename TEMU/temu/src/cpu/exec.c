@@ -66,7 +66,7 @@ uint32_t instr;
 // 共四条指令：st.b，st.w，ld.b，ld.w
 op_fun group_0A_table[16] = {
     /* 0x0 */ ld_b, inv, ld_w, inv,
-    /* 0x4 */ st_b, inv, inv,  inv,
+    /* 0x4 */ st_b, inv, st_w,  inv,
     /* 0x8 */ inv,  inv, inv,  inv,
     /* 0xC */ inv,  inv, inv,  inv};
 
@@ -81,7 +81,7 @@ make_group(_group1_3R, inv, inv, inv, inv, /* 0x00  */
            inv, inv, inv, inv,             /* 0x1c  */
            add_w, inv, inv, inv,           /* 0x20  */
            inv, inv, inv, inv,             /* 0x24  */
-           inv, inv, or, inv,              /* 0x28  */
+           inv, inv, or, xor,              /* 0x28  */
            inv, inv, inv, srl_w,           /* 0x2c  */
            inv, inv, inv, inv,             /* 0x30  */
            inv, inv, inv, inv,             /* 0x34  */
@@ -113,8 +113,8 @@ make_group(_group1_3R, inv, inv, inv, inv, /* 0x00  */
         /* 0x08 */ inv,        inv,     _group_0A, inv,
         /* 0x0c */ inv,        inv,     inv,       inv,
         /* 0x10 */ inv,        inv,     inv,       inv,
-        /* 0x14 */ inv,        inv,     beq,       inv,
-        /* 0x18 */ inv,        inv,     inv,       inv,
+        /* 0x14 */ inv,        inv,     beq,       bne,
+        /* 0x18 */ blt,        inv,     inv,       inv,
         /* 0x1c */ inv,        inv,     inv,       inv,
         /* 0x20 */ temu_trap,  inv,     inv,       inv,
         /* 0x24 */ inv,        inv,     inv,       inv,
@@ -129,7 +129,7 @@ make_group(_group1_3R, inv, inv, inv, inv, /* 0x00  */
 op_fun _2byte_opcode_table[16] = {
     /* 0x00 */ _group1_3R, inv,  inv,    inv,
     /* 0x04 */ inv,        inv,  inv,    inv,
-    /* 0x08 */ inv,        inv,  addi_w, inv,
+    /* 0x08 */ inv,        sltui,  addi_w, inv,
     /* 0x0c */ inv,        andi, ori,    inv};
 
 make_helper(exec) {

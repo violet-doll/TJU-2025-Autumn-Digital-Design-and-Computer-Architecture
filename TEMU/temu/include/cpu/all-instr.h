@@ -20,3 +20,5 @@ void pcaaddu12i(uint32_t pc);
 void st_b(uint32_t pc);
 void ld_b(uint32_t pc);
 void ld_w(uint32_t pc);
+
+void xor(uint32_t pc);

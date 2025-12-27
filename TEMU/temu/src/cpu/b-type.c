@@ -36,3 +36,16 @@ make_helper(beq) {
     sprintf(assembly, "beq\t%s,\t%s,\t0x%x", REG_NAME(op_src1->reg),
             REG_NAME(op_src2->reg), op_dest->imm);
 }
+
+make_helper(bne) {
+    decode_b_type(instr);
+    if (op_src1->val != op_src2->val) cpu.pc += op_dest->imm - 4;
+    sprintf(assembly, "bne\t%s,\t%s,\t0x%x", REG_NAME(op_src1->reg), REG_NAME(op_src2->reg), op_dest->imm);
+}
+
+make_helper(blt) {
+    decode_b_type(instr);
+    // blt 是有符号比较
+    if ((int32_t)op_src1->val < (int32_t)op_src2->val) cpu.pc += op_dest->imm - 4;
+    sprintf(assembly, "blt\t%s,\t%s,\t0x%x", REG_NAME(op_src1->reg), REG_NAME(op_src2->reg), op_dest->imm);
+}

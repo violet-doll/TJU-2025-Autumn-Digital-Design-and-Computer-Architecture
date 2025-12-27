@@ -6,5 +6,7 @@
 // 此文件用于处理分支类指令
 
 make_helper(beq);
+make_helper(bne);
+make_helper(blt);
 
 #endif

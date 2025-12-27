@@ -93,3 +93,23 @@ make_helper(ld_w) {
     sprintf(assembly, "ld.w\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg),
             REG_NAME(op_src1->reg), op_src2->imm);
 }
+
+make_helper(st_w) {
+    decode_si12_type(instr);
+    uint32_t addr = op_src1->val + op_src2->val;
+    uint32_t data = reg_w(op_dest->reg);
+    mem_write(addr, 4, data);
+    sprintf(assembly, "st.w\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), op_src2->imm);
+}
+
+make_helper(sltui) {
+    // sltui 立即数是 sign-extended 12-bit
+    decode_si12_type(instr); 
+    // 比较时视为无符号数
+    if (op_src1->val < (uint32_t)op_src2->val) {
+        reg_w(op_dest->reg) = 1;
+    } else {
+        reg_w(op_dest->reg) = 0;
+    }
+    sprintf(assembly, "sltui\t%s,\t%s,\t0x%03x", REG_NAME(op_dest->reg), REG_NAME(op_src1->reg), op_src2->imm);
+}
