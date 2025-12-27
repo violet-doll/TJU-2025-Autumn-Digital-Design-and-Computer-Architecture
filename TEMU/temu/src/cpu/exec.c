@@ -85,7 +85,7 @@ make_group(_group1_3R, inv, inv, inv, inv, /* 0x00  */
            inv, inv, inv, srl_w,           /* 0x2c  */
            inv, inv, inv, inv,             /* 0x30  */
            inv, inv, inv, inv,             /* 0x34  */
-           inv, inv, inv, inv,             /* 0x38  */
+           temu_trap, inv, inv, inv,             /* 0x38  */
            inv, inv, inv, inv,             /* 0x3c  */
            inv, inv, inv, inv,             /* 0x40  */
            inv, inv, inv, inv,             /* 0x44  */

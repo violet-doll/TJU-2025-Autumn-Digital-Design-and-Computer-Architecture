@@ -22,3 +22,7 @@ void ld_b(uint32_t pc);
 void ld_w(uint32_t pc);
 
 void xor(uint32_t pc);
+void bne(uint32_t pc);
+void blt(uint32_t pc);
+void st_w(uint32_t pc);
+void sltui(uint32_t pc);
