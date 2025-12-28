@@ -15,7 +15,7 @@ void srl_w(uint32_t pc);
 void beq(uint32_t pc);
 
 void lu12i_w(uint32_t pc);
-void pcaaddu12i(uint32_t pc);
+void pcaddu12i(uint32_t pc);
 
 void st_b(uint32_t pc);
 void ld_b(uint32_t pc);

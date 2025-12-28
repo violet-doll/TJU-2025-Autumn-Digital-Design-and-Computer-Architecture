@@ -106,7 +106,7 @@ make_helper(sltui) {
     // sltui 立即数是 sign-extended 12-bit
     decode_si12_type(instr); 
     // 比较时视为无符号数
-    if (op_src1->val < (uint32_t)op_src2->val) {
+    if (op_src1->val < op_src2->val) {
         reg_w(op_dest->reg) = 1;
     } else {
         reg_w(op_dest->reg) = 0;

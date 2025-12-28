@@ -1,78 +1,60 @@
 include loongarch_sc/src/Makefile.testcase
 
-.PHONY: run clean clean-temu loongarch_sc gui run-gui
+.PHONY: all run gui clean help
 
 # ========================================
 # Directory Configuration
 # ========================================
-ifndef INCLUDE_DIR
 INCLUDE_DIR := ./temu/include
-endif
-ifndef SRC_DIR
-SRC_DIR := ./temu/src
-endif
-ifndef BUILD_DIR
-BUILD_DIR := build
-endif
-OBJ_DIR := $(BUILD_DIR)/obj
-ifndef GUI_DIR
-GUI_DIR := ./gui
-endif
-ifndef VENDOR_DIR
-VENDOR_DIR := ./vendor
-endif
-
-DEBUG := false
+SRC_DIR     := ./temu/src
+BUILD_DIR   := build
+OBJ_DIR     := $(BUILD_DIR)/obj
+GUI_DIR     := ./gui
+VENDOR_DIR  := ./vendor
+SC_DIR      := ./loongarch_sc
 
 # ========================================
 # Compiler Configuration
 # ========================================
-CC := gcc
+CC  := gcc
 CXX := g++
-LD := g++
+LD  := g++
 
 # ========================================
-# C Compilation Flags
+# Compilation Flags
 # ========================================
-CFLAGS := -I$(INCLUDE_DIR) \
-          -I$(INCLUDE_DIR)/cpu \
-          -I$(INCLUDE_DIR)/memory \
-          -I$(INCLUDE_DIR)/monitor \
-          -Wall -Werror
-
-# ========================================
-# C++ Compilation Flags
-# ========================================
-CXXFLAGS := -std=c++11 \
-            -I$(INCLUDE_DIR) \
+INCLUDES := -I$(INCLUDE_DIR) \
             -I$(INCLUDE_DIR)/cpu \
             -I$(INCLUDE_DIR)/memory \
-            -I$(INCLUDE_DIR)/monitor \
+            -I$(INCLUDE_DIR)/monitor
+
+CFLAGS := $(INCLUDES) -Wall -Werror
+
+CXXFLAGS := -std=c++11 $(INCLUDES) \
             -I$(VENDOR_DIR)/imgui \
             -I$(VENDOR_DIR)/imgui/backends \
             -I$(VENDOR_DIR)/imgui_club/imgui_memory_editor \
             $(shell pkg-config --cflags sdl2) \
             -Wall -Wformat
 
-# ========================================
-# Linker Flags
-# ========================================
-LDFLAGS := -lreadline
+LDFLAGS := -lreadline $(shell pkg-config --libs sdl2) -lGL -ldl -lpthread
 
-# GUI-specific linker flags (SDL2 + OpenGL3)
-GUI_LDFLAGS := $(shell pkg-config --libs sdl2) -lGL -ldl -lpthread
+# Debug mode
+ifeq ($(DEBUG), true)
+CFLAGS += -g
+CXXFLAGS += -g
+endif
 
 # ========================================
-# Source Files - C (TEMU Core)
+# Source Files
 # ========================================
+# C sources (TEMU core)
 C_SRCS := $(wildcard $(SRC_DIR)/*.c) \
           $(wildcard $(SRC_DIR)/memory/*.c) \
           $(wildcard $(SRC_DIR)/cpu/*.c) \
           $(wildcard $(SRC_DIR)/monitor/*.c)
 
-# ========================================
-# Source Files - C++ (Dear ImGui + GUI)
-# ========================================
+# C++ sources (ImGui + GUI)
 IMGUI_DIR := $(VENDOR_DIR)/imgui
 IMGUI_SRCS := $(IMGUI_DIR)/imgui.cpp \
               $(IMGUI_DIR)/imgui_demo.cpp \
@@ -89,117 +71,74 @@ CXX_SRCS := $(IMGUI_SRCS) $(GUI_SRCS)
 # ========================================
 # Object Files
 # ========================================
-C_OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(C_SRCS))
+C_OBJS   := $(patsubst %.c, $(OBJ_DIR)/%.o, $(C_SRCS))
 CXX_OBJS := $(patsubst %.cpp, $(OBJ_DIR)/%.o, $(CXX_SRCS))
-
 ALL_OBJS := $(C_OBJS) $(CXX_OBJS)
 
 # ========================================
 # Targets
 # ========================================
-TEMU_TARGET := temu
-GUI_TARGET := temu-gui
+TEMU_TARGET := $(BUILD_DIR)/temu
 
-# ========================================
-# Debug Configuration
-# ========================================
-ifeq ($(DEBUG), true)
-CFLAGS += -g
-CXXFLAGS += -g
-endif
-
-# ========================================
-# Export Variables
-# ========================================
-export INCLUDE_DIR
-export SRC_DIR
-export BUILD_DIR
-
-SC_DIR := ./loongarch_sc
-
-# ========================================
-# Build Rules
-# ========================================
-
-.PHONY: all
+# Default target
 all:
 	$(MAKE) clean
-	$(MAKE) $(BUILD_DIR)/$(TEMU_TARGET)
+	$(MAKE) $(TEMU_TARGET)
 
-# Main version (TEMU with optional GUI support)
-$(BUILD_DIR)/$(TEMU_TARGET): $(ALL_OBJS)
+# Build TEMU (with GUI support)
+$(TEMU_TARGET): $(ALL_OBJS)
 	@mkdir -p $(BUILD_DIR)
-	$(LD) -o $@ $(ALL_OBJS) $(LDFLAGS) $(GUI_LDFLAGS)
+	$(LD) -o $@ $(ALL_OBJS) $(LDFLAGS)
 
-# GUI version (TEMU with Dear ImGui)
-gui: $(BUILD_DIR)/$(GUI_TARGET)
-
-$(BUILD_DIR)/$(GUI_TARGET): $(ALL_OBJS)
-	@echo "Linking GUI executable..."
-	@mkdir -p $(BUILD_DIR)
-	$(LD) -o $@ $(ALL_OBJS) $(LDFLAGS) $(GUI_LDFLAGS)
-	@echo "Build complete: $(BUILD_DIR)/$(GUI_TARGET)"
+# Alias for building
+gui: $(TEMU_TARGET)
 
 # ========================================
-# Compilation Rules for C Files
+# Compilation Rules
 # ========================================
 $(OBJ_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)
 	@echo "Compiling C: $<"
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# ========================================
-# Compilation Rules for C++ Files
-# ========================================
 $(OBJ_DIR)/%.o: %.cpp
 	@mkdir -p $(dir $@)
 	@echo "Compiling C++: $<"
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # ========================================
-# LoongArch SC Testcases
-# ========================================
-loongarch_sc:
-	$(MAKE) -C $(SC_DIR)
-
-# ========================================
 # Run Targets
 # ========================================
-run: loongarch_sc $(BUILD_DIR)/$(TEMU_TARGET)
-	@./$(BUILD_DIR)/$(TEMU_TARGET) $(USER_PROGRAM)
-
-run-gui: loongarch_sc gui
-	@./$(BUILD_DIR)/$(GUI_TARGET) $(USER_PROGRAM)
+run: $(TEMU_TARGET)
+	@./$(TEMU_TARGET) $(USER_PROGRAM)
 
 # ========================================
 # Clean Targets
 # ========================================
-clean-temu:
-	rm -f -r $(BUILD_DIR)
-
 clean:
-	rm -f -r $(BUILD_DIR)
+	rm -rf $(BUILD_DIR)
 	$(MAKE) -C $(SC_DIR) clean
-	rm -f log.txt trace.txt
-	rm -f *.bin
+	rm -f log.txt trace.txt *.bin
 
 # ========================================
 # Help Target
 # ========================================
-.PHONY: help
 help:
 	@echo "TEMU Build System"
 	@echo "================="
 	@echo "Targets:"
-	@echo "  all         - Build CLI version (default)"
-	@echo "  gui         - Build GUI version with Dear ImGui"
-	@echo "  run         - Run CLI version"
-	@echo "  run-gui     - Run GUI version"
-	@echo "  clean       - Clean all build artifacts"
-	@echo "  clean-temu  - Clean only TEMU build artifacts"
-	@echo "  help        - Show this help message"
+	@echo "  all     - Clean and build TEMU"
+	@echo "  gui     - Build TEMU (same as all)"
+	@echo "  run     - Run TEMU with USER_PROGRAM"
+	@echo "  clean   - Clean all build artifacts"
+	@echo "  help    - Show this help message"
 	@echo ""
 	@echo "Examples:"
-	@echo "  make gui                              - Build GUI version"
-	@echo "  make run-gui USER_PROGRAM=test.bin    - Run GUI with test program"
-	@echo "  make DEBUG=true gui                   - Build GUI with debug symbols"
+	@echo "  make gui                           - Build TEMU"
+	@echo "  make run USER_PROGRAM=test.bin     - Run with test program"
+	@echo "  make DEBUG=true                    - Build with debug symbols"
+	@echo ""
+	@echo "Usage workflow:"
+	@echo "  1. cd loongarch_sc && make && cd .."
+	@echo "  2. make gui"
+	@echo "  3. ./build/temu loongarch_sc/build/add_w --gui"
