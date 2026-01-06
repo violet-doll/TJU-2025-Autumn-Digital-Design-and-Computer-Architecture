@@ -1,31 +1,31 @@
 `include "defines.v"
 
-module wb_stage(
+module wb_stage (
 
-    // ´Ó·Ã´æ½×¶Î»ñµÃµÄĞÅÏ¢
-	input  wire [`REG_ADDR_BUS  ] wb_wa_i,
-	input  wire                   wb_wreg_i,
-	input  wire [`REG_BUS       ] wb_dreg_i,
-	input  wire [`INST_ADDR_BUS]  wb_debug_wb_pc,  // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃĞÅºÅ
+    // ä»è®¿å­˜é˜¶æ®µè·å¾—çš„ä¿¡æ¯
+    input wire [`REG_ADDR_BUS] wb_wa_i,
+    input wire wb_wreg_i,
+    input wire [`REG_BUS] wb_dreg_i,
+    input  wire [`INST_ADDR_BUS]  wb_debug_wb_pc,  // ä¾›è°ƒè¯•ä½¿ç”¨çš„PCå€¼ï¼Œä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥ä¿¡å·
 
-    // Ğ´»ØÄ¿µÄ¼Ä´æÆ÷µÄÊı¾İ
-    output wire [`REG_ADDR_BUS  ] wb_wa_o,
-	output wire                   wb_wreg_o,
-    output wire [`WORD_BUS      ] wb_wd_o,
-    
-    output wire [`INST_ADDR_BUS]  debug_wb_pc,       // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃĞÅºÅ
-    output wire                   debug_wb_rf_wen,   // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃĞÅºÅ
-    output wire [`REG_ADDR_BUS  ] debug_wb_rf_wnum,  // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃĞÅºÅ
-    output wire [`WORD_BUS      ] debug_wb_rf_wdata  // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃĞÅºÅ
-    );
+    // å†™å›ç›®çš„å¯„å­˜å™¨çš„ç›¸å…³ä¿¡æ¯
+    output wire [`REG_ADDR_BUS] wb_wa_o,
+    output wire                 wb_wreg_o,
+    output wire [    `WORD_BUS] wb_wd_o,
 
-    assign wb_wa_o      = wb_wa_i;
-    assign wb_wreg_o    = wb_wreg_i;
-    assign wb_wd_o      = wb_dreg_i;
-    
-    assign debug_wb_pc         = wb_debug_wb_pc;    // ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃÓï¾ä
-    assign debug_wb_rf_wen     = wb_wreg_i;         // ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃÓï¾ä 
-    assign debug_wb_rf_wnum    = wb_wa_i;           // ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃÓï¾ä
-    assign debug_wb_rf_wdata   = wb_dreg_i;         // ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃÓï¾ä 
-    
+    output wire [`INST_ADDR_BUS]  debug_wb_pc,       // ä¾›è°ƒè¯•ä½¿ç”¨çš„PCå€¼ï¼Œä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥ä¿¡å·
+    output wire                   debug_wb_rf_wen,   // ä¾›è°ƒè¯•ä½¿ç”¨çš„å¯„å­˜å™¨å†™ä½¿èƒ½ï¼Œä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥ä¿¡å·
+    output wire [`REG_ADDR_BUS  ] debug_wb_rf_wnum,  // ä¾›è°ƒè¯•ä½¿ç”¨çš„å†™å¯„å­˜å™¨åœ°å€ï¼Œä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥ä¿¡å·
+    output wire [`WORD_BUS      ] debug_wb_rf_wdata  // ä¾›è°ƒè¯•ä½¿ç”¨çš„å†™å¯„å­˜å™¨æ•°æ®ï¼Œä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥ä¿¡å·
+);
+
+    assign wb_wa_o           = wb_wa_i;
+    assign wb_wreg_o         = wb_wreg_i;
+    assign wb_wd_o           = wb_dreg_i;
+
+    assign debug_wb_pc       = wb_debug_wb_pc;  // ä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥è¯­å¥
+    assign debug_wb_rf_wen   = wb_wreg_i;  // ä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥è¯­å¥
+    assign debug_wb_rf_wnum  = wb_wa_i;  // ä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥è¯­å¥
+    assign debug_wb_rf_wdata = wb_dreg_i;  // ä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥è¯­å¥ 
+
 endmodule

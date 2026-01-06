@@ -1,48 +1,61 @@
 `include "defines.v"
 
 module idexe_reg (
-    input  wire 				  cpu_clk_50M,
-    input  wire 				  cpu_rst_n,
+    input wire cpu_clk_50M,
+    input wire cpu_rst_n,
+    input wire flush,
 
-    // À´×ÔÒëÂë½×¶ÎµÄĞÅÏ¢
-    input  wire [`ALUTYPE_BUS  ]  id_alutype,
-    input  wire [`ALUOP_BUS    ]  id_aluop,
-    input  wire [`REG_BUS      ]  id_src1,
-    input  wire [`REG_BUS      ]  id_src2,
-    input  wire [`REG_ADDR_BUS ]  id_wa,
-    input  wire                   id_wreg,
-    input  wire [`INST_ADDR_BUS]  id_debug_wb_pc, // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃĞÅºÅ
-    
-    // ËÍÖÁÖ´ĞĞ½×¶ÎµÄĞÅÏ¢
-    output reg  [`ALUTYPE_BUS  ]  exe_alutype,
-    output reg  [`ALUOP_BUS    ]  exe_aluop,
-    output reg  [`REG_BUS      ]  exe_src1,
-    output reg  [`REG_BUS      ]  exe_src2,
-    output reg  [`REG_ADDR_BUS ]  exe_wa,
-    output reg                    exe_wreg,
-    output reg  [`INST_ADDR_BUS]  exe_debug_wb_pc  // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃĞÅºÅ
-    );
+    // æ¥è‡ªè¯‘ç é˜¶æ®µçš„ä¿¡æ¯
+    input wire [`ALUTYPE_BUS] id_alutype,
+    input wire [`ALUOP_BUS] id_aluop,
+    input wire [`REG_BUS] id_src1,
+    input wire [`REG_BUS] id_src2,
+    input wire [`REG_ADDR_BUS] id_wa,
+    input wire id_wreg,
+    input  wire [`INST_ADDR_BUS]  id_debug_wb_pc, // ä¾›è°ƒè¯•ä½¿ç”¨çš„PCå€¼ï¼Œä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥ä¿¡å·
+    input wire [`REG_BUS] id_rkd_value,
+
+    // é€è‡³æ‰§è¡Œé˜¶æ®µçš„ä¿¡æ¯
+    output reg [`ALUTYPE_BUS] exe_alutype,
+    output reg [`ALUOP_BUS] exe_aluop,
+    output reg [`REG_BUS] exe_src1,
+    output reg [`REG_BUS] exe_src2,
+    output reg [`REG_ADDR_BUS] exe_wa,
+    output reg exe_wreg,
+    output reg [`REG_BUS] exe_rkd_value,
+    output reg  [`INST_ADDR_BUS]  exe_debug_wb_pc  // ä¾›è°ƒè¯•ä½¿ç”¨çš„PCå€¼ï¼Œä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥ä¿¡å·
+);
 
     always @(posedge cpu_clk_50M) begin
-        // ¸´Î»µÄÊ±ºò½«ËÍÖÁÖ´ĞĞ½×¶ÎµÄĞÅÏ¢Çå0
+        // å¤ä½æœŸé—´ï¼Œé€è‡³æ‰§è¡Œé˜¶æ®µçš„ä¿¡æ¯ä¸º0
         if (cpu_rst_n == `RST_ENABLE) begin
-            exe_alutype 	   <= `NOP;
-            exe_aluop 		   <= `LoongArch32_SLL;
-            exe_src1 		   <= `ZERO_WORD;
-            exe_src2 		   <= `ZERO_WORD;
-            exe_wa 			   <= `REG_NOP;
-            exe_wreg    	   <= `WRITE_DISABLE;
-            exe_debug_wb_pc    <= `PC_INIT;   // ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃÓï¾ä
-        end
-        // ½«À´×ÔÒëÂë½×¶ÎµÄĞÅÏ¢¼Ä´æ²¢ËÍÖÁÖ´ĞĞ½×¶Î
-        else begin
-            exe_alutype 	   <= id_alutype;
-            exe_aluop 		   <= id_aluop;
-            exe_src1 		   <= id_src1;
-            exe_src2 		   <= id_src2;
-            exe_wa 			   <= id_wa;
-            exe_wreg		   <= id_wreg;
-            exe_debug_wb_pc    <= id_debug_wb_pc;   // ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃÓï¾ä
+            exe_alutype     <= `NOP;
+            exe_aluop       <= `LoongArch32_SLL;
+            exe_src1        <= `ZERO_WORD;
+            exe_src2        <= `ZERO_WORD;
+            exe_wa          <= `REG_NOP;
+            exe_wreg        <= `WRITE_DISABLE;
+            exe_rkd_value   <= `ZERO_WORD;
+            exe_debug_wb_pc <= `PC_INIT;  // ä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥è¯­å¥
+        end  // æ¸…ç©ºè¯‘ç é˜¶æ®µçš„ä¿¡æ¯ï¼Œæš‚åœå¹¶é‡æ–°æ‰§è¡Œé˜¶æ®µ
+        else if (flush == `TRUE_V) begin
+            exe_alutype     <= `NOP;
+            exe_aluop       <= `LoongArch32_SLL;
+            exe_wa          <= `REG_NOP;
+            exe_wreg        <= `WRITE_DISABLE;  // ç¦æ­¢å†™å¯„å­˜å™¨
+            exe_src1        <= `ZERO_WORD;
+            exe_src2        <= `ZERO_WORD;
+            exe_rkd_value   <= `ZERO_WORD;  // é˜²æ­¢é”™è¯¯çš„ Store æ•°æ®
+            exe_debug_wb_pc <= id_debug_wb_pc;
+        end else begin
+            exe_alutype <= id_alutype;
+            exe_aluop <= id_aluop;
+            exe_src1 <= id_src1;
+            exe_src2 <= id_src2;
+            exe_wa <= id_wa;
+            exe_wreg <= id_wreg;
+            exe_rkd_value <= id_rkd_value;
+            exe_debug_wb_pc <= id_debug_wb_pc;  // ä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥è¯­å¥
         end
     end
 

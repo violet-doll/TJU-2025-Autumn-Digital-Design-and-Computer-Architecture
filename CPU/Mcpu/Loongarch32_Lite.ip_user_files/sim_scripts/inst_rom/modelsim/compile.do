@@ -10,10 +10,10 @@ vmap xpm modelsim_lib/msim/xpm
 vmap dist_mem_gen_v8_0_12 modelsim_lib/msim/dist_mem_gen_v8_0_12
 
 vlog -work xil_defaultlib -64 -incr -sv \
-"D:/vivado2018.3/Vivado/2018.3/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv" \
+"D:/Xlinix2018/Vivado/2018.3/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv" \
 
 vcom -work xpm -64 -93 \
-"D:/vivado2018.3/Vivado/2018.3/data/ip/xpm/xpm_VCOMP.vhd" \
+"D:/Xlinix2018/Vivado/2018.3/data/ip/xpm/xpm_VCOMP.vhd" \
 
 vlog -work dist_mem_gen_v8_0_12 -64 -incr \
 "../../../ipstatic/simulation/dist_mem_gen_v8_0.v" \

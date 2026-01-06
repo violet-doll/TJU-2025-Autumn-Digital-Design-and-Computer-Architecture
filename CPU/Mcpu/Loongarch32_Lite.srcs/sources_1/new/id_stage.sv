@@ -2,92 +2,168 @@
 
 module id_stage (
 
-    // ´ÓÈ¡Ö¸½×¶Î»ñµÃµÄPCÖµ
+    // æ¥è‡ªå–æŒ‡é˜¶æ®µçš„PCå€¼
     input wire [`INST_ADDR_BUS] id_pc_i,
-    input  wire [`INST_ADDR_BUS]    id_debug_wb_pc,  // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃĞÅºÅ
+    input wire [`INST_ADDR_BUS] id_debug_wb_pc, // ä¾›è°ƒè¯•ä½¿ç”¨çš„PCå€¼ï¼Œä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥ä¿¡å·
 
-    // ´ÓÖ¸Áî´æ´¢Æ÷¶Á³öµÄÖ¸Áî×Ö
+    // ä»æŒ‡ä»¤å­˜å‚¨å™¨è·å¾—çš„æŒ‡ä»¤
     input wire [`INST_BUS] id_inst_i,
 
-    // ´ÓÍ¨ÓÃ¼Ä´æÆ÷¶Ñ¶Á³öµÄÊı¾İ 
+    // ä»é€šç”¨å¯„å­˜å™¨å †è¯»å‡ºçš„æ•°æ®
     input wire [`REG_BUS] rd1,
     input wire [`REG_BUS] rd2,
 
-    // ËÍÖÁÖ´ĞĞ½×¶ÎµÄÒëÂëĞÅÏ¢
+    // é€è‡³æ‰§è¡Œé˜¶æ®µçš„æ“ä½œæ•°
     output wire [ `ALUTYPE_BUS] id_alutype_o,
     output wire [   `ALUOP_BUS] id_aluop_o,
     output wire [`REG_ADDR_BUS] id_wa_o,
     output wire                 id_wreg_o,
 
-    // ËÍÖÁÖ´ĞĞ½×¶ÎµÄÔ´²Ù×÷Êı1¡¢Ô´²Ù×÷Êı2
+    // é€è‡³æ‰§è¡Œé˜¶æ®µçš„æ“ä½œæ•°1å’Œæ“ä½œæ•°2
     output wire [`REG_BUS] id_src1_o,
     output wire [`REG_BUS] id_src2_o,
 
-    // ËÍÖÁ¶ÁÍ¨ÓÃ¼Ä´æÆ÷¶Ñ¶Ë¿ÚµØÖ·
+    // ç”¨äºåˆ†æ”¯æˆ–StoreæŒ‡ä»¤çš„å­˜å‚¨æ•°æ®æˆ–åç§»é‡
+    output wire [`REG_BUS] id_rkd_value_o,
+
+    // é€è‡³é€šç”¨å¯„å­˜å™¨å †çš„è¯»åœ°å€
     output wire [`REG_ADDR_BUS] ra1,
     output wire [`REG_ADDR_BUS] ra2,
 
-    output       [`INST_ADDR_BUS] 	debug_wb_pc  // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃĞÅºÅ
+    output [`INST_ADDR_BUS] debug_wb_pc  // ä¾›è°ƒè¯•ä½¿ç”¨çš„PCå€¼ï¼Œä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥ä¿¡å·
 );
 
-    // ¸ù¾İĞ¡¶ËÄ£Ê½×éÖ¯Ö¸Áî×Ö
+    // æŒ‡ä»¤å°ç«¯åºè½¬æ¢ä¸ºå¤§ç«¯åº
     wire [`INST_BUS] inst;
     assign inst = {id_inst_i[7:0], id_inst_i[15:8], id_inst_i[23:16], id_inst_i[31:24]};
 
-    // ÌáÈ¡Ö¸Áî×ÖÖĞ¸÷¸ö×Ö¶ÎµÄĞÅÏ¢
-    wire [16:0] op17 = inst[31:15];
-    wire [4 : 0] rd = inst[4 : 0];
-    wire [4 : 0] rj = inst[9 : 5];
-    wire [11:0] imm12 = inst[21:10];
+    // ä»æŒ‡ä»¤ä¸­æå–æ“ä½œç å’Œæ“ä½œæ•°
+    wire [16:0] op17 = inst[31:15];  // ç”¨äº3R-type
+    wire [9:0] op10 = inst[31:22];  // ç”¨äº2RI12-type
+    wire [6:0] op7 = inst[31:25];  // ç”¨äºI20-type
+    wire [5:0] op6 = inst[31:26];  // ç”¨äºB-type
 
-    // Éæ¼°Á¢¼´ÊıÅĞ¶¨µÄĞÅºÅ
-    wire id_immsel;
-    wire id_sext;
+    wire [4:0] rd = inst[4:0];
+    wire [4:0] rj = inst[9:5];
+    wire [4:0] rk = inst[14:10];  // 3R-typeæŒ‡ä»¤çš„ç¬¬ä¸‰ä¸ªå¯„å­˜å™¨
 
-    /*-------------------- µÚÒ»¼¶ÒëÂëÂß¼­£ºÈ·¶¨µ±Ç°ĞèÒªÒëÂëµÄÖ¸Áî --------------------*/
-    // 000000 1 1 0 1
-    wire inst_andi = ~|op17[16:11] & ~(~|op17[16:6]) & op17[10] & op17[9] & ~op17[8] & op17[7];
+    wire [11:0] imm12 = inst[21:10];  // I12 ç«‹å³æ•°
+    wire [15:0] imm16 = inst[25:10];  // B16 ç«‹å³æ•°
+    wire [19:0] imm20 = inst[24:5];  // I20 ç«‹å³æ•°
+
+    /*-------------------- æŒ‡ä»¤è¯‘ç ï¼šåˆ¤æ–­å…·ä½“æ˜¯å“ªä¸€æ¡æŒ‡ä»¤ --------------------*/
+    // I12-type (2RI12)
 
     // 000000 1 0 1 0
-    wire inst_addiw = ~|op17[16:11] & op17[10] & ~op17[9] & op17[8] & ~op17[7];
+    wire inst_addiw = (op10 == 10'b0000001010);
 
-    /*--------------------- µÚ¶ş¼¶ÒëÂëÂß¼­£ºÉú³É¾ßÌå¿ØÖÆĞÅºÅ -------------------------*/
-    // ²Ù×÷ÀàĞÍalutype
-    assign id_alutype_o[2] = 1'b0;
-    assign id_alutype_o[1] = inst_andi;
-    assign id_alutype_o[0] = inst_addiw;
+    // 000000 1 1 0 1
+    wire inst_andi  = (op10 == 10'b0000001101);
 
-    // ÄÚ²¿²Ù×÷Âëaluop
-    assign id_aluop_o = inst_andi   ? `LoongArch32_ANDI : 
-                        inst_addiw  ? `LoongArch32_ADDI_W : `LoongArch32_SLL;
+    // 000000 1 1 1 0
+    wire inst_ori   = (op10 == 10'b0000001110);
 
-    // Ğ´Í¨ÓÃ¼Ä´æÆ÷Ê¹ÄÜĞÅºÅ
-    assign id_wreg_o = inst_andi | inst_addiw;  
+    // 000000 1 0 0 1
+    wire inst_sltui = (op10 == 10'b0000001001);
 
-    // È·¶¨µÚ¶ş¸ö²Ù×÷ÊıÀ´Ô´µÄĞÅºÅ£¨¼Ä´æÆ÷ or Á¢¼´Êı£©
-    assign id_immsel = inst_andi | inst_addiw;  
+    // 001010 0 0 0 0
+    wire inst_ld_b  = (op10 == 10'b0010100000);
 
-    // ¶ÔÁ¢¼´Êı½øĞĞ·ûºÅÀ©Õ¹»òÕßÁãÀ©Õ¹µÄĞÅºÅ
-    assign id_sext = inst_addiw;  
+    // 001010 0 0 1 0
+    wire inst_ld_w  = (op10 == 10'b0010100010);
+
+    // 001010 0 1 0 0
+    wire inst_st_b  = (op10 == 10'b0010100100);
+
+    // 001010 0 1 1 0
+    wire inst_st_w  = (op10 == 10'b0010100110);
+
+    // 3R-type
+    wire inst_add_w = (op17 == 17'h00020);
+    wire inst_or    = (op17 == 17'h0002A);
+    wire inst_xor   = (op17 == 17'h0002B);
+    wire inst_srl_w = (op17 == 17'h0002F);
+
+    // B-type (2RI16)
+    wire inst_beq   = (op6 == 6'h16);
+    wire inst_bne   = (op6 == 6'h17);
+    wire inst_blt   = (op6 == 6'h18);
+
+    // I20-type
+    wire inst_lu12i_w    = (op7 == 7'h0A);
+    wire inst_pcaddu12i  = (op7 == 7'h0E);
+
+    /*--------------------- äº§ç”Ÿå…·ä½“çš„ALUæ“ä½œç ä¿¡å· -------------------------*/
+    // æ ¹æ®æŒ‡ä»¤ç”Ÿæˆaluop
+    assign id_aluop_o = inst_add_w ? `LoongArch32_ADD_W :
+        inst_addiw ? `LoongArch32_ADDI_W :
+        inst_ld_b ? `LoongArch32_LD_B : 
+        inst_ld_w ? `LoongArch32_LD_W : 
+        inst_st_b ? `LoongArch32_ST_B : 
+        inst_st_w ? `LoongArch32_ST_W : 
+        inst_andi  ? `LoongArch32_ANDI :
+        inst_or ? `LoongArch32_OR :
+        inst_ori ? `LoongArch32_ORI  :
+        inst_xor   ? `LoongArch32_XOR :
+        inst_sltui ? `LoongArch32_SLTUI : 
+        inst_srl_w ? `LoongArch32_SRL_W :
+        inst_lu12i_w ? `LoongArch32_LU12I_W :
+        inst_pcaddu12i ? `LoongArch32_PCADDU12I :
+        inst_beq   ? `LoongArch32_BEQ :
+        inst_bne   ? `LoongArch32_BNE :
+        inst_blt   ? `LoongArch32_BLT : `LoongArch32_SLL;
+
+    assign id_alutype_o = (inst_andi | inst_ori | inst_or | inst_xor | inst_lu12i_w) ?
+        `LOGIC : (inst_srl_w | 1'b0) ? `SHIFT : `ARITH;
+
+    // å†™å¯„å­˜å™¨ä½¿èƒ½ (Store å’Œ Branch ä¸å†™å¯„å­˜å™¨)
+    assign id_wreg_o = !(inst_st_b | inst_st_w | inst_beq | inst_bne | inst_blt);
+
+    // ç«‹å³æ•°é€‰æ‹©ä¿¡å·ï¼šæ˜¯å¦éœ€è¦é›¶æ‰©å±• or ç¬¦å·æ‰©å±•
+    assign id_immsel = inst_andi | inst_addiw;
+
+    // ç¬¦å·æ‰©å±•æ§åˆ¶ä¿¡å·ï¼Œç”¨äºç¬¦å·æ‰©å±•ç«‹å³æ•°
+    assign id_sext = inst_addiw;
     /*------------------------------------------------------------------------------*/
 
-    // ¶ÁÍ¨ÓÃ¼Ä´æÆ÷2¸ö¶Ñ¶Ë¿ÚµÄµØÖ·È·ÈÏ
+    // é€è‡³é€šç”¨å¯„å­˜å™¨å †çš„è¯»åœ°å€1å’Œ2
+    // ra1 æ€»æ˜¯è¯» rj
     assign ra1 = rj;
-    assign ra2 = 5'b0;
 
-    // »ñµÃ´ıĞ´ÈëÄ¿µÄ¼Ä´æÆ÷µÄµØÖ·
-    assign id_wa_o = rd;
+    // ra2 æ ¹æ®æŒ‡ä»¤ç±»å‹é€‰æ‹©
+    // 3R -> rk
+    // Store (st.w) -> rd (å­˜å‚¨æ•°æ®)
+    // Branch (beq) -> rd (æ¯”è¾ƒæ•°æ®)
+    assign ra2 = (inst_add_w | inst_or | inst_xor | inst_srl_w) ? rk :
+                 (inst_st_b | inst_st_w | inst_beq | inst_bne | inst_blt) ? rd : 5'b0;
 
-    // »ñµÃÎ»ÒÆºóÁ¢¼´Êı£¬Èç¹ûsextÓĞĞ§Ôò·ûºÅÍØÕ¹£¬Èç¹ûsextÎŞĞ§ÔòÁãÍØÕ¹
+    // --- ç«‹å³æ•°æ‰©å±• ---
+    wire [31:0] imm_s12 = {{20{imm12[11]}}, imm12};
+    wire [31:0] imm_u12 = {20'b0, imm12};
+    wire [31:0] imm_s20 = {imm20, 12'b0};
+
+    // æ ¹æ®ä½å®½é€‰æ‹©ç¬¦å·æ‰©å±•è¿˜æ˜¯é›¶æ‰©å±•ï¼Œå½“sextæœ‰æ•ˆæ—¶ç¬¦å·æ‰©å±•ï¼Œå½“sextæ— æ•ˆæ—¶é›¶æ‰©å±•
     wire [31:0] imm32;
     assign imm32 = (id_sext == `TRUE_V) ? ({{20{imm12[11]}}, imm12}) : ({20'b0, imm12});
 
-    // »ñµÃÔ´²Ù×÷Êı1¡£Èç¹ûshiftĞÅºÅÓĞĞ§£¬ÔòÔ´²Ù×÷Êı1ÎªÒÆÎ»Î»Êı£»·ñÔòÎª´Ó¶ÁÍ¨ÓÃ¼Ä´æÆ÷¶Ñ¶Ë¿Ú1»ñµÃµÄÊı¾İ
-    assign id_src1_o = rd1;
+    // --- æ“ä½œæ•°é€‰æ‹© ---
+    // src1
+    assign id_src1_o = (inst_pcaddu12i) ? id_pc_i : rd1;
 
-    // »ñµÃÔ´²Ù×÷Êı2¡£Èç¹ûimmselĞÅºÅÓĞĞ§£¬ÔòÔ´²Ù×÷Êı1ÎªÁ¢¼´Êı£»·ñÔòÎª´Ó¶ÁÍ¨ÓÃ¼Ä´æÆ÷¶Ñ¶Ë¿Ú2»ñµÃµÄÊı¾İ
-    assign id_src2_o = (id_immsel == `READ_ENABLE) ? imm32 : rd2;
+    // src2
+    assign id_src2_o = 
+        (inst_add_w | inst_or | inst_xor | inst_srl_w | inst_beq | inst_bne | inst_blt) ? rd2 :
+        (inst_andi | inst_ori) ? imm_u12 : // æŒ‰ç…§æ•™æè¦æ±‚ï¼Œä»¥åŠLA32æ–‡æ¡£ï¼Œandi/oriä½¿ç”¨é›¶æ‰©å±•
+        (inst_lu12i_w | inst_pcaddu12i) ? imm_s20 : imm_s12;  // addi.w, ld, st, sltui ä½¿ç”¨ç¬¦å·æ‰©å±•
 
-    assign debug_wb_pc = id_debug_wb_pc;  // ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃÓï¾ä  
+    // ç”Ÿæˆ Branch Offset
+    wire [31:0] imm_b16 = {{14{imm16[15]}}, imm16, 2'b0};
+    // å¤ç”¨é€šé“ï¼šBranchæŒ‡ä»¤ä¼  offsetï¼Œå…¶ä»–æƒ…å†µå¦‚ StoreæŒ‡ä»¤ä¼  rd2
+    assign id_rkd_value_o = (inst_beq | inst_bne | inst_blt) ? imm_b16 : rd2;
+
+    // å†™ç›®çš„å¯„å­˜å™¨åœ°å€ï¼Œæ€»æ˜¯rd
+    assign id_wa_o = rd;
+
+    assign debug_wb_pc = id_debug_wb_pc;  // ä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥è¯­å¥
 
 endmodule

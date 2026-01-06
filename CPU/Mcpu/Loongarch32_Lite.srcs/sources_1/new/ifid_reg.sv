@@ -1,35 +1,39 @@
 `include "defines.v"
 
 module ifid_reg (
-	input  wire 						cpu_clk_50M,
-	input  wire 						cpu_rst_n,
+    input wire cpu_clk_50M,
+    input wire cpu_rst_n,
+    input wire flush,
 
-	// À´×ÔÈ¡Ö¸½×¶ÎµÄĞÅÏ¢  
-	input  wire [`INST_ADDR_BUS]       if_pc,
-	input  wire [`INST_ADDR_BUS]       if_debug_wb_pc, // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃĞÅºÅ
-	
-	// À´×ÔÖ¸Áî´æ´¢Æ÷µÄĞÅÏ¢
-	input  wire [`INST_BUS     ]       inst,  
+    // æ¥è‡ªå–æŒ‡é˜¶æ®µçš„ä¿¡æ¯  
+    input wire [`INST_ADDR_BUS] if_pc,
+    input  wire [`INST_ADDR_BUS]       if_debug_wb_pc, // ä¾›è°ƒè¯•ä½¿ç”¨çš„PCå€¼ï¼Œä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥ä¿¡å·
 
-	// ËÍÖÁÒëÂë½×¶ÎµÄĞÅÏ¢  
-	output reg  [`INST_ADDR_BUS]        id_pc,
-	output reg  [`INST_BUS     ]        id_inst,
-    output reg  [`INST_ADDR_BUS] 	    id_debug_wb_pc  // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃĞÅºÅ
-	);
+    // æ¥è‡ªæŒ‡ä»¤å­˜å‚¨å™¨çš„ä¿¡æ¯
+    input wire [`INST_BUS] inst,
 
-	always @(posedge cpu_clk_50M) begin
-	    // ¸´Î»µÄÊ±ºò½«ËÍÖÁÒëÂë½×¶ÎµÄĞÅÏ¢Çå0
-		if (cpu_rst_n == `RST_ENABLE) begin
-			id_pc 	<= `PC_INIT;
-			id_debug_wb_pc <= `PC_INIT;   // ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃÓï¾ä
-			id_inst <= `ZERO_WORD;
-		end
-		// ½«À´×ÔÈ¡Ö¸½×¶ÎµÄĞÅÏ¢¼Ä´æ²¢ËÍÖÁÒëÂë½×¶Î
-		else begin
-    	    id_pc	<= if_pc;
-            id_debug_wb_pc <= if_debug_wb_pc;   // ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃÓï¾ä
+    // é€è‡³è¯‘ç é˜¶æ®µçš„ä¿¡æ¯  
+    output reg [`INST_ADDR_BUS] id_pc,
+    output reg [`INST_BUS] id_inst,
+    output reg  [`INST_ADDR_BUS] 	    id_debug_wb_pc  // ä¾›è°ƒè¯•ä½¿ç”¨çš„PCå€¼ï¼Œä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥ä¿¡å·
+);
+
+    always @(posedge cpu_clk_50M) begin
+        // å¤ä½æœŸé—´ï¼Œé€è‡³è¯‘ç é˜¶æ®µçš„ä¿¡æ¯ä¸º0
+        if (cpu_rst_n == `RST_ENABLE) begin
+            id_pc <= `PC_INIT;
+            id_debug_wb_pc <= `PC_INIT;  // ä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥è¯­å¥
+            id_inst <= `ZERO_WORD;
+        end  // æ¸…ç©ºå–æŒ‡é˜¶æ®µçš„ä¿¡æ¯ï¼Œæš‚åœå¹¶è¯‘ç é˜¶æ®µ
+		else if (flush == `TRUE_V) begin
+            id_pc          <= `PC_INIT;
+            id_debug_wb_pc <= if_debug_wb_pc;
+            id_inst        <= `ZERO_WORD;  // æ’å…¥ NOP (inst=0 ç›¸å½“äºå†™ r0ï¼Œæ— ä¿®æ”¹ä½œç”¨)
+        end else begin
+            id_pc <= if_pc;
+            id_debug_wb_pc <= if_debug_wb_pc;  // ä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥è¯­å¥
             id_inst <= inst;
-		end
-	end
+        end
+    end
 
 endmodule

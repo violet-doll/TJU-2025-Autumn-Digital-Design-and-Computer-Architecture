@@ -2,41 +2,78 @@
 
 module exe_stage (
 
-    // ´ÓÒëÂë½×¶Î»ñµÃµÄÐÅÏ¢
+    // ä»Žè¯‘ç é˜¶æ®µèŽ·å¾—çš„ä¿¡æ¯
     input wire [`ALUTYPE_BUS] exe_alutype_i,
     input wire [`ALUOP_BUS] exe_aluop_i,
     input wire [`REG_BUS] exe_src1_i,
     input wire [`REG_BUS] exe_src2_i,
     input wire [`REG_ADDR_BUS] exe_wa_i,
     input wire exe_wreg_i,
-    input  wire [`INST_ADDR_BUS]    exe_debug_wb_pc,  // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ý¸ÃÐÅºÅ
+    input  wire [`INST_ADDR_BUS]    exe_debug_wb_pc,  // ä¾›è°ƒè¯•ä½¿ç”¨çš„PCå€¼ï¼Œä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥ä¿¡å·
 
-    // ËÍÖÁÖ´ÐÐ½×¶ÎµÄÐÅÏ¢
+    // Store æ•°æ®é€ä¼ 
+    input  wire [`REG_BUS] exe_rkd_value_i,
+    output wire [`REG_BUS] exe_rkd_value_o,
+
+    // åˆ†æ”¯æŽ¥å£
+    output wire                  exe_branch_taken_o,
+    output wire [`INST_ADDR_BUS] exe_branch_target_o,
+
+    // é€è‡³æ‰§è¡Œé˜¶æ®µçš„ä¿¡æ¯
     output wire [   `ALUOP_BUS] exe_aluop_o,
     output wire [`REG_ADDR_BUS] exe_wa_o,
     output wire                 exe_wreg_o,
     output wire [     `REG_BUS] exe_wd_o,
 
-    output wire [`INST_ADDR_BUS] 	debug_wb_pc  // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ý¸ÃÐÅºÅ
+    output wire [`INST_ADDR_BUS] 	debug_wb_pc  // ä¾›è°ƒè¯•ä½¿ç”¨çš„PCå€¼ï¼Œä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥ä¿¡å·
 );
 
-    // Ö±½Ó´«µ½ÏÂÒ»½×¶Î
     assign exe_aluop_o = exe_aluop_i;
-
-    wire [`REG_BUS] logicres;  // Âß¼­ÔËËãµÄ½á¹û
-    wire [`REG_BUS] arithres;  // ËãÊýÔËËãµÄ½á¹û
-
-    // ¸ù¾ÝÄÚ²¿²Ù×÷Âëaluop½øÐÐÂß¼­ÔËËã
-    assign logicres = (exe_aluop_i == `LoongArch32_ANDI) ? (exe_src1_i & exe_src2_i) : `ZERO_WORD;
-    assign arithres = (exe_aluop_i == `LoongArch32_ADDI_W) ? (exe_src1_i + exe_src2_i) : `ZERO_WORD;
-
     assign exe_wa_o = exe_wa_i;
     assign exe_wreg_o = exe_wreg_i;
+    assign exe_rkd_value_o = exe_rkd_value_i;  // é€ä¼ 
 
-    // ¸ù¾Ý²Ù×÷ÀàÐÍalutypeÈ·¶¨Ö´ÐÐ½×¶Î×îÖÕµÄÔËËã½á¹û£¨¼È¿ÉÄÜÊÇ´ýÐ´ÈëÄ¿µÄ¼Ä´æÆ÷µÄÊý¾Ý£¬Ò²¿ÉÄÜÊÇ·ÃÎÊÊý¾Ý´æ´¢Æ÷µÄµØÖ·£©
-    assign exe_wd_o = (exe_alutype_i == `LOGIC) ? logicres : 
-                      (exe_alutype_i == `ARITH) ? arithres : `ZERO_WORD;
+    // --- ALU è®¡ç®— ---
+    wire [`REG_BUS] adder_res = exe_src1_i + exe_src2_i;  // åŠ æ³•ã€Load/Storeåœ°å€
 
-    assign debug_wb_pc = exe_debug_wb_pc;  // ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ý¸ÃÓï¾ä 
+    wire [`REG_BUS] logic_res = 
+        (exe_aluop_i == `LoongArch32_ANDI) ? (exe_src1_i & exe_src2_i) :
+        (exe_aluop_i == `LoongArch32_OR || exe_aluop_i == `LoongArch32_ORI) ? (exe_src1_i | exe_src2_i) :
+        (exe_aluop_i == `LoongArch32_XOR) ? (exe_src1_i ^ exe_src2_i) :
+        (exe_aluop_i == `LoongArch32_LU12I_W) ? exe_src2_i : `ZERO_WORD;
+
+    wire [`REG_BUS] shift_res = 
+        (exe_aluop_i == `LoongArch32_SRL_W) ? (exe_src1_i >> exe_src2_i[4:0]) : 
+        (exe_src1_i << exe_src2_i[4:0]); // é»˜è®¤SLL
+
+    // SLTUI: æ— ç¬¦å·æ¯”è¾ƒ
+    wire [`REG_BUS] sltu_res = (exe_src1_i < exe_src2_i) ? 32'b1 : 32'b0;
+
+    // ç»“æžœé€‰æ‹©
+    assign exe_wd_o = 
+        (exe_aluop_i == `LoongArch32_SLTUI) ? sltu_res :
+        (exe_alutype_i == `LOGIC) ? logic_res :
+        (exe_alutype_i == `SHIFT) ? shift_res :
+        adder_res;
+
+    wire [31:0] br_offset = exe_rkd_value_i;  // å¤ç”¨é€šé“
+    wire [31:0] br_target = exe_debug_wb_pc + br_offset;  // PC + offset
+
+    wire is_branch = (exe_aluop_i == `LoongArch32_BEQ) || 
+                 (exe_aluop_i == `LoongArch32_BNE) || 
+                 (exe_aluop_i == `LoongArch32_BLT);
+
+    wire rs_eq_rt = (exe_src1_i == exe_src2_i);
+    wire rs_lt_rt = ($signed(exe_src1_i) < $signed(exe_src2_i));  // æœ‰ç¬¦å·æ¯”è¾ƒ
+
+    assign exe_branch_taken_o = is_branch && (
+        (exe_aluop_i == `LoongArch32_BEQ && rs_eq_rt) ||
+        (exe_aluop_i == `LoongArch32_BNE && !rs_eq_rt) ||
+        (exe_aluop_i == `LoongArch32_BLT && rs_lt_rt)
+    );
+
+    assign exe_branch_target_o = exe_branch_taken_o ? br_target : `ZERO_WORD;
+
+    assign debug_wb_pc = exe_debug_wb_pc;  // ä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥è¯­å¥
 
 endmodule

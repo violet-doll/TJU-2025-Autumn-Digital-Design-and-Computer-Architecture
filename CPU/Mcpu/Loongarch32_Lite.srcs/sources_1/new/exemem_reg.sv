@@ -1,38 +1,41 @@
 `include "defines.v"
 
 module exemem_reg (
-    input  wire 				cpu_clk_50M,
-    input  wire 				cpu_rst_n,
+    input wire cpu_clk_50M,
+    input wire cpu_rst_n,
 
-    // À´×ÔÖ´ĞĞ½×¶ÎµÄĞÅÏ¢
-    input  wire [`ALUOP_BUS   ] exe_aluop,
-    input  wire [`REG_ADDR_BUS] exe_wa,
-    input  wire                 exe_wreg,
-    input  wire [`REG_BUS 	  ] exe_wd,
-    input  wire [`INST_ADDR_BUS]  exe_debug_wb_pc, // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃĞÅºÅ
-    
-    // ËÍµ½·Ã´æ½×¶ÎµÄĞÅÏ¢ 
-    output reg  [`ALUOP_BUS   ] mem_aluop,
-    output reg  [`REG_ADDR_BUS] mem_wa,
-    output reg                  mem_wreg,
-    output reg  [`REG_BUS 	  ] mem_wd,
-    output reg  [`INST_ADDR_BUS]  mem_debug_wb_pc  // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃĞÅºÅ
-    );
+    // æ¥è‡ªæ‰§è¡Œé˜¶æ®µçš„ä¿¡æ¯
+    input wire [`ALUOP_BUS] exe_aluop,
+    input wire [`REG_ADDR_BUS] exe_wa,
+    input wire exe_wreg,
+    input wire [`REG_BUS] exe_wd,
+    input wire [`REG_BUS] exe_rkd_value,
+    input  wire [`INST_ADDR_BUS]  exe_debug_wb_pc, // ä¾›è°ƒè¯•ä½¿ç”¨çš„PCå€¼ï¼Œä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥ä¿¡å·
+
+    // é€åˆ°è®¿å­˜é˜¶æ®µçš„ä¿¡æ¯
+    output reg [`ALUOP_BUS] mem_aluop,
+    output reg [`REG_ADDR_BUS] mem_wa,
+    output reg mem_wreg,
+    output reg [`REG_BUS] mem_wd,
+    output reg [`REG_BUS] mem_rkd_value,
+    output reg  [`INST_ADDR_BUS]  mem_debug_wb_pc  // ä¾›è°ƒè¯•ä½¿ç”¨çš„PCå€¼ï¼Œä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥ä¿¡å·
+);
 
     always @(posedge cpu_clk_50M) begin
         if (cpu_rst_n == `RST_ENABLE) begin
-            mem_aluop              <= `LoongArch32_SLL;
-            mem_wa 				   <= `REG_NOP;
-            mem_wreg   			   <= `WRITE_DISABLE;
-            mem_wd   			   <= `ZERO_WORD;
-            mem_debug_wb_pc        <= `PC_INIT;   // ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃÓï¾ä
-        end
-        else begin
-            mem_aluop              <= exe_aluop;
-            mem_wa 				   <= exe_wa;
-            mem_wreg 			   <= exe_wreg;
-            mem_wd 		    	   <= exe_wd;
-            mem_debug_wb_pc        <= exe_debug_wb_pc;   // ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃÓï¾ä
+            mem_aluop       <= `LoongArch32_SLL;
+            mem_wa          <= `REG_NOP;
+            mem_wreg        <= `WRITE_DISABLE;
+            mem_wd          <= `ZERO_WORD;
+            mem_rkd_value   <= `ZERO_WORD;
+            mem_debug_wb_pc <= `PC_INIT;  // ä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥è¯­å¥
+        end else begin
+            mem_aluop       <= exe_aluop;
+            mem_wa          <= exe_wa;
+            mem_wreg        <= exe_wreg;
+            mem_wd          <= exe_wd;
+            mem_rkd_value   <= exe_rkd_value;
+            mem_debug_wb_pc <= exe_debug_wb_pc;  // ä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥è¯­å¥
         end
     end
 

@@ -1,28 +1,29 @@
 `include "defines.v"
 
 module if_stage (
-    input 					       cpu_clk_50M,
-    input 					       cpu_rst_n,
-    
-    output logic [`INST_ADDR_BUS]  pc,
-    output 	     [`INST_ADDR_BUS]  iaddr,
-    output       [`INST_ADDR_BUS]  debug_wb_pc // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃĞÅºÅ
-    );
-  
-    wire [`INST_ADDR_BUS] pc_next; 
-    assign pc_next = pc + 4;           
+    input cpu_clk_50M,
+    input cpu_rst_n,
+
+    // æ¥è‡ª EXE çš„åˆ†æ”¯è½¬ç§»ä¿¡å·
+    input wire branch_taken_i,
+    input wire [`INST_ADDR_BUS] branch_target_i,
+
+    output logic [`INST_ADDR_BUS] pc,
+    output [`INST_ADDR_BUS] iaddr,
+    output [`INST_ADDR_BUS] debug_wb_pc
+);
+    wire [`INST_ADDR_BUS] pc_next;
+
+    // å¦‚æœå‘ç”Ÿåˆ†æ”¯è½¬ç§»ï¼ŒPC = targetï¼Œå¦åˆ™ PC = PC + 4
+    assign pc_next = branch_taken_i ? branch_target_i : (pc + 4);
 
     always @(posedge cpu_clk_50M) begin
-        if (~cpu_rst_n) begin
-            pc <= `PC_INIT;                   // ¸´Î»Ê± PC ´¦ÓÚ³õÊ¼Öµ
-        end
-        else begin
-            pc <= pc_next;                    // Ö¸Áî´æ´¢Æ÷Ê¹ÄÜºó£¬PCÖµÃ¿Ê±ÖÓÖÜÆÚ¼Ó4 	
-        end
+        if (~cpu_rst_n) pc <= `PC_INIT;
+        else pc <= pc_next;
     end
-    
-    assign iaddr = (~cpu_rst_n) ? `PC_INIT : pc_next;    // »ñµÃ·ÃÎÊÖ¸Áî´æ´¢Æ÷µÄµØÖ·
-    
-    assign debug_wb_pc = pc;   // ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃÓï¾ä
-    
+
+    assign iaddr = (~cpu_rst_n) ? `PC_INIT : pc;
+
+    assign debug_wb_pc = pc;  // ä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥è¯­å¥
+
 endmodule

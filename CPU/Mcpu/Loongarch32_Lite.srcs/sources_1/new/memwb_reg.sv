@@ -1,38 +1,37 @@
 `include "defines.v"
 
 module memwb_reg (
-    input  wire                     cpu_clk_50M,
-	input  wire                     cpu_rst_n,
+    input wire cpu_clk_50M,
+    input wire cpu_rst_n,
 
-	// À´×Ô·Ã´æ½×¶ÎµÄĞÅÏ¢
-	input  wire [`REG_ADDR_BUS  ]   mem_wa,
-	input  wire                     mem_wreg,
-	input  wire [`REG_BUS       ] 	mem_dreg,
-	input  wire [`INST_ADDR_BUS]   mem_debug_wb_pc, // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃĞÅºÅ
+    // æ¥è‡ªè®¿å­˜é˜¶æ®µçš„ä¿¡æ¯
+    input wire [`REG_ADDR_BUS] mem_wa,
+    input wire mem_wreg,
+    input wire [`REG_BUS] mem_dreg,
+    input  wire [`INST_ADDR_BUS]   mem_debug_wb_pc, // ä¾›è°ƒè¯•ä½¿ç”¨çš„PCå€¼ï¼Œä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥ä¿¡å·
 
-	// ËÍÖÁĞ´»Ø½×¶ÎµÄĞÅÏ¢ 
-	output reg  [`REG_ADDR_BUS  ]   wb_wa,
-	output reg                      wb_wreg,
-	output reg  [`REG_BUS       ]   wb_dreg,
-	
-	output reg  [`INST_ADDR_BUS]    wb_debug_wb_pc  // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃĞÅºÅ
-    );
+    // é€è‡³å†™å›é˜¶æ®µçš„ä¿¡æ¯
+    output reg [`REG_ADDR_BUS] wb_wa,
+    output reg                 wb_wreg,
+    output reg [     `REG_BUS] wb_dreg,
+
+    output reg  [`INST_ADDR_BUS]    wb_debug_wb_pc  // ä¾›è°ƒè¯•ä½¿ç”¨çš„PCå€¼ï¼Œä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥ä¿¡å·
+);
 
     always @(posedge cpu_clk_50M) begin
-		// ¸´Î»µÄÊ±ºò½«ËÍÖÁĞ´»Ø½×¶ÎµÄĞÅÏ¢Çå0
-		if (cpu_rst_n == `RST_ENABLE) begin
-			wb_wa                 <= `REG_NOP;
-			wb_wreg               <= `WRITE_DISABLE;
-			wb_dreg               <= `ZERO_WORD;
-			wb_debug_wb_pc        <= `PC_INIT;   // ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃÓï¾ä
-		end
-		// ½«À´×Ô·Ã´æ½×¶ÎµÄĞÅÏ¢¼Ä´æ²¢ËÍÖÁĞ´»Ø½×¶Î
-		else begin
-			wb_wa 	              <= mem_wa;
-			wb_wreg               <= mem_wreg;
-			wb_dreg               <= mem_dreg;
-			wb_debug_wb_pc        <= mem_debug_wb_pc;   // ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃÓï¾ä
-		end
-	end
+        // å¤ä½æœŸé—´ï¼Œé€è‡³å†™å›é˜¶æ®µçš„ä¿¡æ¯ä¸º0
+        if (cpu_rst_n == `RST_ENABLE) begin
+            wb_wa          <= `REG_NOP;
+            wb_wreg        <= `WRITE_DISABLE;
+            wb_dreg        <= `ZERO_WORD;
+            wb_debug_wb_pc <= `PC_INIT;  // ä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥è¯­å¥
+        end  // æ¸…ç©ºè®¿å­˜é˜¶æ®µçš„ä¿¡æ¯ï¼Œæš‚åœå¹¶å†™å›é˜¶æ®µ
+        else begin
+            wb_wa          <= mem_wa;
+            wb_wreg        <= mem_wreg;
+            wb_dreg        <= mem_dreg;
+            wb_debug_wb_pc <= mem_debug_wb_pc;  // ä¸Šæ¿æµ‹è¯•æ—¶åŠ¡å¿…åˆ é™¤è¯¥è¯­å¥
+        end
+    end
 
 endmodule
