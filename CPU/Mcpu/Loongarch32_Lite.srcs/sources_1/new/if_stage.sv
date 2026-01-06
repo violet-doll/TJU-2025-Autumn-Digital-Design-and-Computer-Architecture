@@ -4,6 +4,9 @@ module if_stage (
     input cpu_clk_50M,
     input cpu_rst_n,
 
+    // 来自控制模块的暂停信号
+    input wire [5:0] stall,
+
     // 来自 EXE 的分支转移信号
     input wire branch_taken_i,
     input wire [`INST_ADDR_BUS] branch_target_i,
@@ -19,6 +22,7 @@ module if_stage (
 
     always @(posedge cpu_clk_50M) begin
         if (~cpu_rst_n) pc <= `PC_INIT;
+        else if (stall[0]) pc <= pc;  // 暂停时保持当前 PC
         else pc <= pc_next;
     end
 

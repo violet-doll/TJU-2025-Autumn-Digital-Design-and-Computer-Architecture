@@ -4,37 +4,41 @@ module Loongarch32_Lite (
     input wire cpu_clk_50M,
     input wire cpu_rst_n,
 
-    // inst_rom
+    // 指令ROM接口
     output wire [`INST_ADDR_BUS] iaddr,
     input  wire [     `INST_BUS] inst,
 
-    // data_ram ???
+    // 数据RAM接口
     output wire data_sram_en,
     output wire [3:0] data_sram_we,
     output wire [`REG_BUS] data_sram_addr,
     output wire [`REG_BUS] data_sram_wdata,
     input wire [`REG_BUS] data_sram_rdata,
 
-    output wire [`INST_ADDR_BUS]  debug_wb_pc,       // ??????????PC?????????????????????
-    output wire debug_wb_rf_wen,  // ??????????PC?????????????????????
-    output wire [`REG_ADDR_BUS  ] debug_wb_rf_wnum,  // ??????????PC?????????????????????
-    output wire [`WORD_BUS      ] debug_wb_rf_wdata  // ??????????PC?????????????????????
+    output wire [`INST_ADDR_BUS] debug_wb_pc,       // 写回阶段的PC值
+    output wire                  debug_wb_rf_wen,   // 写回阶段的寄存器写使能
+    output wire [ `REG_ADDR_BUS] debug_wb_rf_wnum,  // 写回阶段的寄存器写地址
+    output wire [     `WORD_BUS] debug_wb_rf_wdata  // 写回阶段的寄存器写数据
 );
 
 
     wire [`WORD_BUS] pc;
 
-    // ????IF/ID???????????ID???????
+    // IF/ID流水线寄存器输出到ID阶段的信号
     wire [`WORD_BUS] id_pc_i;
     wire [`INST_BUS] id_inst_i;
 
-    // ????ID???????��????Regfile???????;
+    // ID阶段读取寄存器堆的信号
     wire [`REG_ADDR_BUS] ra1;
     wire [`REG_BUS] rd1;
     wire [`REG_ADDR_BUS] ra2;
     wire [`REG_BUS] rd2;
 
-    // ????ID/EXE???????��??EXE???????
+    // ID 阶段分支信号
+    wire id_branch_taken;
+    wire [31:0] id_branch_target;
+
+    // ID/EXE流水线寄存器的信号
     wire [`ALUOP_BUS] id_aluop_o;
     wire [`ALUTYPE_BUS] id_alutype_o;
     wire [`REG_BUS] id_src1_o;
@@ -48,12 +52,12 @@ module Loongarch32_Lite (
     wire exe_wreg_i;
     wire [`REG_ADDR_BUS] exe_wa_i;
 
-    // rkd_value �ź�����
-    wire [`REG_BUS] id_rkd_value_o;  // ID�׶����
-    wire [`REG_BUS] exe_rkd_value_i;  // EXE�׶�����
-    wire [`REG_BUS] exe_rkd_value_o;  // EXE�׶����
+    // rkd_value 信号定义
+    wire [`REG_BUS] id_rkd_value_o;  // ID阶段输出
+    wire [`REG_BUS] exe_rkd_value_i;  // EXE阶段输入
+    wire [`REG_BUS] exe_rkd_value_o;  // EXE阶段输出
 
-    // ????EXE/MEM?????????MEM???????
+    // EXE/MEM流水线寄存器的信号
     wire [`ALUOP_BUS] exe_aluop_o;
     wire exe_wreg_o;
     wire [`REG_ADDR_BUS] exe_wa_o;
@@ -63,7 +67,7 @@ module Loongarch32_Lite (
     wire [`REG_ADDR_BUS] mem_wa_i;
     wire [`REG_BUS] mem_wd_i;
 
-    // ????MEM/WB?????��????WB???????
+    // MEM/WB流水线寄存器的信号
     wire mem_wreg_o;
     wire [`REG_ADDR_BUS] mem_wa_o;
     wire [`REG_BUS] mem_dreg_o;
@@ -71,40 +75,80 @@ module Loongarch32_Lite (
     wire [`REG_ADDR_BUS] wb_wa_i;
     wire [`REG_BUS] wb_dreg_i;
 
-    // ????WB???????��????Regfile???????
+    // WB阶段写回寄存器堆的信号
     wire wb_wreg_o;
     wire [`REG_ADDR_BUS] wb_wa_o;
     wire [`REG_BUS] wb_wd_o;
 
     wire [`REG_BUS] mem_rkd_value_i;
 
-    // ������ת��ص�������
+    // 分支跳转相关信号
     wire branch_taken;
     wire [31:0] branch_target;
 
-    wire [`INST_ADDR_BUS] if_debug_wb_pc;  // ??????????????????
-    wire [`INST_ADDR_BUS] id_debug_wb_pc_i;  // ??????????????????
-    wire [`INST_ADDR_BUS] id_debug_wb_pc_o;  // ??????????????????
-    wire [`INST_ADDR_BUS] exe_debug_wb_pc_i;  // ??????????????????
-    wire [`INST_ADDR_BUS] exe_debug_wb_pc_o;  // ??????????????????
-    wire [`INST_ADDR_BUS] mem_debug_wb_pc_i;  // ??????????????????
-    wire [`INST_ADDR_BUS] mem_debug_wb_pc_o;  // ??????????????????
-    wire [`INST_ADDR_BUS] wb_debug_wb_pc_i;  // ??????????????????
+    // 流水线暂停信号
+    wire [5:0] stall;
+    wire stallreq_from_id;
+    wire stallreq_from_exe;
+
+    // 前推信号
+    wire [`REG_ADDR_BUS] exe_ra1_i;  // EXE阶段源寄存器地址1
+    wire [`REG_ADDR_BUS] exe_ra2_i;  // EXE阶段源寄存器地址2
+    wire [1:0] forward_src1;
+    wire [1:0] forward_src2;
+    wire [`REG_BUS] forward_data_mem;
+    wire [`REG_BUS] forward_data_wb;
+
+    // 1. 判断 EXE 阶段的指令是否为 Load 指令 (需要访问内存)
+    wire exe_is_load = (exe_aluop_i == `LoongArch32_LD_B) || (exe_aluop_i == `LoongArch32_LD_W);
+
+    // 2. 判断 ID 阶段的指令是否使用了 EXE 阶段 Load 的目标寄存器 (raw hazard)
+    wire id_uses_ra1 = (id_aluop_o != `LoongArch32_LU12I_W) && (id_aluop_o != `LoongArch32_PCADDU12I);
+
+    // 检测寄存器冲突 (ra1 和 ra2 是否依赖于 EXE 阶段写回的寄存器)
+    // 排除掉寄存器为 r0 的情况
+    wire conflict_ra1 = id_uses_ra1 && (ra1 == exe_wa_i) && (ra1 != 5'd0);
+    wire conflict_ra2 = (ra2 == exe_wa_i) && (ra2 != 5'd0); // id_stage 内部逻辑已保证对于非 rk/rd(ra2)自动置0
+
+    // 3. 生成暂停请求：如果存在 Load 冒险，则请求暂停 ID 阶段
+    assign stallreq_from_id  = exe_is_load && (conflict_ra1 || conflict_ra2);
+
+    // 预留：执行阶段暂停请求
+    assign stallreq_from_exe = `FALSE_V;
+
+    wire [`INST_ADDR_BUS] if_debug_wb_pc;
+    wire [`INST_ADDR_BUS] id_debug_wb_pc_i;
+    wire [`INST_ADDR_BUS] id_debug_wb_pc_o;
+    wire [`INST_ADDR_BUS] exe_debug_wb_pc_i;
+    wire [`INST_ADDR_BUS] exe_debug_wb_pc_o;
+    wire [`INST_ADDR_BUS] mem_debug_wb_pc_i;
+    wire [`INST_ADDR_BUS] mem_debug_wb_pc_o;
+    wire [`INST_ADDR_BUS] wb_debug_wb_pc_i;
+
+    // 控制模块
+    ctrl ctrl0 (
+        .cpu_rst_n(cpu_rst_n),
+        .stallreq_from_id(stallreq_from_id),
+        .stallreq_from_exe(stallreq_from_exe),
+        .stall(stall)
+    );
 
     if_stage if_stage0 (
-        .cpu_clk_50M(cpu_clk_50M),
-        .cpu_rst_n(cpu_rst_n),
-        .pc(pc),
-        .iaddr(iaddr),
-        .branch_taken_i(branch_taken),
-        .branch_target_i(branch_target),
-        .debug_wb_pc(if_debug_wb_pc)
+        .cpu_clk_50M    (cpu_clk_50M),
+        .cpu_rst_n      (cpu_rst_n),
+        .stall          (stall),
+        .pc             (pc),
+        .iaddr          (iaddr),
+        .branch_taken_i (id_branch_taken),
+        .branch_target_i(id_branch_target),
+        .debug_wb_pc    (if_debug_wb_pc)
     );
 
     ifid_reg ifid_reg0 (
         .cpu_clk_50M(cpu_clk_50M),
         .cpu_rst_n(cpu_rst_n),
-        .flush(branch_taken),
+        .stall(stall),
+        .flush(id_branch_taken),
         .inst(inst),
         .if_pc(pc),
         .if_debug_wb_pc(if_debug_wb_pc),
@@ -114,21 +158,31 @@ module Loongarch32_Lite (
     );
 
     id_stage id_stage0 (
-        .id_pc_i(id_pc_i),
-        .id_inst_i(id_inst_i),
-        .id_debug_wb_pc(id_debug_wb_pc_i),
-        .rd1(rd1),
-        .rd2(rd2),
-        .ra1(ra1),
-        .ra2(ra2),
-        .id_aluop_o(id_aluop_o),
-        .id_alutype_o(id_alutype_o),
-        .id_src1_o(id_src1_o),
-        .id_src2_o(id_src2_o),
-        .id_wa_o(id_wa_o),
-        .id_wreg_o(id_wreg_o),
-        .id_rkd_value_o(id_rkd_value_o),
-        .debug_wb_pc(id_debug_wb_pc_o)
+        .id_pc_i           (id_pc_i),
+        .id_inst_i         (id_inst_i),
+        .id_debug_wb_pc    (id_debug_wb_pc_i),
+        .rd1               (rd1),
+        .rd2               (rd2),
+        .ra1               (ra1),
+        .ra2               (ra2),
+        .id_aluop_o        (id_aluop_o),
+        .id_alutype_o      (id_alutype_o),
+        .id_src1_o         (id_src1_o),
+        .id_src2_o         (id_src2_o),
+        .id_wa_o           (id_wa_o),
+        .id_wreg_o         (id_wreg_o),
+        .id_rkd_value_o    (id_rkd_value_o),
+        // 添加前推输入（用于分支比较）
+        .exe_wreg_i        (exe_wreg_i),
+        .exe_wa_i          (exe_wa_i),
+        .exe_wd_i          (exe_wd_o),          // EXE 阶段计算结果
+        .mem_wreg_i        (mem_wreg_i),
+        .mem_wa_i          (mem_wa_i),
+        .mem_wd_i          (mem_dreg_o),
+        // 添加分支输出
+        .id_branch_taken_o (id_branch_taken),
+        .id_branch_target_o(id_branch_target),
+        .debug_wb_pc       (id_debug_wb_pc_o)
     );
 
     regfile regfile0 (
@@ -146,7 +200,7 @@ module Loongarch32_Lite (
     idexe_reg idexe_reg0 (
         .cpu_clk_50M(cpu_clk_50M),
         .cpu_rst_n(cpu_rst_n),
-        .flush(branch_taken),
+        .stall(stall),
         .id_alutype(id_alutype_o),
         .id_aluop(id_aluop_o),
         .id_src1(id_src1_o),
@@ -162,7 +216,26 @@ module Loongarch32_Lite (
         .exe_src2(exe_src2_i),
         .exe_wa(exe_wa_i),
         .exe_wreg(exe_wreg_i),
+        .id_ra1(ra1),
+        .id_ra2(ra2),
+        .exe_ra1(exe_ra1_i),
+        .exe_ra2(exe_ra2_i),
         .exe_debug_wb_pc(exe_debug_wb_pc_i)
+    );
+
+    forwarding_unit forwarding_unit0 (
+        .exe_rs1_addr(exe_ra1_i),
+        .exe_rs2_addr(exe_ra2_i),
+        .mem_wreg(mem_wreg_i),
+        .mem_wa(mem_wa_i),
+        .mem_wd(mem_dreg_o),
+        .wb_wreg(wb_wreg_o),
+        .wb_wa(wb_wa_o),
+        .wb_wd(wb_wd_o),
+        .forward_src1(forward_src1),
+        .forward_src2(forward_src2),
+        .forward_data_mem(forward_data_mem),
+        .forward_data_wb(forward_data_wb)
     );
 
     exe_stage exe_stage0 (
@@ -174,19 +247,22 @@ module Loongarch32_Lite (
         .exe_wreg_i(exe_wreg_i),
         .exe_rkd_value_i(exe_rkd_value_i),
         .exe_rkd_value_o(exe_rkd_value_o),
-        .exe_branch_taken_o(branch_taken),
-        .exe_branch_target_o(branch_target),
         .exe_debug_wb_pc(exe_debug_wb_pc_i),
         .exe_aluop_o(exe_aluop_o),
         .exe_wa_o(exe_wa_o),
         .exe_wreg_o(exe_wreg_o),
         .exe_wd_o(exe_wd_o),
+        .forward_src1(forward_src1),
+        .forward_src2(forward_src2),
+        .forward_data_mem(forward_data_mem),
+        .forward_data_wb(forward_data_wb),
         .debug_wb_pc(exe_debug_wb_pc_o)
     );
 
     exemem_reg exemem_reg0 (
         .cpu_clk_50M(cpu_clk_50M),
         .cpu_rst_n(cpu_rst_n),
+        .stall(stall),
         .exe_aluop(exe_aluop_o),
         .exe_wa(exe_wa_o),
         .exe_wreg(exe_wreg_o),
@@ -209,12 +285,12 @@ module Loongarch32_Lite (
         .mem_rkd_value_i(mem_rkd_value_i),
         .mem_debug_wb_pc(mem_debug_wb_pc_i),
 
-        // ???? SRAM ???
+        // 数据 SRAM 接口
         .data_sram_en(data_sram_en),
         .data_sram_we(data_sram_we),
         .data_sram_addr(data_sram_addr),
         .data_sram_wdata(data_sram_wdata),
-        .data_sram_rdata(data_sram_rdata),  // ????
+        .data_sram_rdata(data_sram_rdata),  // 读数据
 
         .mem_wa_o(mem_wa_o),
         .mem_wreg_o(mem_wreg_o),
@@ -225,6 +301,7 @@ module Loongarch32_Lite (
     memwb_reg memwb_reg0 (
         .cpu_clk_50M(cpu_clk_50M),
         .cpu_rst_n(cpu_rst_n),
+        .stall(stall),
         .mem_wa(mem_wa_o),
         .mem_wreg(mem_wreg_o),
         .mem_dreg(mem_dreg_o),

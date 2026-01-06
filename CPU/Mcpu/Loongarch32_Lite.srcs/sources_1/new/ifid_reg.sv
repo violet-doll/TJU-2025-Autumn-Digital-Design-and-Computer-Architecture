@@ -3,6 +3,7 @@
 module ifid_reg (
     input wire cpu_clk_50M,
     input wire cpu_rst_n,
+    input wire [5:0] stall,
     input wire flush,
 
     // 来自取指阶段的信息  
@@ -22,16 +23,21 @@ module ifid_reg (
         // 复位期间，送至译码阶段的信息为0
         if (cpu_rst_n == `RST_ENABLE) begin
             id_pc <= `PC_INIT;
-            id_debug_wb_pc <= `PC_INIT;  // 上板测试时务必删除该语句
+            id_debug_wb_pc <= `PC_INIT;
             id_inst <= `ZERO_WORD;
-        end  // 清空取指阶段的信息，暂停并译码阶段
-		else if (flush == `TRUE_V) begin
+        end  // 修复：只要 stall[1] 为真，就保持当前值，不管 stall[2] 是什么
+        else if (stall[1] == `TRUE_V) begin
+            id_pc <= id_pc;
+            id_debug_wb_pc <= id_debug_wb_pc;
+            id_inst <= id_inst;
+        end  // 清空：分支跳转时 flush
+        else if (flush == `TRUE_V) begin
             id_pc          <= `PC_INIT;
             id_debug_wb_pc <= if_debug_wb_pc;
-            id_inst        <= `ZERO_WORD;  // 插入 NOP (inst=0 相当于写 r0，无修改作用)
+            id_inst        <= `ZERO_WORD;
         end else begin
             id_pc <= if_pc;
-            id_debug_wb_pc <= if_debug_wb_pc;  // 上板测试时务必删除该语句
+            id_debug_wb_pc <= if_debug_wb_pc;
             id_inst <= inst;
         end
     end

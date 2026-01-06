@@ -4,7 +4,7 @@ module id_stage (
 
     // 来自取指阶段的PC值
     input wire [`INST_ADDR_BUS] id_pc_i,
-    input wire [`INST_ADDR_BUS] id_debug_wb_pc, // 供调试使用的PC值，上板测试时务必删除该信号
+    input wire [`INST_ADDR_BUS] id_debug_wb_pc, // 供调试使用的PC值
 
     // 从指令存储器获得的指令
     input wire [`INST_BUS] id_inst_i,
@@ -12,6 +12,14 @@ module id_stage (
     // 从通用寄存器堆读出的数据
     input wire [`REG_BUS] rd1,
     input wire [`REG_BUS] rd2,
+
+    // ID 阶段前推输入（用于分支比较）
+    input wire                 exe_wreg_i,  // EXE 阶段写使能
+    input wire [`REG_ADDR_BUS] exe_wa_i,    // EXE 阶段写地址
+    input wire [     `REG_BUS] exe_wd_i,    // EXE 阶段写数据
+    input wire                 mem_wreg_i,  // MEM 阶段写使能
+    input wire [`REG_ADDR_BUS] mem_wa_i,    // MEM 阶段写地址
+    input wire [     `REG_BUS] mem_wd_i,    // MEM 阶段写数据
 
     // 送至执行阶段的操作数
     output wire [ `ALUTYPE_BUS] id_alutype_o,
@@ -30,7 +38,11 @@ module id_stage (
     output wire [`REG_ADDR_BUS] ra1,
     output wire [`REG_ADDR_BUS] ra2,
 
-    output [`INST_ADDR_BUS] debug_wb_pc  // 供调试使用的PC值，上板测试时务必删除该信号
+    // ID 阶段分支输出
+    output wire                  id_branch_taken_o,
+    output wire [`INST_ADDR_BUS] id_branch_target_o,
+
+    output [`INST_ADDR_BUS] debug_wb_pc
 );
 
     // 指令小端序转换为大端序
@@ -164,6 +176,42 @@ module id_stage (
     // 写目的寄存器地址，总是rd
     assign id_wa_o = rd;
 
-    assign debug_wb_pc = id_debug_wb_pc;  // 上板测试时务必删除该语句
+    assign debug_wb_pc = id_debug_wb_pc;
+
+    /*------------------------------------------------------------------------------
+     *  ID 阶段分支判断（提前分支计算，减少分支惩罚从 2 周期降为 1 周期）
+     *------------------------------------------------------------------------------*/
+
+    // 分支比较需要用到的源操作数（需要前推）
+    // 前推优先级：EXE > MEM > 原始值
+    wire [`REG_BUS] branch_src1 = 
+        (exe_wreg_i && (exe_wa_i != `REG_NOP) && (exe_wa_i == ra1)) ? exe_wd_i :
+        (mem_wreg_i && (mem_wa_i != `REG_NOP) && (mem_wa_i == ra1)) ? mem_wd_i :
+        rd1;
+
+    wire [`REG_BUS] branch_src2 = 
+        (exe_wreg_i && (exe_wa_i != `REG_NOP) && (exe_wa_i == ra2)) ? exe_wd_i :
+        (mem_wreg_i && (mem_wa_i != `REG_NOP) && (mem_wa_i == ra2)) ? mem_wd_i :
+        rd2;
+
+    // 分支比较结果
+    wire rs_eq_rd = (branch_src1 == branch_src2);
+    wire rs_lt_rd = ($signed(branch_src1) < $signed(branch_src2));  // 有符号比较
+
+    // 是否为分支指令
+    wire is_branch = inst_beq | inst_bne | inst_blt;
+
+    // 分支目标地址 = PC + offset
+    wire [31:0] branch_target = id_pc_i + imm_b16;
+
+    // 分支判断结果
+    assign id_branch_taken_o = is_branch && (
+        (inst_beq && rs_eq_rd) ||
+        (inst_bne && !rs_eq_rd) ||
+        (inst_blt && rs_lt_rd)
+    );
+
+    assign id_branch_target_o = id_branch_taken_o ? branch_target : `ZERO_WORD;
 
 endmodule
+

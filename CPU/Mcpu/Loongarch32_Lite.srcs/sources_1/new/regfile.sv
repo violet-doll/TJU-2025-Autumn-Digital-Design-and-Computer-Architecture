@@ -62,17 +62,21 @@ module regfile (
 
     // 读端口1的读操作
     // ra1是读地址，wa是写地址，we是写使能，wd是要写入的数据
+    // 添加 WB-ID 旁路：如果读地址等于写地址且写使能有效，直接前推写数据
     always @(*) begin
         if (cpu_rst_n == `RST_ENABLE) rd1 <= `ZERO_WORD;
         else if (ra1 == `REG_NOP) rd1 <= `ZERO_WORD;
+        else if ((we == `WRITE_ENABLE) && (wa == ra1) && (wa != 5'h0)) rd1 <= wd;  // WB-ID 旁路
         else rd1 <= regs[ra1];
     end
 
     // 读端口2的读操作
     // ra2是读地址，wa是写地址，we是写使能，wd是要写入的数据
+    // 添加 WB-ID 旁路：如果读地址等于写地址且写使能有效，直接前推写数据
     always @(*) begin
         if (cpu_rst_n == `RST_ENABLE) rd2 <= `ZERO_WORD;
         else if (ra2 == `REG_NOP) rd2 <= `ZERO_WORD;
+        else if ((we == `WRITE_ENABLE) && (wa == ra2) && (wa != 5'h0)) rd2 <= wd;  // WB-ID 旁路
         else rd2 <= regs[ra2];
     end
 

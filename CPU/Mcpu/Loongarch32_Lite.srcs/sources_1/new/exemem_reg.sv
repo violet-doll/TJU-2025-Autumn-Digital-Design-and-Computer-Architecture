@@ -3,6 +3,7 @@
 module exemem_reg (
     input wire cpu_clk_50M,
     input wire cpu_rst_n,
+    input wire [5:0] stall,
 
     // 来自执行阶段的信息
     input wire [`ALUOP_BUS] exe_aluop,
@@ -29,6 +30,22 @@ module exemem_reg (
             mem_wd          <= `ZERO_WORD;
             mem_rkd_value   <= `ZERO_WORD;
             mem_debug_wb_pc <= `PC_INIT;  // 上板测试时务必删除该语句
+        end  // 暂停：EXE/MEM 暂停但 MEM/WB 不暂停时，插入气泡
+        else if (stall[3] == `TRUE_V && stall[4] == `FALSE_V) begin
+            mem_aluop       <= `LoongArch32_SLL;
+            mem_wa          <= `REG_NOP;
+            mem_wreg        <= `WRITE_DISABLE;
+            mem_wd          <= `ZERO_WORD;
+            mem_rkd_value   <= `ZERO_WORD;
+            mem_debug_wb_pc <= exe_debug_wb_pc;
+        end  // 暂停：EXE/MEM 和 MEM/WB 都暂停时，保持当前值
+        else if (stall[3] == `TRUE_V && stall[4] == `TRUE_V) begin
+            mem_aluop       <= mem_aluop;
+            mem_wa          <= mem_wa;
+            mem_wreg        <= mem_wreg;
+            mem_wd          <= mem_wd;
+            mem_rkd_value   <= mem_rkd_value;
+            mem_debug_wb_pc <= mem_debug_wb_pc;
         end else begin
             mem_aluop       <= exe_aluop;
             mem_wa          <= exe_wa;
@@ -40,3 +57,4 @@ module exemem_reg (
     end
 
 endmodule
+

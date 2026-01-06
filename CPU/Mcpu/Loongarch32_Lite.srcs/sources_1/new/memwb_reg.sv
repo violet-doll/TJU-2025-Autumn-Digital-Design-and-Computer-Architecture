@@ -3,6 +3,7 @@
 module memwb_reg (
     input wire cpu_clk_50M,
     input wire cpu_rst_n,
+    input wire [5:0] stall,
 
     // 来自访存阶段的信息
     input wire [`REG_ADDR_BUS] mem_wa,
@@ -25,8 +26,19 @@ module memwb_reg (
             wb_wreg        <= `WRITE_DISABLE;
             wb_dreg        <= `ZERO_WORD;
             wb_debug_wb_pc <= `PC_INIT;  // 上板测试时务必删除该语句
-        end  // 清空访存阶段的信息，暂停并写回阶段
-        else begin
+        end  // 暂停：MEM/WB 暂停但 WB 不暂停时（stall[5]=0），插入气泡
+        else if (stall[4] == `TRUE_V && stall[5] == `FALSE_V) begin
+            wb_wa          <= `REG_NOP;
+            wb_wreg        <= `WRITE_DISABLE;
+            wb_dreg        <= `ZERO_WORD;
+            wb_debug_wb_pc <= mem_debug_wb_pc;
+        end  // 暂停：MEM/WB 和 WB 都暂停时，保持当前值
+        else if (stall[4] == `TRUE_V && stall[5] == `TRUE_V) begin
+            wb_wa          <= wb_wa;
+            wb_wreg        <= wb_wreg;
+            wb_dreg        <= wb_dreg;
+            wb_debug_wb_pc <= wb_debug_wb_pc;
+        end else begin
             wb_wa          <= mem_wa;
             wb_wreg        <= mem_wreg;
             wb_dreg        <= mem_dreg;
@@ -35,3 +47,4 @@ module memwb_reg (
     end
 
 endmodule
+
