@@ -1,4 +1,4 @@
-// (c) Copyright 1995-2025 Xilinx, Inc. All rights reserved.
+// (c) Copyright 1995-2026 Xilinx, Inc. All rights reserved.
 // 
 // This file contains confidential and proprietary information
 // of Xilinx, Inc. and is protected under U.S. and
@@ -55,8 +55,13 @@
 
 //----------- Begin Cut here for INSTANTIATION Template ---// INST_TAG
 inst_rom your_instance_name (
-  .a(a),      // input wire [13 : 0] a
-  .spo(spo)  // output wire [31 : 0] spo
+  .a(a),        // input wire [11 : 0] a
+  .d(d),        // input wire [31 : 0] d
+  .dpra(dpra),  // input wire [11 : 0] dpra
+  .clk(clk),    // input wire clk
+  .we(we),      // input wire we
+  .spo(spo),    // output wire [31 : 0] spo
+  .dpo(dpo)    // output wire [31 : 0] dpo
 );
 // INST_TAG_END ------ End INSTANTIATION Template ---------
 

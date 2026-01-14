@@ -1,36 +1,62 @@
-module tb_Loongarch32_Lite_FullSyS();
-    // Ê±ÖÓÓë¸´Î»ĞÅºÅ
-    logic sys_clk = 0;
-    logic sys_rst_n = 1;
-    initial forever #5 sys_clk = ~sys_clk;
-    
-    // SoC
-    Loongarch32_Lite_FullSyS SoC(
-        .sys_clk(sys_clk),
-        .sys_rst_n(sys_rst_n)
+`timescale 1ns / 1ps
+
+module tb_Loongarch32_Lite_FullSyS ();
+    // 1. å®šä¹‰ä¿¡å·
+    logic clk;
+    logic locked;
+    logic rxd;
+    wire  txd;
+
+    // 2. äº§ç”Ÿæ—¶é’Ÿ (50MHz)
+    initial begin
+        clk = 0;
+        forever #10 clk = ~clk;  // å‘¨æœŸ 20ns
+    end
+
+    // 3. äº§ç”Ÿå¤ä½åºåˆ— (æ ¸å¿ƒä¿®æ”¹ï¼)
+    initial begin
+        // åˆå§‹çŠ¶æ€ï¼šå…ˆæ‹‰ä½ lockedï¼Œè®© CPU è¿›å…¥å¤ä½çŠ¶æ€
+        locked = 0;
+        rxd = 1;  // ä¸²å£ç©ºé—²æ—¶ä¸ºé«˜ç”µå¹³
+
+        // ä¿æŒå¤ä½ä¸€æ®µæ—¶é—´ (ä¾‹å¦‚ 200ns)ï¼Œç¡®ä¿æ‰€æœ‰å¯„å­˜å™¨éƒ½è¢«æ¸…é›¶
+        #200;
+
+        // é‡Šæ”¾å¤ä½ï¼šæ‹‰é«˜ lockedï¼ŒCPU å¼€å§‹å·¥ä½œ
+        locked = 1;
+    end
+
+    // 4. å®ä¾‹åŒ– SoC
+    // è¯·ç¡®ä¿è¿™é‡Œçš„ç«¯å£å(.clk, .locked)ä¸ä½ çš„ Loongarch32_Lite_FullSyS.sv é‡Œçš„å®šä¹‰ä¸€è‡´
+    // å¦‚æœä½ çš„ SoC ç«¯å£å« cpu_clkï¼Œè¯·æ”¹æˆ .cpu_clk(clk)
+    Loongarch32_Lite_FullSyS SoC (
+        .sys_clk  (clk),
+        .sys_rst_n(locked)
     );
-    
-    // CPUµ÷ÊÔĞÅºÅ
-    logic        cpu_clk, cpu_rst_n;
-    logic [31:0] debug_wb_pc;       // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃĞÅºÅ
-    logic        debug_wb_rf_wen;   // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃĞÅºÅ
-    logic [ 4:0] debug_wb_rf_wnum;  // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃĞÅºÅ
-    logic [31:0] debug_wb_rf_wdata;  // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ı¸ÃĞÅºÅ
-    
-    assign cpu_clk           = SoC.cpu_clk;
-    assign cpu_rst_n         = SoC.cpu_rst_n;
-    assign debug_wb_pc       = SoC.debug_wb_pc;      
-    assign debug_wb_rf_wen   = SoC.debug_wb_rf_wen;  
-    assign debug_wb_rf_wnum  = SoC.debug_wb_rf_wnum; 
+
+    // 5. è§‚å¯Ÿä¿¡å·
+    logic cpu_clk, cpu_rst_n;
+    logic [31:0] debug_wb_pc;
+    logic        debug_wb_rf_wen;
+    logic [ 4:0] debug_wb_rf_wnum;
+    logic [31:0] debug_wb_rf_wdata;
+
+    assign cpu_clk           = SoC.cpu_clk;  // ç¡®ä¿ SoC å†…éƒ¨æœ‰è¿™ä¸ªä¿¡å·
+    assign cpu_rst_n         = SoC.cpu_rst_n;  // ç¡®ä¿ SoC å†…éƒ¨æœ‰è¿™ä¸ªä¿¡å·
+    assign debug_wb_pc       = SoC.debug_wb_pc;
+    assign debug_wb_rf_wen   = SoC.debug_wb_rf_wen;
+    assign debug_wb_rf_wnum  = SoC.debug_wb_rf_wnum;
     assign debug_wb_rf_wdata = SoC.debug_wb_rf_wdata;
-    
+
+    // 6. æ‰“å° trace ä¿¡æ¯
     always @(posedge cpu_clk) begin
-	   if(debug_wb_rf_wen && debug_wb_rf_wnum!=5'd0) begin
-	       $display("--------------------------------------------------------------");
-           $display("[%t]ns",$time/1000);
-           $display("reference: PC = 0x%8h, wb_rf_wnum = 0x%2h, wb_rf_wdata = 0x%8h",
-                      debug_wb_pc, debug_wb_rf_wnum, debug_wb_rf_wdata);
-           $display("--------------------------------------------------------------");    
-	   end
-	end
+        if (debug_wb_rf_wen && debug_wb_rf_wnum != 5'd0) begin
+            $display("--------------------------------------------------------------");
+            $display("[%t]ns", $time);
+            $display("reference: PC = 0x%8h, wb_rf_wnum = 0x%2h, wb_rf_wdata = 0x%8h", debug_wb_pc,
+                     debug_wb_rf_wnum, debug_wb_rf_wdata);
+            $display("--------------------------------------------------------------");
+        end
+    end
+
 endmodule

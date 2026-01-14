@@ -1,0 +1,269 @@
+{
+  "design": {
+    "design_info": {
+      "boundary_crc": "0xF9889C9C01A83798",
+      "device": "xc7z020clg400-1",
+      "name": "design_1",
+      "synth_flow_mode": "Hierarchical",
+      "tool_version": "2018.3",
+      "validated": "true"
+    },
+    "design_tree": {
+      "cg_fpga_0": "",
+      "clk_wiz_0": "",
+      "top_0": ""
+    },
+    "interface_ports": {
+      "DDR_0": {
+        "mode": "Master",
+        "vlnv": "xilinx.com:interface:ddrx_rtl:1.0",
+        "parameters": {
+          "AXI_ARBITRATION_SCHEME": {
+            "value": "TDM",
+            "value_src": "const_prop"
+          },
+          "BURST_LENGTH": {
+            "value": "8",
+            "value_src": "const_prop"
+          },
+          "CAN_DEBUG": {
+            "value": "false",
+            "value_src": "default"
+          },
+          "CAS_LATENCY": {
+            "value": "11",
+            "value_src": "const_prop"
+          },
+          "CAS_WRITE_LATENCY": {
+            "value": "11",
+            "value_src": "const_prop"
+          },
+          "CS_ENABLED": {
+            "value": "true",
+            "value_src": "const_prop"
+          },
+          "DATA_MASK_ENABLED": {
+            "value": "true",
+            "value_src": "const_prop"
+          },
+          "DATA_WIDTH": {
+            "value": "8",
+            "value_src": "const_prop"
+          },
+          "MEMORY_TYPE": {
+            "value": "COMPONENTS",
+            "value_src": "const_prop"
+          },
+          "MEM_ADDR_MAP": {
+            "value": "ROW_COLUMN_BANK",
+            "value_src": "const_prop"
+          },
+          "SLOT": {
+            "value": "Single",
+            "value_src": "const_prop"
+          },
+          "TIMEPERIOD_PS": {
+            "value": "1250",
+            "value_src": "const_prop"
+          }
+        }
+      },
+      "FIXED_IO_0": {
+        "mode": "Master",
+        "vlnv": "xilinx.com:display_processing_system7:fixedio_rtl:1.0",
+        "parameters": {
+          "CAN_DEBUG": {
+            "value": "false",
+            "value_src": "default"
+          }
+        }
+      }
+    },
+    "components": {
+      "cg_fpga_0": {
+        "vlnv": "educg.net:user:cg_fpga:1.4",
+        "xci_name": "design_1_cg_fpga_0_0"
+      },
+      "clk_wiz_0": {
+        "vlnv": "xilinx.com:ip:clk_wiz:6.0",
+        "xci_name": "design_1_clk_wiz_0_0",
+        "parameters": {
+          "CLKOUT1_JITTER": {
+            "value": "151.636"
+          },
+          "CLKOUT1_REQUESTED_OUT_FREQ": {
+            "value": "50.000"
+          },
+          "MMCM_CLKOUT0_DIVIDE_F": {
+            "value": "20.000"
+          },
+          "MMCM_DIVCLK_DIVIDE": {
+            "value": "1"
+          },
+          "RESET_PORT": {
+            "value": "resetn"
+          },
+          "RESET_TYPE": {
+            "value": "ACTIVE_LOW"
+          }
+        }
+      },
+      "top_0": {
+        "vlnv": "xilinx.com:module_ref:top:1.0",
+        "xci_name": "design_1_top_0_0",
+        "reference_info": {
+          "ref_type": "hdl",
+          "ref_name": "top",
+          "boundary_crc": "0x0"
+        },
+        "ports": {
+          "clk": {
+            "type": "clk",
+            "direction": "I",
+            "parameters": {
+              "CLK_DOMAIN": {
+                "value": "/clk_wiz_0_clk_out1",
+                "value_src": "ip_prop"
+              },
+              "FREQ_HZ": {
+                "value": "50000000",
+                "value_src": "ip_prop"
+              },
+              "PHASE": {
+                "value": "0.0",
+                "value_src": "ip_prop"
+              }
+            }
+          },
+          "locked": {
+            "direction": "I"
+          },
+          "rxd": {
+            "direction": "I"
+          },
+          "txd": {
+            "direction": "O"
+          },
+          "sw_1": {
+            "direction": "I",
+            "left": "31",
+            "right": "0"
+          },
+          "sw_2": {
+            "direction": "I",
+            "left": "31",
+            "right": "0"
+          },
+          "led": {
+            "direction": "O",
+            "left": "31",
+            "right": "0"
+          },
+          "seg_cs": {
+            "direction": "O",
+            "left": "3",
+            "right": "0"
+          },
+          "seg_data": {
+            "direction": "O",
+            "left": "7",
+            "right": "0"
+          },
+          "btn": {
+            "direction": "I",
+            "left": "7",
+            "right": "0"
+          }
+        }
+      }
+    },
+    "interface_nets": {
+      "cg_fpga_0_FIXED_IO": {
+        "interface_ports": [
+          "FIXED_IO_0",
+          "cg_fpga_0/FIXED_IO"
+        ]
+      },
+      "cg_fpga_0_DDR": {
+        "interface_ports": [
+          "DDR_0",
+          "cg_fpga_0/DDR"
+        ]
+      }
+    },
+    "nets": {
+      "clk_wiz_0_clk_out1": {
+        "ports": [
+          "clk_wiz_0/clk_out1",
+          "top_0/clk"
+        ]
+      },
+      "clk_wiz_0_locked": {
+        "ports": [
+          "clk_wiz_0/locked",
+          "top_0/locked"
+        ]
+      },
+      "cg_fpga_0_clk_100M": {
+        "ports": [
+          "cg_fpga_0/clk_100M",
+          "clk_wiz_0/clk_in1"
+        ]
+      },
+      "cg_fpga_0_btn_rst": {
+        "ports": [
+          "cg_fpga_0/btn_rst",
+          "clk_wiz_0/resetn"
+        ]
+      },
+      "cg_fpga_0_tx_0": {
+        "ports": [
+          "cg_fpga_0/tx_0",
+          "top_0/rxd"
+        ]
+      },
+      "cg_fpga_0_gpio_sw_1": {
+        "ports": [
+          "cg_fpga_0/gpio_sw_1",
+          "top_0/sw_1"
+        ]
+      },
+      "cg_fpga_0_gpio_sw_2": {
+        "ports": [
+          "cg_fpga_0/gpio_sw_2",
+          "top_0/sw_2"
+        ]
+      },
+      "cg_fpga_0_btn": {
+        "ports": [
+          "cg_fpga_0/btn",
+          "top_0/btn"
+        ]
+      },
+      "top_0_txd": {
+        "ports": [
+          "top_0/txd",
+          "cg_fpga_0/rx_0"
+        ]
+      },
+      "top_0_led": {
+        "ports": [
+          "top_0/led",
+          "cg_fpga_0/gpio_led"
+        ]
+      },
+      "top_0_seg_cs": {
+        "ports": [
+          "top_0/seg_cs",
+          "cg_fpga_0/seg_cs"
+        ]
+      },
+      "top_0_seg_data": {
+        "ports": [
+          "top_0/seg_data",
+          "cg_fpga_0/seg_data"
+        ]
+      }
+    }
+  }
+}

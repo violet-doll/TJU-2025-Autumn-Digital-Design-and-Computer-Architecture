@@ -1,1 +1,1 @@
-vopt -64 +acc -l elaborate.log -L dist_mem_gen_v8_0_12 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -work xil_defaultlib xil_defaultlib.inst_rom xil_defaultlib.glbl -o inst_rom_opt
+vopt -64 +acc -l elaborate.log -L xilinx_vip -L xil_defaultlib -L xpm -L dist_mem_gen_v8_0_12 -L axi_vip_v1_1_4 -L processing_system7_vip_v1_0_6 -L xilinx_vip -L unisims_ver -L unimacro_ver -L secureip -work xil_defaultlib xil_defaultlib.inst_rom xil_defaultlib.glbl -o inst_rom_opt

@@ -1,15 +1,15 @@
 # compile verilog/system verilog design source files
-verilog xil_defaultlib  --include "../../../../Loongarch32_Lite.srcs/sources_1/ip/clkdiv" \
+verilog xil_defaultlib  \
 "../../../../Loongarch32_Lite.srcs/sources_1/ip/data_ram/sim/data_ram.v" \
 "../../../../Loongarch32_Lite.srcs/sources_1/ip/inst_rom/sim/inst_rom.v" \
-"../../../../Loongarch32_Lite.srcs/sources_1/ip/clkdiv/clkdiv_clk_wiz.v" \
-"../../../../Loongarch32_Lite.srcs/sources_1/ip/clkdiv/clkdiv.v" \
 
-sv xil_defaultlib  --include "../../../../Loongarch32_Lite.srcs/sources_1/ip/clkdiv" \
+sv xil_defaultlib  \
 "../../../../Loongarch32_Lite.srcs/sources_1/new/Loongarch32_Lite.sv" \
 "../../../../Loongarch32_Lite.srcs/sources_1/new/Loongarch32_Lite_FullSyS.sv" \
+"../../../../Loongarch32_Lite.srcs/sources_1/new/ctrl.sv" \
 "../../../../Loongarch32_Lite.srcs/sources_1/new/exe_stage.sv" \
 "../../../../Loongarch32_Lite.srcs/sources_1/new/exemem_reg.sv" \
+"../../../../Loongarch32_Lite.srcs/sources_1/new/forwarding_unit.sv" \
 "../../../../Loongarch32_Lite.srcs/sources_1/new/id_stage.sv" \
 "../../../../Loongarch32_Lite.srcs/sources_1/new/idexe_reg.sv" \
 "../../../../Loongarch32_Lite.srcs/sources_1/new/if_stage.sv" \

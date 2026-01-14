@@ -1,27 +1,38 @@
-module Loongarch32_Lite_FullSyS(
-    input clk,  // 50Mhz
-    input locked,
-    
-    input                   rxd,                // ´®¿Ú½ÓÊÕ¶Ë
-    output logic            txd,                // ´®¿Ú·¢ËÍ¶Ë
-    
-    input [31:0]            sw_1,           // µÚÒ»×é²¦Âë¿ª¹Ø
-    input [31:0]            sw_2,           // µÚ¶ş×é²¦Âë¿ª¹Ø
-    output logic [31:0]     led,            // ledµÆ
-    output logic [3:0]             seg_cs,        // 7¶ÎÊıÂë¹ÜÑ¡ÔñĞÅºÅ
-    output logic [7:0]             seg_data,      // 7¶ÎÊıÂë¹ÜÊı¾İ
-    input [7:0]             btn            // °´Å¥
-    );
-    
+`include "defines.v"
+
+//==============================================================================
+// Module: Loongarch32_Lite_FullSyS
+// Description: LoongArch32 SoCé¡¶å±‚æ¨¡å—
+//              é›†æˆCPUæ ¸å¿ƒã€æŒ‡ä»¤ROMã€æ•°æ®RAMå’ŒUARTå¤–è®¾
+// Author: TJU Digital Design Course
+//==============================================================================
+module Loongarch32_Lite_FullSyS (
+    input clk,    // 50MHzä¸»æ—¶é’Ÿ
+    input locked, // PLLé”å®šä¿¡å·
+
+    input        rxd,  // UARTæ¥æ”¶
+    output logic txd,  // UARTå‘é€
+
+    input        [31:0] sw_1,      // æ‹¨ç å¼€å…³ç»„1
+    input        [31:0] sw_2,      // æ‹¨ç å¼€å…³ç»„2
+    output logic [31:0] led,       // LEDç¯
+    output logic [ 3:0] seg_cs,    // æ•°ç ç®¡ç‰‡é€‰
+    output logic [ 7:0] seg_data,  // æ•°ç ç®¡æ®µç 
+    input        [ 7:0] btn        // æŒ‰é’®
+);
+
+    //--------------------------------------------------------------------------
+    // å¤ä½ä¿¡å·ç”Ÿæˆ
+    //--------------------------------------------------------------------------
     logic rst_n;
-    
-    // ½«lockedĞÅºÅ×ªÎªºó¼¶µçÂ·µÄ¸´Î»ĞÅºÅrst_n
     always_ff @(posedge clk or negedge locked) begin
-        if(~locked) rst_n = 1'b0; 
-        else        rst_n = 1'b1;
+        if (~locked) rst_n = 1'b0;
+        else rst_n = 1'b1;
     end
-    
-    // Éú³ÉÊıÂë¹ÜÑ¡ÔñĞÅºÅºÍÊı¾İ
+
+    //--------------------------------------------------------------------------
+    // ä¸ƒæ®µæ•°ç ç®¡é©±åŠ¨
+    //--------------------------------------------------------------------------
     logic [3:0] seg_wdata[0:8];
     x7seg seg_cs_data_gen0 (
         .clk(clk),
@@ -29,65 +40,191 @@ module Loongarch32_Lite_FullSyS(
         .seg_cs(seg_cs),
         .seg_data(seg_data)
     );
-    
-    // ÈçÏÂ´úÂë½öÎªµÚÒ»×é²¦Âë¿ª¹Ø¿ØÖÆ led µÆÑİÊ¾Ê¾Àı£¬Çë¸ù¾İÉè¼ÆÒªÇó×ÔĞĞĞŞ¸Ä
+
+    // æ‹¨ç å¼€å…³1æ§åˆ¶LEDç¯
     logic [31:0] sw_1_ff;
     always_ff @(posedge clk or negedge rst_n) begin
-        if(~rst_n) sw_1_ff <= 0;
+        if (~rst_n) sw_1_ff <= 0;
         else sw_1_ff <= sw_1;
     end
     assign led = sw_1_ff;
-    
-    // ÈçÏÂ´úÂë½öÎªÖ±Á¬´®¿Ú½ÓÊÕ·¢ËÍÑİÊ¾Ê¾Àı£¨¼´´ÓÖ±Á¬´®¿ÚÊÕµ½µÄÊı¾İÔÙ·¢ËÍ»Ø´®¿Ú£©£¬Çë¸ù¾İÉè¼ÆÒªÇó×ÔĞĞĞŞ¸Ä
-    logic [7:0] ext_uart_rx;
+
+    //--------------------------------------------------------------------------
+    // CPUæ ¸å¿ƒæ¥å£ä¿¡å·
+    //--------------------------------------------------------------------------
+    wire  [31:0] iaddr;  // æŒ‡ä»¤åœ°å€
+    wire  [31:0] inst;  // æŒ‡ä»¤æ•°æ®
+
+    wire         data_sram_en;  // æ•°æ®SRAMä½¿èƒ½
+    wire  [ 3:0] data_sram_we;  // æ•°æ®SRAMå†™ä½¿èƒ½(å­—èŠ‚)
+    wire  [31:0] data_sram_addr;  // æ•°æ®SRAMåœ°å€
+    wire  [31:0] data_sram_wdata;  // æ•°æ®SRAMå†™æ•°æ®
+    wire  [31:0] data_sram_rdata;  // æ•°æ®SRAMè¯»æ•°æ®
+
+    // è°ƒè¯•æ¥å£
+    wire  [31:0] debug_wb_pc;
+    wire         debug_wb_rf_wen;
+    wire  [ 4:0] debug_wb_rf_wnum;
+    wire  [31:0] debug_wb_rf_wdata;
+
+    //--------------------------------------------------------------------------
+    // åœ°å€è¯‘ç  (MMIO)
+    //--------------------------------------------------------------------------
+    wire         is_uart_data = (data_sram_addr == 32'hbfd003f8);  // UARTæ•°æ®å¯„å­˜å™¨
+    wire         is_uart_stat = (data_sram_addr == 32'hbfd003fc);  // UARTçŠ¶æ€å¯„å­˜å™¨
+    wire         is_uart_access = is_uart_data | is_uart_stat;
+    wire         is_rom_access = data_sram_en & (data_sram_addr[31:16] == 16'h8000);
+    wire         is_ram_access = data_sram_en & ~is_uart_access & ~is_rom_access;
+
+    //--------------------------------------------------------------------------
+    // UARTæ§åˆ¶é€»è¾‘
+    //--------------------------------------------------------------------------
+    logic [ 7:0] ext_uart_rx;
     logic [7:0] ext_uart_buffer, ext_uart_tx;
     logic ext_uart_ready, ext_uart_clear, ext_uart_busy;
     logic ext_uart_start, ext_uart_avai;
 
-    async_receiver #(.ClkFrequency(50000000),.Baud(9600)) //½ÓÊÕÄ£¿é£¬9600ÎŞ¼ìÑéÎ»
-    ext_uart_r(
-        .clk(clk),                       //Íâ²¿Ê±ÖÓĞÅºÅ
-        .RxD(rxd),                           //Íâ²¿´®ĞĞĞÅºÅÊäÈë
-        .RxD_data_ready(ext_uart_ready),  //Êı¾İ½ÓÊÕµ½±êÖ¾
-        .RxD_clear(ext_uart_clear),       //Çå³ı½ÓÊÕ±êÖ¾
-        .RxD_data(ext_uart_rx)             //½ÓÊÕµ½µÄÒ»×Ö½ÚÊı¾İ
+    // UARTæ¥æ”¶å™¨
+    async_receiver #(
+        .ClkFrequency(50000000),
+        .Baud(9600)
+    ) ext_uart_r (
+        .clk(clk),
+        .RxD(rxd),
+        .RxD_data_ready(ext_uart_ready),
+        .RxD_clear(ext_uart_clear),
+        .RxD_data(ext_uart_rx)
     );
 
-    assign ext_uart_clear = ext_uart_ready; //ÊÕµ½Êı¾İµÄÍ¬Ê±£¬Çå³ı±êÖ¾£¬ÒòÎªÊı¾İÒÑÈ¡µ½ext_uart_bufferÖĞ
-    always @(posedge clk ) begin //½ÓÊÕµ½»º³åÇøext_uart_buffer
-        if(ext_uart_ready)begin
+    // CPUè¯»å–UARTæ•°æ®æ—¶æ¸…é™¤æ¥æ”¶æ ‡å¿—
+    wire cpu_uart_read = data_sram_en & is_uart_data & (data_sram_we == 4'b0000);
+    assign ext_uart_clear = cpu_uart_read & ext_uart_avai;
+
+    // æ¥æ”¶æ•°æ®ç¼“å†²
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (~rst_n) begin
+            ext_uart_buffer <= 8'h0;
+            ext_uart_avai   <= 1'b0;
+        end else if (ext_uart_ready) begin
             ext_uart_buffer <= ext_uart_rx;
-            ext_uart_avai <= 1;
-        end else if(!ext_uart_busy && ext_uart_avai)begin 
-            ext_uart_avai <= 0;
-        end
-    end
-    always @(posedge clk) begin //½«»º³åÇøext_uart_buffer·¢ËÍ³öÈ¥
-        if(!ext_uart_busy && ext_uart_avai)begin 
-            ext_uart_tx <= ext_uart_buffer;
-            ext_uart_start <= 1;
-        end else begin 
-            ext_uart_start <= 0;
+            ext_uart_avai   <= 1'b1;
+        end else if (ext_uart_clear) begin
+            ext_uart_avai <= 1'b0;
         end
     end
 
-    async_transmitter #(.ClkFrequency(50000000),.Baud(9600)) //·¢ËÍÄ£¿é£¬9600ÎŞ¼ìÑéÎ»
-    ext_uart_t(
-        .clk(clk),                  //Íâ²¿Ê±ÖÓĞÅºÅ
-        .TxD(txd),                      //´®ĞĞĞÅºÅÊä³ö
-        .TxD_busy(ext_uart_busy),       //·¢ËÍÆ÷Ã¦×´Ì¬Ö¸Ê¾
-        .TxD_start(ext_uart_start),    //¿ªÊ¼·¢ËÍĞÅºÅ
-        .TxD_data(ext_uart_tx)        //´ı·¢ËÍµÄÊı¾İ
+    // CPUå†™å…¥UARTæ•°æ®æ—¶å‘é€
+    wire cpu_uart_write = data_sram_en & is_uart_data & (data_sram_we != 4'b0000);
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (~rst_n) begin
+            ext_uart_tx <= 8'h0;
+            ext_uart_start <= 1'b0;
+        end else if (cpu_uart_write & ~ext_uart_busy) begin
+            ext_uart_tx <= data_sram_wdata[7:0];
+            ext_uart_start <= 1'b1;
+        end else begin
+            ext_uart_start <= 1'b0;
+        end
+    end
+
+    // UARTå‘é€å™¨
+    async_transmitter #(
+        .ClkFrequency(50000000),
+        .Baud(9600)
+    ) ext_uart_t (
+        .clk(clk),
+        .TxD(txd),
+        .TxD_busy(ext_uart_busy),
+        .TxD_start(ext_uart_start),
+        .TxD_data(ext_uart_tx)
     );
-    
-    // ÈçÏÂ´úÂë½öÎª7¶ÎÊıÂë¹Ü(0-1)ÏÔÊ¾»º³åÇøÊı¾İÑİÊ¾Ê¾Àı£¬Çë¸ù¾İÉè¼ÆÒªÇó×ÔĞĞĞŞ¸Ä
+
+    // UARTçŠ¶æ€å¯„å­˜å™¨: bit0=TX Ready, bit1=RX Ready
+    wire [31:0] uart_status = {30'b0, ext_uart_avai, ~ext_uart_busy};
+    wire [31:0] uart_rx_data = {24'b0, ext_uart_buffer};
+
+    //--------------------------------------------------------------------------
+    // æ•°æ®RAM
+    //--------------------------------------------------------------------------
+    wire [31:0] ram_rdata;
+    wire [3:0] ram_we = is_ram_access ? data_sram_we : 4'b0000;
+
+    // å­—èŠ‚åºè½¬æ¢(å¤§å°ç«¯äº¤æ¢)
+    wire [31:0] ram_wdata_swapped = {
+        data_sram_wdata[7:0], data_sram_wdata[15:8], data_sram_wdata[23:16], data_sram_wdata[31:24]
+    };
+    wire [3:0] ram_we_swapped = {ram_we[0], ram_we[1], ram_we[2], ram_we[3]};
+
+    data_ram data_ram0 (
+        .a  (data_sram_addr[13:2]),
+        .d  (ram_wdata_swapped),
+        .clk(clk),
+        .we (ram_we_swapped),
+        .spo(ram_rdata)
+    );
+
+    //--------------------------------------------------------------------------
+    // æŒ‡ä»¤ROM (åŒç«¯å£)
+    //--------------------------------------------------------------------------
+    wire [31:0] rom_rdata;
+    inst_rom inst_rom0 (
+        // å–æŒ‡ç«¯å£
+        .a(iaddr[13:2]),
+        .spo(inst),
+        // æ•°æ®è®¿é—®ç«¯å£
+        .dpra(data_sram_addr[13:2]),
+        .dpo(rom_rdata),
+        // å†™ç«¯å£ç¦ç”¨
+        .clk(clk),
+        .we(1'b0),
+        .d(32'b0)
+    );
+
+    //--------------------------------------------------------------------------
+    // æ•°æ®è¯»å–MUX (å«å­—èŠ‚åºè½¬æ¢)
+    //--------------------------------------------------------------------------
+    wire [31:0] ram_rdata_swapped = {
+        ram_rdata[7:0], ram_rdata[15:8], ram_rdata[23:16], ram_rdata[31:24]
+    };
+    wire [31:0] rom_rdata_swapped = {
+        rom_rdata[7:0], rom_rdata[15:8], rom_rdata[23:16], rom_rdata[31:24]
+    };
+
+    assign data_sram_rdata = is_uart_data  ? uart_rx_data : 
+                             is_uart_stat  ? uart_status : 
+                             is_rom_access ? rom_rdata_swapped :
+                             ram_rdata_swapped;
+
+    //--------------------------------------------------------------------------
+    // CPUæ ¸å¿ƒå®ä¾‹åŒ–
+    //--------------------------------------------------------------------------
+    Loongarch32_Lite cpu0 (
+        .cpu_clk_50M(clk),
+        .cpu_rst_n(rst_n),
+        .iaddr(iaddr),
+        .inst(inst),
+        .data_sram_en(data_sram_en),
+        .data_sram_we(data_sram_we),
+        .data_sram_addr(data_sram_addr),
+        .data_sram_wdata(data_sram_wdata),
+        .data_sram_rdata(data_sram_rdata),
+        .debug_wb_pc(debug_wb_pc),
+        .debug_wb_rf_wen(debug_wb_rf_wen),
+        .debug_wb_rf_wnum(debug_wb_rf_wnum),
+        .debug_wb_rf_wdata(debug_wb_rf_wdata)
+    );
+
+    //--------------------------------------------------------------------------
+    // æ•°ç ç®¡æ˜¾ç¤º
+    //--------------------------------------------------------------------------
+    // æ•°ç ç®¡0-1: UARTæ¥æ”¶æ•°æ®
     assign seg_wdata[0] = ext_uart_buffer[3:0];
     assign seg_wdata[1] = ext_uart_buffer[7:4];
-    
-    // ÈçÏÂ´úÂë½öÎªµÚ¶ş×é²¦Âë¿ª¹Ø(1-20)¿ØÖÆ7¶ÎÊıÂë¹Ü(2-6)ÑİÊ¾Ê¾Àı£¬Çë¸ù¾İÉè¼ÆÒªÇó×ÔĞĞĞŞ¸Ä
+
+    // æ•°ç ç®¡2-6: æ‹¨ç å¼€å…³2
     logic [31:0] sw_2_ff;
     always_ff @(posedge clk or negedge rst_n) begin
-        if(~rst_n) sw_2_ff <= 0;
+        if (~rst_n) sw_2_ff <= 0;
         else sw_2_ff <= sw_2;
     end
     assign seg_wdata[2] = sw_2_ff[3:0];
@@ -95,26 +232,14 @@ module Loongarch32_Lite_FullSyS(
     assign seg_wdata[4] = sw_2_ff[11:8];
     assign seg_wdata[5] = sw_2_ff[15:12];
     assign seg_wdata[6] = sw_2_ff[19:16];
-    
-    // ÈçÏÂ´úÂë½öÎª8¸ö°´Å¥¿ØÖÆ7¶ÎÊıÂë¹Ü(7-8)ÑİÊ¾Ê¾Àı£¬Çë¸ù¾İÉè¼ÆÒªÇó×ÔĞĞĞŞ¸Ä
+
+    // æ•°ç ç®¡7-8: æŒ‰é’®çŠ¶æ€
     logic [7:0] btn_ff;
     always_ff @(posedge clk or negedge rst_n) begin
-        if(~rst_n) btn_ff <= 0;
+        if (~rst_n) btn_ff <= 0;
         else btn_ff <= btn;
     end
     assign seg_wdata[7] = btn_ff[3:0];
     assign seg_wdata[8] = btn_ff[7:4];
-    
-    
-    
-    /* --------------TODO----------------
-     * ÊµÀı»¯ CPU ºË
-     * Ê±ÖÓĞÅºÅÎª clk
-     * ¸´Î»ĞÅºÅÎª rst_n£¬µÍµçÆ½ÓĞĞ§
-     * ---------------------------------- */
-     
-     /* --------------TODO---------------
-      * ÊµÀı»¯ÒÑÉú³ÉµÄ data_ram ºÍ inst_rom
-      * --------------------------------- */
-      
+
 endmodule

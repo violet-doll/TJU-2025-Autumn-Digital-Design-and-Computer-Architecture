@@ -7,7 +7,7 @@ module Loongarch32_Lite_FullSyS (
     logic cpu_rst_n;
     logic locked;
 
-    // Ê±ÖÓ·ÖÆµ
+    // Ê±ï¿½Ó·ï¿½Æµ
     clkdiv clocking0 (
         // Clock out ports
         .clk_out(cpu_clk),    // output clk_out
@@ -18,18 +18,18 @@ module Loongarch32_Lite_FullSyS (
         .clk_in (sys_clk)
     );  // input clk_in
 
-    // ½«lockedÐÅºÅ×ªÎªºó¼¶µçÂ·µÄ¸´Î»ÐÅºÅrst_n
+    // ï¿½ï¿½lockedï¿½Åºï¿½×ªÎªï¿½ó¼¶µï¿½Â·ï¿½Ä¸ï¿½Î»ï¿½Åºï¿½rst_n
     always_ff @(posedge cpu_clk or negedge locked) begin
         if (~locked) cpu_rst_n = 1'b0;
         else cpu_rst_n = 1'b1;
     end
 
-    wire [31:0] debug_wb_pc;  // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ý¸ÃÐÅºÅ 
-    wire debug_wb_rf_wen;  // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ý¸ÃÐÅºÅ 
-    wire [ 4:0] debug_wb_rf_wnum;  // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ý¸ÃÐÅºÅ 
-    wire [31:0] debug_wb_rf_wdata;  // ¹©µ÷ÊÔÊ¹ÓÃµÄPCÖµ£¬ÉÏ°å²âÊÔÊ±Îñ±ØÉ¾³ý¸ÃÐÅºÅ 
+    wire [31:0] debug_wb_pc;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ãµï¿½PCÖµï¿½ï¿½ï¿½Ï°ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½ 
+    wire debug_wb_rf_wen;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ãµï¿½PCÖµï¿½ï¿½ï¿½Ï°ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½ 
+    wire [ 4:0] debug_wb_rf_wnum;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ãµï¿½PCÖµï¿½ï¿½ï¿½Ï°ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½ 
+    wire [31:0] debug_wb_rf_wdata;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ãµï¿½PCÖµï¿½ï¿½ï¿½Ï°ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½ 
 
-    // Á¬½Ó data_ram µÄÐÅºÅ
+    // ï¿½ï¿½ï¿½ï¿½ data_ram ï¿½ï¿½ï¿½Åºï¿½
     wire data_sram_en;
     wire [3:0] data_sram_we;
     wire [31:0] data_sram_addr;
@@ -46,7 +46,7 @@ module Loongarch32_Lite_FullSyS (
         .iaddr(iaddr),
         .inst (inst),
 
-        // Á¬½Ó Data RAM ÐÅºÅ
+        // ï¿½ï¿½ï¿½ï¿½ Data RAM ï¿½Åºï¿½
         .data_sram_en(data_sram_en),
         .data_sram_we(data_sram_we),
         .data_sram_addr(data_sram_addr),
@@ -64,13 +64,13 @@ module Loongarch32_Lite_FullSyS (
         .spo(inst)          // output wire [31 : 0] spo
     );
 
-    // ÊµÀý»¯ data_ram
+    // Êµï¿½ï¿½ï¿½ï¿½ data_ram
     data_ram data_ram0 (
-        .a(data_sram_addr[15:2]),  // È¡µØÖ·µÄ [15:2] Î»×÷Îª Word µØÖ·
-        .d(data_sram_wdata),  // Ð´Êý¾Ý input [31:0]
-        .clk(cpu_clk),  // Ê±ÖÓ input
-        .we(data_sram_we),  // Ð´Ê¹ÄÜ input [3:0] 
-        .spo(data_sram_rdata)  // ¶ÁÊý¾Ý output [31:0]
+        .a(data_sram_addr[15:2]),  // È¡ï¿½ï¿½Ö·ï¿½ï¿½ [15:2] Î»ï¿½ï¿½Îª Word ï¿½ï¿½Ö·
+        .d(data_sram_wdata),  // Ð´ï¿½ï¿½ï¿½ï¿½ input [31:0]
+        .clk(cpu_clk),  // Ê±ï¿½ï¿½ input
+        .we(data_sram_we),  // Ð´Ê¹ï¿½ï¿½ input [3:0] 
+        .spo(data_sram_rdata)  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ output [31:0]
     );
 
 endmodule

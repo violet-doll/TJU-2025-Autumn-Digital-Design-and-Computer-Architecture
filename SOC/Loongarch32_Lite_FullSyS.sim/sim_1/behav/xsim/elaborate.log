@@ -1,0 +1,68 @@
+Vivado Simulator 2018.3
+Copyright 1986-1999, 2001-2018 Xilinx, Inc. All Rights Reserved.
+Running: D:/Xlinix2018/Vivado/2018.3/bin/unwrapped/win64.o/xelab.exe -wto cc3b600ceb454082930f61ffd9d1ccae --incr --debug typical --relax --mt 2 -L dist_mem_gen_v8_0_12 -L xil_defaultlib -L xilinx_vip -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot top_behav xil_defaultlib.top xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+WARNING: [VRFC 10-3091] actual bit length 4 differs from formal bit length 1 for port 'we' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/Loongarch32_Lite_FullSyS.sv:153]
+Completed static elaboration
+Starting simulation data flow analysis
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/Loongarch32_Lite_FullSyS.sv" Line 3. Module Loongarch32_Lite_FullSyS has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/x7seg.sv" Line 1. Module x7seg has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/x7seg.sv" Line 56. Module seg_decoder has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/x7seg.sv" Line 56. Module seg_decoder has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/x7seg.sv" Line 56. Module seg_decoder has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/x7seg.sv" Line 56. Module seg_decoder has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/x7seg.sv" Line 56. Module seg_decoder has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/x7seg.sv" Line 56. Module seg_decoder has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/x7seg.sv" Line 56. Module seg_decoder has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/x7seg.sv" Line 56. Module seg_decoder has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/x7seg.sv" Line 56. Module seg_decoder has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/async_receiver.sv" Line 12. Module async_receiver_default has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/async_transmitter.sv" Line 13. Module async_transmitter has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/ip/data_ram/sim/data_ram.v" Line 55. Module data_ram has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "/wrk/2018.3/nightly/2018_12_06_2405991/packages/customer/vivado/data/ip/xilinx/dist_mem_gen_v8_0/simulation/dist_mem_gen_v8_0.v" Line 78. Module dist_mem_gen_v8_0_12(C_FAMILY="zynq",C_ADDR_WIDTH=14,C_DEPTH=16384,C_MEM_INIT_FILE="data_ram.mif",C_READ_MIF=1,C_SYNC_ENABLE=1,C_WIDTH=32) has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/ip/inst_rom/sim/inst_rom.v" Line 55. Module inst_rom has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "/wrk/2018.3/nightly/2018_12_06_2405991/packages/customer/vivado/data/ip/xilinx/dist_mem_gen_v8_0/simulation/dist_mem_gen_v8_0.v" Line 78. Module dist_mem_gen_v8_0_12(C_FAMILY="zynq",C_ADDR_WIDTH=14,C_DEPTH=16384,C_HAS_CLK=0,C_HAS_D=0,C_HAS_WE=0,C_MEM_INIT_FILE="inst_rom.mif",C_MEM_TYPE=0,C_READ_MIF=1,C_SYNC_ENABLE=1,C_WIDTH=32) has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/Loongarch32_Lite.sv" Line 3. Module Loongarch32_Lite has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/ctrl.sv" Line 4. Module ctrl has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/if_stage.sv" Line 3. Module if_stage has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/ifid_reg.sv" Line 3. Module ifid_reg has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/id_stage.sv" Line 3. Module id_stage has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/regfile.sv" Line 3. Module regfile has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/idexe_reg.sv" Line 3. Module idexe_reg has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/forwarding_unit.sv" Line 4. Module forwarding_unit has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/exe_stage.sv" Line 3. Module exe_stage has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/exemem_reg.sv" Line 3. Module exemem_reg has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/mem_stage.sv" Line 3. Module mem_stage has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/memwb_reg.sv" Line 3. Module memwb_reg has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/wb_stage.sv" Line 3. Module wb_stage has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.sim/sim_1/behav/xsim/glbl.v" Line 6. Module glbl has a timescale but at least one module in design doesn't have timescale.
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.seg_decoder
+Compiling module xil_defaultlib.x7seg
+Compiling module xil_defaultlib.BaudTickGen(Oversampling=8)
+Compiling module xil_defaultlib.async_receiver_default
+Compiling module xil_defaultlib.BaudTickGen_default
+Compiling module xil_defaultlib.async_transmitter
+Compiling module dist_mem_gen_v8_0_12.dist_mem_gen_v8_0_12(C_FAMILY="z...
+Compiling module xil_defaultlib.data_ram
+Compiling module dist_mem_gen_v8_0_12.dist_mem_gen_v8_0_12(C_FAMILY="z...
+Compiling module xil_defaultlib.inst_rom
+Compiling module xil_defaultlib.ctrl
+Compiling module xil_defaultlib.if_stage
+Compiling module xil_defaultlib.ifid_reg
+Compiling module xil_defaultlib.id_stage
+Compiling module xil_defaultlib.regfile
+Compiling module xil_defaultlib.idexe_reg
+Compiling module xil_defaultlib.forwarding_unit
+Compiling module xil_defaultlib.exe_stage
+Compiling module xil_defaultlib.exemem_reg
+Compiling module xil_defaultlib.mem_stage
+Compiling module xil_defaultlib.memwb_reg
+Compiling module xil_defaultlib.wb_stage
+Compiling module xil_defaultlib.Loongarch32_Lite
+Compiling module xil_defaultlib.Loongarch32_Lite_FullSyS
+Compiling module xil_defaultlib.top
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot top_behav

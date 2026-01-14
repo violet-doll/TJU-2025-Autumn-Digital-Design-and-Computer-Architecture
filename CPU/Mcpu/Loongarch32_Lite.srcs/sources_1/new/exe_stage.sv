@@ -30,18 +30,33 @@ module exe_stage (
     output wire [`INST_ADDR_BUS] debug_wb_pc
 );
 
+    // --- 识别 Store 指令 ---
+    // Store 指令需要特殊处理：ALU 计算地址（不前推 src2），但存储数据需要前推
+    wire is_store = (exe_aluop_i == `LoongArch32_ST_B) || (exe_aluop_i == `LoongArch32_ST_W);
+
     assign exe_aluop_o = exe_aluop_i;
     assign exe_wa_o = exe_wa_i;
     assign exe_wreg_o = exe_wreg_i;
-    assign exe_rkd_value_o = exe_rkd_value_i;  // 透传
 
-    // --- 前推 MUX ---
+    // --- Store 数据前推 MUX ---
+    // 对于 Store 指令，存储数据（exe_rkd_value）需要前推
+    // forward_src2 检测的是 ra2（Store 指令的 rd，即要存储的数据寄存器）
+    assign exe_rkd_value_o = is_store ? (
+        (forward_src2 == 2'b01) ? forward_data_mem :  // MEM阶段前推
+        (forward_src2 == 2'b10) ? forward_data_wb :  // WB阶段前推
+        exe_rkd_value_i  // 原始值
+        ) : exe_rkd_value_i;  // 非 Store 指令直接透传
+
+    // --- ALU 操作数前推 MUX ---
     // 根据前推信号选择实际的操作数
     wire [`REG_BUS] alu_src1 = (forward_src1 == 2'b01) ? forward_data_mem :  // MEM阶段前推
     (forward_src1 == 2'b10) ? forward_data_wb :  // WB阶段前推
     exe_src1_i;  // 原始值
 
-    wire [`REG_BUS] alu_src2 = (forward_src2 == 2'b01) ? forward_data_mem :  // MEM阶段前推
+    // 对于 Store 指令，ALU 的第二操作数是立即数偏移量，不应该被前推
+    // 只有非 Store 指令才对 src2 进行前推
+    wire [`REG_BUS] alu_src2 = is_store ? exe_src2_i :  // Store 指令：使用原始立即数偏移
+    (forward_src2 == 2'b01) ? forward_data_mem :  // MEM阶段前推
     (forward_src2 == 2'b10) ? forward_data_wb :  // WB阶段前推
     exe_src2_i;  // 原始值
 
