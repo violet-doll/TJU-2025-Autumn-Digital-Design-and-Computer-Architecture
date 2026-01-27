@@ -41,48 +41,64 @@ module Loongarch32_Lite_FullSyS (
         .seg_data(seg_data)
     );
 
-    // 拨码开关1控制LED灯
+    // LED 控制寄存器 (MMIO 写入控制)
     logic [31:0] sw_1_ff;
+    logic [31:0] led_reg;  // CPU 可写的 LED 寄存器
+
     always_ff @(posedge clk or negedge rst_n) begin
         if (~rst_n) sw_1_ff <= 0;
         else sw_1_ff <= sw_1;
     end
-    assign led = sw_1_ff;
+
+    // LED 写控制逻辑 (前向声明，实际信号在地址译码后定义)
+    wire is_led_access;
+    wire cpu_led_write = data_sram_en & is_led_access & (data_sram_we != 4'b0000);
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (~rst_n) led_reg <= 32'h0;
+        else if (cpu_led_write) led_reg <= data_sram_wdata;
+    end
+
+    assign led = led_reg;  // LED 输出由寄存器控制
 
     //--------------------------------------------------------------------------
     // CPU核心接口信号
     //--------------------------------------------------------------------------
-    wire  [31:0] iaddr;  // 指令地址
-    wire  [31:0] inst;  // 指令数据
+    wire [31:0] iaddr;  // 指令地址
+    wire [31:0] inst;  // 指令数据
 
-    wire         data_sram_en;  // 数据SRAM使能
-    wire  [ 3:0] data_sram_we;  // 数据SRAM写使能
-    wire  [31:0] data_sram_addr;  // 数据SRAM地址
-    wire  [31:0] data_sram_wdata;  // 数据SRAM写数据
-    wire  [31:0] data_sram_rdata;  // 数据SRAM读数据
+    wire        data_sram_en;  // 数据SRAM使能
+    wire [ 3:0] data_sram_we;  // 数据SRAM写使能
+    wire [31:0] data_sram_addr;  // 数据SRAM地址
+    wire [31:0] data_sram_wdata;  // 数据SRAM写数据
+    wire [31:0] data_sram_rdata;  // 数据SRAM读数据
 
     // 调试接口
-    wire  [31:0] debug_wb_pc;
-    wire         debug_wb_rf_wen;
-    wire  [ 4:0] debug_wb_rf_wnum;
-    wire  [31:0] debug_wb_rf_wdata;
+    wire [31:0] debug_wb_pc;
+    wire        debug_wb_rf_wen;
+    wire [ 4:0] debug_wb_rf_wnum;
+    wire [31:0] debug_wb_rf_wdata;
 
     //--------------------------------------------------------------------------
     // 地址译码 (MMIO)
     //--------------------------------------------------------------------------
-    wire         is_uart_data = (data_sram_addr == 32'hbfd003f8);  // UART数据寄存器
-    wire         is_uart_stat = (data_sram_addr == 32'hbfd003fc);  // UART状态寄存器
-    wire         is_uart_access = is_uart_data | is_uart_stat;
+    wire        is_uart_data = (data_sram_addr == 32'hbfd003f8);  // UART数据寄存器
+    wire        is_uart_stat = (data_sram_addr == 32'hbfd003fc);  // UART状态寄存器
+    wire        is_uart_access = is_uart_data | is_uart_stat;
+
+    // LED 和拨码开关 MMIO
+    assign is_led_access = (data_sram_addr == 32'hbfd00400);  // LED控制寄存器
+    wire        is_switch_access = (data_sram_addr == 32'hbfd00404);  // 拨码开关寄存器
+    wire        is_gpio_access = is_led_access | is_switch_access;
 
     // ROM访问判定: 0x8000_xxxx
-    wire         is_rom_access = data_sram_en & (data_sram_addr[31:16] == 16'h8000);
+    wire        is_rom_access = data_sram_en & (data_sram_addr[31:16] == 16'h8000);
     // RAM访问判定: 非UART且非ROM的访问
-    wire         is_ram_access = data_sram_en & ~is_uart_access & ~is_rom_access;
+    wire        is_ram_access = data_sram_en & ~is_uart_access & ~is_rom_access & ~is_gpio_access;
 
     //--------------------------------------------------------------------------
     // UART控制逻辑
     //--------------------------------------------------------------------------
-    logic [ 7:0] ext_uart_rx;
+    logic [7:0] ext_uart_rx;
     logic [7:0] ext_uart_buffer, ext_uart_tx;
     logic ext_uart_ready, ext_uart_clear, ext_uart_busy;
     logic ext_uart_start, ext_uart_avai;
@@ -159,7 +175,7 @@ module Loongarch32_Lite_FullSyS (
     wire [3:0] ram_we_swapped = {ram_we[0], ram_we[1], ram_we[2], ram_we[3]};
 
     data_ram data_ram0 (
-        .a  (data_sram_addr[15:2]), 
+        .a  (data_sram_addr[15:2]),
         .d  (ram_wdata_swapped),
         .clk(clk),
         .we (ram_we_swapped),
@@ -195,9 +211,13 @@ module Loongarch32_Lite_FullSyS (
         rom_rdata[7:0], rom_rdata[15:8], rom_rdata[23:16], rom_rdata[31:24]
     };
 
-    assign data_sram_rdata = is_uart_data  ? uart_rx_data : 
-                             is_uart_stat  ? uart_status : 
-                             is_rom_access ? rom_rdata_swapped :
+    // 开关读取数据
+    wire [31:0] switch_rdata = sw_1_ff;  // 读取拨码开关组1的同步值
+
+    assign data_sram_rdata = is_uart_data    ? uart_rx_data :
+                             is_uart_stat    ? uart_status :
+                             is_switch_access ? switch_rdata :
+                             is_rom_access   ? rom_rdata_swapped :
                              ram_rdata_swapped;
 
     //--------------------------------------------------------------------------
