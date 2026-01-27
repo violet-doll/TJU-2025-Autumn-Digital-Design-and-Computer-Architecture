@@ -7,21 +7,21 @@ preplace port FIXED_IO_0 -pg 1 -y 140 -defaultsOSRD
 preplace inst cg_fpga_0 -pg 1 -lvl 3 -y 200 -defaultsOSRD
 preplace inst clk_wiz_0 -pg 1 -lvl 1 -y 500 -defaultsOSRD
 preplace inst top_0 -pg 1 -lvl 2 -y 540 -defaultsOSRD
-preplace netloc cg_fpga_0_gpio_sw_1 1 1 3 230 420 NJ 420 880
+preplace netloc cg_fpga_0_gpio_sw_1 1 1 3 230 420 NJ 420 910
 preplace netloc cg_fpga_0_DDR 1 3 1 NJ
-preplace netloc top_0_txd 1 2 1 520
-preplace netloc cg_fpga_0_gpio_sw_2 1 1 3 220 410 530J 430 870
-preplace netloc cg_fpga_0_btn_rst 1 0 4 20 380 NJ 380 560J 390 850
+preplace netloc top_0_txd 1 2 1 540
+preplace netloc cg_fpga_0_gpio_sw_2 1 1 3 220 410 550J 430 900
+preplace netloc cg_fpga_0_btn_rst 1 0 4 10 380 NJ 380 580J 390 880
 preplace netloc clk_wiz_0_locked 1 1 1 N
-preplace netloc top_0_led 1 2 1 510
-preplace netloc cg_fpga_0_clk_100M 1 0 4 30 390 NJ 390 540J 410 890
+preplace netloc top_0_led 1 2 1 530
+preplace netloc cg_fpga_0_clk_100M 1 0 4 20 390 NJ 390 560J 410 920
 preplace netloc cg_fpga_0_FIXED_IO 1 3 1 NJ
-preplace netloc top_0_seg_data 1 2 1 570
+preplace netloc top_0_seg_data 1 2 1 590
 preplace netloc clk_wiz_0_clk_out1 1 1 1 N
-preplace netloc top_0_seg_cs 1 2 1 550
-preplace netloc cg_fpga_0_btn 1 1 3 210 400 NJ 400 900
-preplace netloc cg_fpga_0_tx_0 1 1 3 240 430 500J 440 860
-levelinfo -pg 1 0 120 370 710 920 -top 0 -bot 650
+preplace netloc top_0_seg_cs 1 2 1 570
+preplace netloc cg_fpga_0_btn 1 1 3 210 400 NJ 400 930
+preplace netloc cg_fpga_0_tx_0 1 1 3 240 430 520J 440 890
+levelinfo -pg 1 -10 120 390 740 950 -top 0 -bot 650
 "
 }
 0

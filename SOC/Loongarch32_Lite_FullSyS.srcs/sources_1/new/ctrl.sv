@@ -8,8 +8,8 @@
 module ctrl (
     input wire cpu_rst_n,
 
-    input wire stallreq_from_id,  // ID阶段暂停请求(Load-Use冒险)
-    input wire stallreq_from_exe, // EXE阶段暂停请求(预留)
+    input wire stallreq_from_id,  // ID阶段暂停请求
+    input wire stallreq_from_exe, // EXE阶段暂停请求
 
     // 暂停信号: [0]PC [1]IF/ID [2]ID/EXE [3]EXE/MEM [4]MEM/WB [5]预留
     output reg [5:0] stall

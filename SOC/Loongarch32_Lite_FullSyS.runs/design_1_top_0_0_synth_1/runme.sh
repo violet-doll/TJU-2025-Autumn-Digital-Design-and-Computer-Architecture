@@ -24,7 +24,7 @@ else
 fi
 export LD_LIBRARY_PATH
 
-HD_PWD='D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.runs/design_1_top_0_0_synth_1'
+HD_PWD='D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.runs/design_1_top_0_0_synth_1'
 cd "$HD_PWD"
 
 HD_LOG=runme.log

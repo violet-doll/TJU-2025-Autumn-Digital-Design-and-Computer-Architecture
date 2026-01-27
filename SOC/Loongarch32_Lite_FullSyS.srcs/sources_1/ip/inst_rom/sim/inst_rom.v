@@ -55,31 +55,21 @@
 (* DowngradeIPIdentifiedWarnings = "yes" *)
 module inst_rom (
   a,
-  d,
-  dpra,
-  clk,
-  we,
-  spo,
-  dpo
+  spo
 );
 
-input wire [11 : 0] a;
-input wire [31 : 0] d;
-input wire [11 : 0] dpra;
-input wire clk;
-input wire we;
+input wire [13 : 0] a;
 output wire [31 : 0] spo;
-output wire [31 : 0] dpo;
 
   dist_mem_gen_v8_0_12 #(
     .C_FAMILY("zynq"),
-    .C_ADDR_WIDTH(12),
+    .C_ADDR_WIDTH(14),
     .C_DEFAULT_DATA("0"),
-    .C_DEPTH(4096),
-    .C_HAS_CLK(1),
-    .C_HAS_D(1),
-    .C_HAS_DPO(1),
-    .C_HAS_DPRA(1),
+    .C_DEPTH(16384),
+    .C_HAS_CLK(0),
+    .C_HAS_D(0),
+    .C_HAS_DPO(0),
+    .C_HAS_DPRA(0),
     .C_HAS_I_CE(0),
     .C_HAS_QDPO(0),
     .C_HAS_QDPO_CE(0),
@@ -91,10 +81,10 @@ output wire [31 : 0] dpo;
     .C_HAS_QSPO_RST(0),
     .C_HAS_QSPO_SRST(0),
     .C_HAS_SPO(1),
-    .C_HAS_WE(1),
+    .C_HAS_WE(0),
     .C_MEM_INIT_FILE("inst_rom.mif"),
     .C_ELABORATION_DIR("./"),
-    .C_MEM_TYPE(2),
+    .C_MEM_TYPE(0),
     .C_PIPELINE_STAGES(0),
     .C_QCE_JOINED(0),
     .C_QUALIFY_WE(0),
@@ -106,10 +96,10 @@ output wire [31 : 0] dpo;
     .C_PARSER_TYPE(1)
   ) inst (
     .a(a),
-    .d(d),
-    .dpra(dpra),
-    .clk(clk),
-    .we(we),
+    .d(32'B0),
+    .dpra(14'B0),
+    .clk(1'D0),
+    .we(1'D0),
     .i_ce(1'D1),
     .qspo_ce(1'D1),
     .qdpo_ce(1'D1),
@@ -119,7 +109,7 @@ output wire [31 : 0] dpo;
     .qspo_srst(1'D0),
     .qdpo_srst(1'D0),
     .spo(spo),
-    .dpo(dpo),
+    .dpo(),
     .qspo(),
     .qdpo()
   );

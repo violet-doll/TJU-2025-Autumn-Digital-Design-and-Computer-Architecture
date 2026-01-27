@@ -55,13 +55,8 @@
 
 //----------- Begin Cut here for INSTANTIATION Template ---// INST_TAG
 inst_rom your_instance_name (
-  .a(a),        // input wire [11 : 0] a
-  .d(d),        // input wire [31 : 0] d
-  .dpra(dpra),  // input wire [11 : 0] dpra
-  .clk(clk),    // input wire clk
-  .we(we),      // input wire we
-  .spo(spo),    // output wire [31 : 0] spo
-  .dpo(dpo)    // output wire [31 : 0] dpo
+  .a(a),      // input wire [13 : 0] a
+  .spo(spo)  // output wire [31 : 0] spo
 );
 // INST_TAG_END ------ End INSTANTIATION Template ---------
 

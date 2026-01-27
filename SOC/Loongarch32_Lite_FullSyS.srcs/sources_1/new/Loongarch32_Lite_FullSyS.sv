@@ -2,9 +2,9 @@
 
 //==============================================================================
 // Module: Loongarch32_Lite_FullSyS
-// Description: LoongArch32 SoC顶层模块
+// Description: LoongArch32 SoC顶层模块 (Fixed for Lab 4 Requirements)
 //              集成CPU核心、指令ROM、数据RAM和UART外设
-// Author: TJU Digital Design Course
+//              修改点: 单端口ROM仲裁、64KB地址空间适配
 //==============================================================================
 module Loongarch32_Lite_FullSyS (
     input clk,    // 50MHz主时钟
@@ -56,7 +56,7 @@ module Loongarch32_Lite_FullSyS (
     wire  [31:0] inst;  // 指令数据
 
     wire         data_sram_en;  // 数据SRAM使能
-    wire  [ 3:0] data_sram_we;  // 数据SRAM写使能(字节)
+    wire  [ 3:0] data_sram_we;  // 数据SRAM写使能
     wire  [31:0] data_sram_addr;  // 数据SRAM地址
     wire  [31:0] data_sram_wdata;  // 数据SRAM写数据
     wire  [31:0] data_sram_rdata;  // 数据SRAM读数据
@@ -73,7 +73,10 @@ module Loongarch32_Lite_FullSyS (
     wire         is_uart_data = (data_sram_addr == 32'hbfd003f8);  // UART数据寄存器
     wire         is_uart_stat = (data_sram_addr == 32'hbfd003fc);  // UART状态寄存器
     wire         is_uart_access = is_uart_data | is_uart_stat;
+
+    // ROM访问判定: 0x8000_xxxx
     wire         is_rom_access = data_sram_en & (data_sram_addr[31:16] == 16'h8000);
+    // RAM访问判定: 非UART且非ROM的访问
     wire         is_ram_access = data_sram_en & ~is_uart_access & ~is_rom_access;
 
     //--------------------------------------------------------------------------
@@ -144,19 +147,19 @@ module Loongarch32_Lite_FullSyS (
     wire [31:0] uart_rx_data = {24'b0, ext_uart_buffer};
 
     //--------------------------------------------------------------------------
-    // 数据RAM
+    // 数据RAM (Single Port RAM)
     //--------------------------------------------------------------------------
     wire [31:0] ram_rdata;
     wire [3:0] ram_we = is_ram_access ? data_sram_we : 4'b0000;
 
-    // 字节序转换(大小端交换)
+    // 字节序转换
     wire [31:0] ram_wdata_swapped = {
         data_sram_wdata[7:0], data_sram_wdata[15:8], data_sram_wdata[23:16], data_sram_wdata[31:24]
     };
     wire [3:0] ram_we_swapped = {ram_we[0], ram_we[1], ram_we[2], ram_we[3]};
 
     data_ram data_ram0 (
-        .a  (data_sram_addr[13:2]),
+        .a  (data_sram_addr[15:2]), 
         .d  (ram_wdata_swapped),
         .clk(clk),
         .we (ram_we_swapped),
@@ -164,28 +167,30 @@ module Loongarch32_Lite_FullSyS (
     );
 
     //--------------------------------------------------------------------------
-    // 指令ROM (双端口)
+    // 指令ROM (Single Port ROM + Arbitration)
     //--------------------------------------------------------------------------
-    wire [31:0] rom_rdata;
+    // 仲裁逻辑: 当需要访问ROM数据时(is_rom_access=1), 优先给访存阶段使用
+    wire [13:0] rom_addr_idx = is_rom_access ? data_sram_addr[15:2] : iaddr[15:2]; // [FIXED] 增加MUX，地址位宽改为14位
+    wire [31:0] rom_out_raw;
+
     inst_rom inst_rom0 (
-        // 取指端口
-        .a(iaddr[13:2]),
-        .spo(inst),
-        // 数据访问端口
-        .dpra(data_sram_addr[13:2]),
-        .dpo(rom_rdata),
-        // 写端口禁用
-        .clk(clk),
-        .we(1'b0),
-        .d(32'b0)
+        .a  (rom_addr_idx),  // 地址输入
+        .spo(rom_out_raw)    // 数据输出
     );
 
+    // 分发ROM输出
+    assign inst = rom_out_raw;
+
+    // 如果是数据访问，rom_rdata 将获取 ROM 的输出值
+    wire [31:0] rom_rdata = rom_out_raw;
+
     //--------------------------------------------------------------------------
-    // 数据读取MUX (含字节序转换)
+    // 数据读取MUX
     //--------------------------------------------------------------------------
     wire [31:0] ram_rdata_swapped = {
         ram_rdata[7:0], ram_rdata[15:8], ram_rdata[23:16], ram_rdata[31:24]
     };
+
     wire [31:0] rom_rdata_swapped = {
         rom_rdata[7:0], rom_rdata[15:8], rom_rdata[23:16], rom_rdata[31:24]
     };

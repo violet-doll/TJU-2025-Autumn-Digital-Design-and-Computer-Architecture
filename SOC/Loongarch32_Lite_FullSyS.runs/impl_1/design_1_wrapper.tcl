@@ -67,7 +67,7 @@ set ACTIVE_STEP write_bitstream
 set rc [catch {
   create_msg_db write_bitstream.pb
   open_checkpoint design_1_wrapper_routed.dcp
-  set_property webtalk.parent_dir D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.cache/wt [current_project]
+  set_property webtalk.parent_dir D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.cache/wt [current_project]
   set_property XPM_LIBRARIES {XPM_CDC XPM_FIFO XPM_MEMORY} [current_project]
   catch { write_mem_info -force design_1_wrapper.mmi }
   write_bitstream -force design_1_wrapper.bit 
