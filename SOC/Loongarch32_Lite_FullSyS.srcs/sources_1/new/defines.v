@@ -63,6 +63,10 @@
 `define LoongArch32_ORI             8'h1D   // 立即数或运算
 `define LoongArch32_XOR             8'h1E   // 异或运算
 `define LoongArch32_SLTUI           8'h27   // 无符号比较置位
+`define LoongArch32_MUL_W           8'h30   // 乘法(低32位)
+`define LoongArch32_MULH_W          8'h31   // 乘法(高32位)
+`define LoongArch32_DIV_W           8'h32   // 除法
+`define LoongArch32_MOD_W           8'h33   // 取模
 `define LoongArch32_LD_B            8'h90   // 字节加载
 `define LoongArch32_LD_W            8'h92   // 字加载
 `define LoongArch32_ST_B            8'h98   // 字节存储

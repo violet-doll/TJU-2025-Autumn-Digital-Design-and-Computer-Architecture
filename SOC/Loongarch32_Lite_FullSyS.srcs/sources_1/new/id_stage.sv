@@ -97,6 +97,10 @@ module id_stage (
 
     // 3R-type
     wire inst_add_w = (op17 == 17'h00020);
+    wire inst_mul_w = (op17 == 17'h00038);
+    wire inst_mulh_w = (op17 == 17'h00039);
+    wire inst_div_w = (op17 == 17'h00040);
+    wire inst_mod_w = (op17 == 17'h00041);
     wire inst_or    = (op17 == 17'h0002A);
     wire inst_xor   = (op17 == 17'h0002B);
     wire inst_srl_w = (op17 == 17'h0002F);
@@ -115,6 +119,10 @@ module id_stage (
     //--------------------------------------------------------------------------
     assign id_aluop_o = inst_add_w     ? `LoongArch32_ADD_W :
                         inst_addiw     ? `LoongArch32_ADDI_W :
+                        inst_mul_w     ? `LoongArch32_MUL_W :
+                        inst_mulh_w    ? `LoongArch32_MULH_W :
+                        inst_div_w     ? `LoongArch32_DIV_W :
+                        inst_mod_w     ? `LoongArch32_MOD_W :
                         inst_ld_b      ? `LoongArch32_LD_B : 
                         inst_ld_w      ? `LoongArch32_LD_W : 
                         inst_st_b      ? `LoongArch32_ST_B : 
@@ -145,7 +153,7 @@ module id_stage (
     // 寄存器读地址
     //--------------------------------------------------------------------------
     assign ra1 = rj;
-    assign ra2 = (inst_add_w | inst_or | inst_xor | inst_srl_w) ? rk :
+    assign ra2 = (inst_add_w | inst_mul_w | inst_mulh_w | inst_div_w | inst_mod_w | inst_or | inst_xor | inst_srl_w) ? rk :
                  (inst_st_b | inst_st_w | inst_beq | inst_bne | inst_blt) ? rd : 5'b0;
 
     //--------------------------------------------------------------------------
@@ -164,7 +172,7 @@ module id_stage (
     assign id_src1_o = (inst_pcaddu12i) ? id_pc_i : rd1;
 
     assign id_src2_o = 
-        (inst_add_w | inst_or | inst_xor | inst_srl_w | inst_beq | inst_bne | inst_blt) ? rd2 :
+        (inst_add_w | inst_mul_w | inst_mulh_w | inst_div_w | inst_mod_w | inst_or | inst_xor | inst_srl_w | inst_beq | inst_bne | inst_blt) ? rd2 :
         (inst_andi | inst_ori) ? imm_u12 :
         (inst_lu12i_w | inst_pcaddu12i) ? imm_s20 : imm_s12;
 

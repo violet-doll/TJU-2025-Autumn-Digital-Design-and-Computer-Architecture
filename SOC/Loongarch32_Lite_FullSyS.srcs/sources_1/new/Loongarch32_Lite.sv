@@ -144,6 +144,7 @@ module Loongarch32_Lite (
     ctrl ctrl0 (
         .cpu_rst_n(cpu_rst_n),
         .stallreq_from_id(stallreq_from_id),
+        .stallreq_from_exe(stallreq_from_exe),
         .stallreq_from_mem(stallreq_from_mem),
         .stall(stall)
     );
@@ -297,6 +298,8 @@ module Loongarch32_Lite (
     // EXE阶段: 执行
     //--------------------------------------------------------------------------
     exe_stage exe_stage0 (
+        .cpu_clk_50M(cpu_clk_50M),
+        .cpu_rst_n(cpu_rst_n),
         .exe_alutype_i(exe_alutype_i),
         .exe_aluop_i(exe_aluop_i),
         .exe_src1_i(exe_src1_i),
@@ -314,6 +317,7 @@ module Loongarch32_Lite (
         .forward_src2(forward_src2),
         .forward_data_mem(forward_data_mem),
         .forward_data_wb(forward_data_wb),
+        .stallreq_from_exe(stallreq_from_exe),
         .debug_wb_pc(exe_debug_wb_pc_o)
     );
 
