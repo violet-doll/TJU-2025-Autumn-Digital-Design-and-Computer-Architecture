@@ -111,8 +111,10 @@ module Loongarch32_Lite (
     wire id_uses_ra1 = (id_aluop_o != `LoongArch32_LU12I_W) && (id_aluop_o != `LoongArch32_PCADDU12I);
     wire conflict_ra1 = id_uses_ra1 && (ra1 == exe_wa_i) && (ra1 != 5'd0);
     wire conflict_ra2 = (ra2 == exe_wa_i) && (ra2 != 5'd0);
-    assign stallreq_from_id  = exe_is_load && (conflict_ra1 || conflict_ra2);
-    assign stallreq_from_exe = `FALSE_V;
+    assign stallreq_from_id = exe_is_load && (conflict_ra1 || conflict_ra2);
+
+    // MEM阶段ROM结构冲突检测: 当MEM访问ROM区域时暂停IF阶段
+    wire stallreq_from_mem = data_sram_en & (data_sram_addr[31:16] == 16'h8000);
 
     // 调试PC信号链
     wire [`INST_ADDR_BUS] if_debug_wb_pc;
@@ -130,7 +132,7 @@ module Loongarch32_Lite (
     ctrl ctrl0 (
         .cpu_rst_n(cpu_rst_n),
         .stallreq_from_id(stallreq_from_id),
-        .stallreq_from_exe(stallreq_from_exe),
+        .stallreq_from_mem(stallreq_from_mem),
         .stall(stall)
     );
 
