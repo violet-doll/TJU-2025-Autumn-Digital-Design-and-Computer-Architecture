@@ -2,12 +2,12 @@
 # Vivado v2018.3 (64-bit)
 # SW Build 2405991 on Thu Dec  6 23:38:27 MST 2018
 # IP Build 2404404 on Fri Dec  7 01:43:56 MST 2018
-# Start of session at: Mon Jan 26 23:09:38 2026
-# Process ID: 24620
-# Current directory: D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.runs/design_1_top_0_0_synth_1
+# Start of session at: Wed Jan 28 20:59:12 2026
+# Process ID: 24460
+# Current directory: D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.runs/design_1_top_0_0_synth_1
 # Command line: vivado.exe -log design_1_top_0_0.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source design_1_top_0_0.tcl
-# Log file: D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.runs/design_1_top_0_0_synth_1/design_1_top_0_0.vds
-# Journal file: D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.runs/design_1_top_0_0_synth_1\vivado.jou
+# Log file: D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.runs/design_1_top_0_0_synth_1/design_1_top_0_0.vds
+# Journal file: D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.runs/design_1_top_0_0_synth_1\vivado.jou
 #-----------------------------------------------------------
 source design_1_top_0_0.tcl -notrace
 INFO: [IP_Flow 19-234] Refreshing IP repositories
@@ -18,45 +18,45 @@ Starting synth_design
 Attempting to get a license for feature 'Synthesis' and/or device 'xc7z020'
 INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z020'
 INFO: Launching helper process for spawning children vivado processes
-INFO: Helper process launched with PID 23844 
+INFO: Helper process launched with PID 10472 
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:02 ; elapsed = 00:00:02 . Memory (MB): peak = 399.152 ; gain = 102.207
+Starting RTL Elaboration : Time (s): cpu = 00:00:02 ; elapsed = 00:00:03 . Memory (MB): peak = 399.977 ; gain = 104.184
 ---------------------------------------------------------------------------------
-INFO: [Synth 8-6157] synthesizing module 'design_1_top_0_0' [d:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/bd/design_1/ip/design_1_top_0_0/synth/design_1_top_0_0.v:58]
-INFO: [Synth 8-6157] synthesizing module 'top' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/top.v:6]
-INFO: [Synth 8-6157] synthesizing module 'Loongarch32_Lite_FullSyS' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/Loongarch32_Lite_FullSyS.sv:9]
-INFO: [Synth 8-6157] synthesizing module 'x7seg' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/x7seg.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'design_1_top_0_0' [d:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/bd/design_1/ip/design_1_top_0_0/synth/design_1_top_0_0.v:58]
+INFO: [Synth 8-6157] synthesizing module 'top' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/top.v:6]
+INFO: [Synth 8-6157] synthesizing module 'Loongarch32_Lite_FullSyS' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/Loongarch32_Lite_FullSyS.sv:9]
+INFO: [Synth 8-6157] synthesizing module 'x7seg' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/x7seg.sv:1]
 	Parameter SCAN_DELAY bound to: 50000 - type: integer 
-INFO: [Synth 8-6157] synthesizing module 'seg_decoder' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/x7seg.sv:56]
-INFO: [Synth 8-6155] done synthesizing module 'seg_decoder' (1#1) [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/x7seg.sv:56]
-INFO: [Synth 8-6155] done synthesizing module 'x7seg' (2#1) [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/x7seg.sv:1]
-INFO: [Synth 8-6157] synthesizing module 'async_receiver' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/async_receiver.sv:12]
+INFO: [Synth 8-6157] synthesizing module 'seg_decoder' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/x7seg.sv:56]
+INFO: [Synth 8-6155] done synthesizing module 'seg_decoder' (1#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/x7seg.sv:56]
+INFO: [Synth 8-6155] done synthesizing module 'x7seg' (2#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/x7seg.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'async_receiver' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/async_receiver.sv:12]
 	Parameter ClkFrequency bound to: 50000000 - type: integer 
 	Parameter Baud bound to: 9600 - type: integer 
 	Parameter Oversampling bound to: 8 - type: integer 
 	Parameter l2o bound to: 4 - type: integer 
-INFO: [Synth 8-6157] synthesizing module 'BaudTickGen' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/BaudTickGen.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'BaudTickGen' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/BaudTickGen.sv:1]
 	Parameter ClkFrequency bound to: 50000000 - type: integer 
 	Parameter Baud bound to: 9600 - type: integer 
 	Parameter Oversampling bound to: 8 - type: integer 
 	Parameter AccWidth bound to: 21 - type: integer 
 	Parameter ShiftLimiter bound to: 7 - type: integer 
 	Parameter Inc bound to: 3221 - type: integer 
-INFO: [Synth 8-6155] done synthesizing module 'BaudTickGen' (3#1) [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/BaudTickGen.sv:1]
-INFO: [Synth 8-6155] done synthesizing module 'async_receiver' (4#1) [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/async_receiver.sv:12]
-INFO: [Synth 8-6157] synthesizing module 'async_transmitter' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/async_transmitter.sv:13]
+INFO: [Synth 8-6155] done synthesizing module 'BaudTickGen' (3#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/BaudTickGen.sv:1]
+INFO: [Synth 8-6155] done synthesizing module 'async_receiver' (4#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/async_receiver.sv:12]
+INFO: [Synth 8-6157] synthesizing module 'async_transmitter' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/async_transmitter.sv:13]
 	Parameter ClkFrequency bound to: 50000000 - type: integer 
 	Parameter Baud bound to: 9600 - type: integer 
-INFO: [Synth 8-6157] synthesizing module 'BaudTickGen__parameterized0' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/BaudTickGen.sv:1]
+INFO: [Synth 8-6157] synthesizing module 'BaudTickGen__parameterized0' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/BaudTickGen.sv:1]
 	Parameter ClkFrequency bound to: 50000000 - type: integer 
 	Parameter Baud bound to: 9600 - type: integer 
 	Parameter Oversampling bound to: 1 - type: integer 
 	Parameter AccWidth bound to: 21 - type: integer 
 	Parameter ShiftLimiter bound to: 4 - type: integer 
 	Parameter Inc bound to: 403 - type: integer 
-INFO: [Synth 8-6155] done synthesizing module 'BaudTickGen__parameterized0' (4#1) [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/BaudTickGen.sv:1]
-INFO: [Synth 8-6155] done synthesizing module 'async_transmitter' (5#1) [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/async_transmitter.sv:13]
-INFO: [Synth 8-638] synthesizing module 'data_ram' [d:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/ip/data_ram/synth/data_ram.vhd:69]
+INFO: [Synth 8-6155] done synthesizing module 'BaudTickGen__parameterized0' (4#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/BaudTickGen.sv:1]
+INFO: [Synth 8-6155] done synthesizing module 'async_transmitter' (5#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/async_transmitter.sv:13]
+INFO: [Synth 8-638] synthesizing module 'data_ram' [d:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/ip/data_ram/synth/data_ram.vhd:69]
 	Parameter C_FAMILY bound to: zynq - type: string 
 	Parameter C_ADDR_WIDTH bound to: 14 - type: integer 
 	Parameter C_DEFAULT_DATA bound to: 0 - type: string 
@@ -89,10 +89,10 @@ INFO: [Synth 8-638] synthesizing module 'data_ram' [d:/vivado_project/a/SOC/Loon
 	Parameter C_SYNC_ENABLE bound to: 1 - type: integer 
 	Parameter C_WIDTH bound to: 32 - type: integer 
 	Parameter C_PARSER_TYPE bound to: 1 - type: integer 
-INFO: [Synth 8-3491] module 'dist_mem_gen_v8_0_12' declared at 'd:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/ip/inst_rom/hdl/dist_mem_gen_v8_0_vhsyn_rfs.vhd:3237' bound to instance 'U0' of component 'dist_mem_gen_v8_0_12' [d:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/ip/data_ram/synth/data_ram.vhd:135]
-INFO: [Synth 8-256] done synthesizing module 'data_ram' (9#1) [d:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/ip/data_ram/synth/data_ram.vhd:69]
-WARNING: [Synth 8-689] width (4) of port connection 'we' does not match port width (1) of module 'data_ram' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/Loongarch32_Lite_FullSyS.sv:165]
-INFO: [Synth 8-638] synthesizing module 'inst_rom' [d:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/ip/inst_rom/synth/inst_rom.vhd:66]
+INFO: [Synth 8-3491] module 'dist_mem_gen_v8_0_12' declared at 'd:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/ip/inst_rom/hdl/dist_mem_gen_v8_0_vhsyn_rfs.vhd:3237' bound to instance 'U0' of component 'dist_mem_gen_v8_0_12' [d:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/ip/data_ram/synth/data_ram.vhd:135]
+INFO: [Synth 8-256] done synthesizing module 'data_ram' (9#1) [d:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/ip/data_ram/synth/data_ram.vhd:69]
+WARNING: [Synth 8-689] width (4) of port connection 'we' does not match port width (1) of module 'data_ram' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/Loongarch32_Lite_FullSyS.sv:181]
+INFO: [Synth 8-638] synthesizing module 'inst_rom' [d:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/ip/inst_rom/synth/inst_rom.vhd:66]
 	Parameter C_FAMILY bound to: zynq - type: string 
 	Parameter C_ADDR_WIDTH bound to: 14 - type: integer 
 	Parameter C_DEFAULT_DATA bound to: 0 - type: string 
@@ -125,37 +125,42 @@ INFO: [Synth 8-638] synthesizing module 'inst_rom' [d:/vivado_project/a/SOC/Loon
 	Parameter C_SYNC_ENABLE bound to: 1 - type: integer 
 	Parameter C_WIDTH bound to: 32 - type: integer 
 	Parameter C_PARSER_TYPE bound to: 1 - type: integer 
-INFO: [Synth 8-3491] module 'dist_mem_gen_v8_0_12' declared at 'd:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/ip/inst_rom/hdl/dist_mem_gen_v8_0_vhsyn_rfs.vhd:3237' bound to instance 'U0' of component 'dist_mem_gen_v8_0_12' [d:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/ip/inst_rom/synth/inst_rom.vhd:132]
-INFO: [Synth 8-256] done synthesizing module 'inst_rom' (11#1) [d:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/ip/inst_rom/synth/inst_rom.vhd:66]
-INFO: [Synth 8-6157] synthesizing module 'Loongarch32_Lite' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/Loongarch32_Lite.sv:9]
-INFO: [Synth 8-6157] synthesizing module 'ctrl' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/ctrl.sv:8]
-INFO: [Synth 8-6155] done synthesizing module 'ctrl' (12#1) [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/ctrl.sv:8]
-INFO: [Synth 8-6157] synthesizing module 'if_stage' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/if_stage.sv:8]
-INFO: [Synth 8-6155] done synthesizing module 'if_stage' (13#1) [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/if_stage.sv:8]
-INFO: [Synth 8-6157] synthesizing module 'ifid_reg' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/ifid_reg.sv:8]
-INFO: [Synth 8-6155] done synthesizing module 'ifid_reg' (14#1) [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/ifid_reg.sv:8]
-INFO: [Synth 8-6157] synthesizing module 'id_stage' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/id_stage.sv:9]
-INFO: [Synth 8-6155] done synthesizing module 'id_stage' (15#1) [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/id_stage.sv:9]
-INFO: [Synth 8-6157] synthesizing module 'regfile' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/regfile.sv:8]
-INFO: [Synth 8-6155] done synthesizing module 'regfile' (16#1) [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/regfile.sv:8]
-INFO: [Synth 8-6157] synthesizing module 'idexe_reg' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/idexe_reg.sv:8]
-INFO: [Synth 8-6155] done synthesizing module 'idexe_reg' (17#1) [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/idexe_reg.sv:8]
-INFO: [Synth 8-6157] synthesizing module 'forwarding_unit' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/forwarding_unit.sv:8]
-INFO: [Synth 8-6155] done synthesizing module 'forwarding_unit' (18#1) [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/forwarding_unit.sv:8]
-INFO: [Synth 8-6157] synthesizing module 'exe_stage' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/exe_stage.sv:8]
-INFO: [Synth 8-6155] done synthesizing module 'exe_stage' (19#1) [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/exe_stage.sv:8]
-INFO: [Synth 8-6157] synthesizing module 'exemem_reg' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/exemem_reg.sv:8]
-INFO: [Synth 8-6155] done synthesizing module 'exemem_reg' (20#1) [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/exemem_reg.sv:8]
-INFO: [Synth 8-6157] synthesizing module 'mem_stage' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/mem_stage.sv:8]
-INFO: [Synth 8-6155] done synthesizing module 'mem_stage' (21#1) [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/mem_stage.sv:8]
-INFO: [Synth 8-6157] synthesizing module 'memwb_reg' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/memwb_reg.sv:8]
-INFO: [Synth 8-6155] done synthesizing module 'memwb_reg' (22#1) [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/memwb_reg.sv:8]
-INFO: [Synth 8-6157] synthesizing module 'wb_stage' [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/wb_stage.sv:8]
-INFO: [Synth 8-6155] done synthesizing module 'wb_stage' (23#1) [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/wb_stage.sv:8]
-INFO: [Synth 8-6155] done synthesizing module 'Loongarch32_Lite' (24#1) [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/Loongarch32_Lite.sv:9]
-INFO: [Synth 8-6155] done synthesizing module 'Loongarch32_Lite_FullSyS' (25#1) [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/Loongarch32_Lite_FullSyS.sv:9]
-INFO: [Synth 8-6155] done synthesizing module 'top' (26#1) [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/top.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'design_1_top_0_0' (27#1) [d:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/bd/design_1/ip/design_1_top_0_0/synth/design_1_top_0_0.v:58]
+INFO: [Synth 8-3491] module 'dist_mem_gen_v8_0_12' declared at 'd:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/ip/inst_rom/hdl/dist_mem_gen_v8_0_vhsyn_rfs.vhd:3237' bound to instance 'U0' of component 'dist_mem_gen_v8_0_12' [d:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/ip/inst_rom/synth/inst_rom.vhd:132]
+INFO: [Synth 8-256] done synthesizing module 'inst_rom' (11#1) [d:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/ip/inst_rom/synth/inst_rom.vhd:66]
+INFO: [Synth 8-6157] synthesizing module 'Loongarch32_Lite' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/Loongarch32_Lite.sv:9]
+INFO: [Synth 8-6157] synthesizing module 'ctrl' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/ctrl.sv:8]
+INFO: [Synth 8-6155] done synthesizing module 'ctrl' (12#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/ctrl.sv:8]
+INFO: [Synth 8-6157] synthesizing module 'if_stage' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/if_stage.sv:8]
+INFO: [Synth 8-6157] synthesizing module 'branch_predictor' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/branch_predictor.sv:8]
+	Parameter ENTRY_NUM bound to: 64 - type: integer 
+	Parameter INDEX_WIDTH bound to: 6 - type: integer 
+	Parameter TAG_WIDTH bound to: 24 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'branch_predictor' (13#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/branch_predictor.sv:8]
+INFO: [Synth 8-6155] done synthesizing module 'if_stage' (14#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/if_stage.sv:8]
+INFO: [Synth 8-6157] synthesizing module 'ifid_reg' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/ifid_reg.sv:8]
+INFO: [Synth 8-6155] done synthesizing module 'ifid_reg' (15#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/ifid_reg.sv:8]
+INFO: [Synth 8-6157] synthesizing module 'id_stage' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/id_stage.sv:9]
+INFO: [Synth 8-6155] done synthesizing module 'id_stage' (16#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/id_stage.sv:9]
+INFO: [Synth 8-6157] synthesizing module 'regfile' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/regfile.sv:8]
+INFO: [Synth 8-6155] done synthesizing module 'regfile' (17#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/regfile.sv:8]
+INFO: [Synth 8-6157] synthesizing module 'idexe_reg' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/idexe_reg.sv:8]
+INFO: [Synth 8-6155] done synthesizing module 'idexe_reg' (18#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/idexe_reg.sv:8]
+INFO: [Synth 8-6157] synthesizing module 'forwarding_unit' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/forwarding_unit.sv:8]
+INFO: [Synth 8-6155] done synthesizing module 'forwarding_unit' (19#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/forwarding_unit.sv:8]
+INFO: [Synth 8-6157] synthesizing module 'exe_stage' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/exe_stage.sv:8]
+INFO: [Synth 8-6155] done synthesizing module 'exe_stage' (20#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/exe_stage.sv:8]
+INFO: [Synth 8-6157] synthesizing module 'exemem_reg' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/exemem_reg.sv:8]
+INFO: [Synth 8-6155] done synthesizing module 'exemem_reg' (21#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/exemem_reg.sv:8]
+INFO: [Synth 8-6157] synthesizing module 'mem_stage' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/mem_stage.sv:8]
+INFO: [Synth 8-6155] done synthesizing module 'mem_stage' (22#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/mem_stage.sv:8]
+INFO: [Synth 8-6157] synthesizing module 'memwb_reg' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/memwb_reg.sv:8]
+INFO: [Synth 8-6155] done synthesizing module 'memwb_reg' (23#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/memwb_reg.sv:8]
+INFO: [Synth 8-6157] synthesizing module 'wb_stage' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/wb_stage.sv:8]
+INFO: [Synth 8-6155] done synthesizing module 'wb_stage' (24#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/wb_stage.sv:8]
+INFO: [Synth 8-6155] done synthesizing module 'Loongarch32_Lite' (25#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/Loongarch32_Lite.sv:9]
+INFO: [Synth 8-6155] done synthesizing module 'Loongarch32_Lite_FullSyS' (26#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/Loongarch32_Lite_FullSyS.sv:9]
+INFO: [Synth 8-6155] done synthesizing module 'top' (27#1) [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/top.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_top_0_0' (28#1) [d:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/bd/design_1/ip/design_1_top_0_0/synth/design_1_top_0_0.v:58]
 WARNING: [Synth 8-3331] design memwb_reg has unconnected port stall[3]
 WARNING: [Synth 8-3331] design memwb_reg has unconnected port stall[2]
 WARNING: [Synth 8-3331] design memwb_reg has unconnected port stall[1]
@@ -173,6 +178,10 @@ WARNING: [Synth 8-3331] design ifid_reg has unconnected port stall[4]
 WARNING: [Synth 8-3331] design ifid_reg has unconnected port stall[3]
 WARNING: [Synth 8-3331] design ifid_reg has unconnected port stall[2]
 WARNING: [Synth 8-3331] design ifid_reg has unconnected port stall[0]
+WARNING: [Synth 8-3331] design branch_predictor has unconnected port pc_i[1]
+WARNING: [Synth 8-3331] design branch_predictor has unconnected port pc_i[0]
+WARNING: [Synth 8-3331] design branch_predictor has unconnected port update_pc_i[1]
+WARNING: [Synth 8-3331] design branch_predictor has unconnected port update_pc_i[0]
 WARNING: [Synth 8-3331] design if_stage has unconnected port stall[5]
 WARNING: [Synth 8-3331] design if_stage has unconnected port stall[4]
 WARNING: [Synth 8-3331] design if_stage has unconnected port stall[3]
@@ -252,13 +261,9 @@ WARNING: [Synth 8-3331] design dist_mem_gen_v8_0_12_synth__parameterized0 has un
 WARNING: [Synth 8-3331] design dist_mem_gen_v8_0_12_synth__parameterized0 has unconnected port qdpo[28]
 WARNING: [Synth 8-3331] design dist_mem_gen_v8_0_12_synth__parameterized0 has unconnected port qdpo[27]
 WARNING: [Synth 8-3331] design dist_mem_gen_v8_0_12_synth__parameterized0 has unconnected port qdpo[26]
-WARNING: [Synth 8-3331] design dist_mem_gen_v8_0_12_synth__parameterized0 has unconnected port qdpo[25]
-WARNING: [Synth 8-3331] design dist_mem_gen_v8_0_12_synth__parameterized0 has unconnected port qdpo[24]
-WARNING: [Synth 8-3331] design dist_mem_gen_v8_0_12_synth__parameterized0 has unconnected port qdpo[23]
-WARNING: [Synth 8-3331] design dist_mem_gen_v8_0_12_synth__parameterized0 has unconnected port qdpo[22]
 INFO: [Common 17-14] Message 'Synth 8-3331' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:15:22 ; elapsed = 00:16:31 . Memory (MB): peak = 1052.207 ; gain = 755.262
+Finished RTL Elaboration : Time (s): cpu = 00:11:45 ; elapsed = 00:12:12 . Memory (MB): peak = 1052.957 ; gain = 757.164
 ---------------------------------------------------------------------------------
 
 Report Check Netlist: 
@@ -271,85 +276,154 @@ Report Check Netlist:
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:15:23 ; elapsed = 00:16:31 . Memory (MB): peak = 1052.207 ; gain = 755.262
+Finished Handling Custom Attributes : Time (s): cpu = 00:11:46 ; elapsed = 00:12:12 . Memory (MB): peak = 1052.957 ; gain = 757.164
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:15:23 ; elapsed = 00:16:31 . Memory (MB): peak = 1052.207 ; gain = 755.262
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:11:46 ; elapsed = 00:12:12 . Memory (MB): peak = 1052.957 ; gain = 757.164
 ---------------------------------------------------------------------------------
 INFO: [Device 21-403] Loading part xc7z020clg400-1
 INFO: [Project 1-570] Preparing netlist for logic optimization
 
 Processing XDC Constraints
 Initializing timing engine
-Parsing XDC File [d:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/bd/design_1/ip/design_1_top_0_0/design_1_top_0_0_ooc.xdc] for cell 'inst'
-Finished Parsing XDC File [d:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/bd/design_1/ip/design_1_top_0_0/design_1_top_0_0_ooc.xdc] for cell 'inst'
-Parsing XDC File [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.runs/design_1_top_0_0_synth_1/dont_touch.xdc]
-Finished Parsing XDC File [D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.runs/design_1_top_0_0_synth_1/dont_touch.xdc]
+Parsing XDC File [d:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/bd/design_1/ip/design_1_top_0_0/design_1_top_0_0_ooc.xdc] for cell 'inst'
+Finished Parsing XDC File [d:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/bd/design_1/ip/design_1_top_0_0/design_1_top_0_0_ooc.xdc] for cell 'inst'
+Parsing XDC File [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.runs/design_1_top_0_0_synth_1/dont_touch.xdc]
+Finished Parsing XDC File [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.runs/design_1_top_0_0_synth_1/dont_touch.xdc]
 Completed Processing XDC Constraints
 
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1057.895 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.002 . Memory (MB): peak = 1082.035 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1057.895 ; gain = 0.000
-Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.086 . Memory (MB): peak = 1057.973 ; gain = 0.078
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1082.035 ; gain = 0.000
+Constraint Validation Runtime : Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.085 . Memory (MB): peak = 1083.281 ; gain = 1.246
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:15:33 ; elapsed = 00:16:46 . Memory (MB): peak = 1057.973 ; gain = 761.027
+Finished Constraint Validation : Time (s): cpu = 00:11:54 ; elapsed = 00:12:22 . Memory (MB): peak = 1083.281 ; gain = 787.488
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7z020clg400-1
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:15:33 ; elapsed = 00:16:46 . Memory (MB): peak = 1057.973 ; gain = 761.027
+Finished Loading Part and Timing Information : Time (s): cpu = 00:11:54 ; elapsed = 00:12:22 . Memory (MB): peak = 1083.281 ; gain = 787.488
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
 ---------------------------------------------------------------------------------
-Applied set_property DONT_TOUCH = true for inst. (constraint file  D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.runs/design_1_top_0_0_synth_1/dont_touch.xdc, line 19).
+Applied set_property DONT_TOUCH = true for inst. (constraint file  D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.runs/design_1_top_0_0_synth_1/dont_touch.xdc, line 19).
 Applied set_property DONT_TOUCH = true for inst/Loongarch32_Lite_FullSyS0/inst_rom0. (constraint file  auto generated constraint, line ).
 Applied set_property DONT_TOUCH = true for inst/Loongarch32_Lite_FullSyS0/data_ram0. (constraint file  auto generated constraint, line ).
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:15:33 ; elapsed = 00:16:46 . Memory (MB): peak = 1057.973 ; gain = 761.027
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:11:54 ; elapsed = 00:12:22 . Memory (MB): peak = 1083.281 ; gain = 787.488
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-802] inferred FSM for state register 'RxD_state_reg' in module 'async_receiver'
 INFO: [Synth 8-5544] ROM "RxD_bit" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
 INFO: [Synth 8-5544] ROM "RxD_bit" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
 INFO: [Synth 8-5544] ROM "OversamplingCnt0" won't be mapped to Block RAM because address size (4) smaller than threshold (5)
 INFO: [Synth 8-802] inferred FSM for state register 'TxD_state_reg' in module 'async_transmitter'
+INFO: [Synth 8-5546] ROM "tag_reg[0]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[1]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[2]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[3]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[4]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[5]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[6]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[7]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[8]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[9]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[10]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[11]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[12]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[13]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[14]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[15]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[16]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[17]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[18]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[19]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[20]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[21]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[22]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[23]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[24]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[25]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[26]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[27]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[28]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[29]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[30]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[31]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[32]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[33]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[34]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[35]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[36]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[37]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[38]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[39]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[40]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[41]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[42]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[43]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[44]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[45]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[46]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[47]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[48]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[49]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[50]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[51]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[52]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[53]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[54]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[55]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[56]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[57]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[58]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[59]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[60]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[61]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[62]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "tag_reg[63]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[0]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[0]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[1]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[1]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[2]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[2]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[3]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[3]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[4]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[4]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[5]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[5]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[6]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[6]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[7]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[7]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[8]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[8]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[9]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[9]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[10]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[10]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[11]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[11]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[12]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[12]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[13]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[13]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[14]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[14]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[15]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[15]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[16]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[16]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[17]" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "counter_reg[17]" won't be mapped to RAM because it is too sparse
+INFO: [Common 17-14] Message 'Synth 8-5546' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 INFO: [Synth 8-5544] ROM "id_alutype_o0" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
-INFO: [Synth 8-5546] ROM "regs_reg[0]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[1]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[2]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[3]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[4]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[5]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[6]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[7]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[8]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[9]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[10]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[11]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[12]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[13]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[14]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[15]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[16]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[17]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[18]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[19]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[20]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[21]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[22]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[23]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[24]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[25]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[26]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[27]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[28]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[29]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[30]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[31]" won't be mapped to RAM because it is too sparse
 ---------------------------------------------------------------------------------------------------
                    State |                     New Encoding |                Previous Encoding 
 ---------------------------------------------------------------------------------------------------
@@ -383,7 +457,7 @@ INFO: [Synth 8-3354] encoded FSM with state register 'RxD_state_reg' using encod
 ---------------------------------------------------------------------------------------------------
 INFO: [Synth 8-3354] encoded FSM with state register 'TxD_state_reg' using encoding 'one-hot' in module 'async_transmitter'
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:16:09 ; elapsed = 00:17:26 . Memory (MB): peak = 1057.973 ; gain = 761.027
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:12:23 ; elapsed = 00:12:53 . Memory (MB): peak = 1083.281 ; gain = 787.488
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -396,24 +470,26 @@ Start RTL Component Statistics
 ---------------------------------------------------------------------------------
 Detailed RTL Component Info : 
 +---Adders : 
-	   2 Input     32 Bit       Adders := 3     
+	   2 Input     32 Bit       Adders := 4     
 	   2 Input     22 Bit       Adders := 2     
 	   2 Input      4 Bit       Adders := 1     
 	   2 Input      3 Bit       Adders := 1     
-	   2 Input      2 Bit       Adders := 1     
+	   2 Input      2 Bit       Adders := 4     
 +---XORs : 
 	   2 Input     32 Bit         XORs := 1     
 +---Registers : 
-	               32 Bit    Registers := 48    
+	               32 Bit    Registers := 114   
+	               24 Bit    Registers := 64    
 	               22 Bit    Registers := 2     
 	                8 Bit    Registers := 7     
 	                5 Bit    Registers := 5     
 	                4 Bit    Registers := 1     
 	                3 Bit    Registers := 2     
-	                2 Bit    Registers := 2     
-	                1 Bit    Registers := 8     
+	                2 Bit    Registers := 66    
+	                1 Bit    Registers := 73    
 +---Muxes : 
-	   2 Input     32 Bit        Muxes := 27    
+	   2 Input     32 Bit        Muxes := 28    
+	   4 Input     32 Bit        Muxes := 1     
 	   3 Input     32 Bit        Muxes := 6     
 	   2 Input     14 Bit        Muxes := 1     
 	  11 Input     11 Bit        Muxes := 2     
@@ -422,14 +498,18 @@ Detailed RTL Component Info :
 	  18 Input      8 Bit        Muxes := 1     
 	   4 Input      8 Bit        Muxes := 1     
 	   2 Input      5 Bit        Muxes := 2     
-	   2 Input      4 Bit        Muxes := 4     
+	   2 Input      4 Bit        Muxes := 2     
 	  11 Input      4 Bit        Muxes := 2     
 	   3 Input      4 Bit        Muxes := 1     
+	   2 Input      3 Bit        Muxes := 2     
 	   3 Input      3 Bit        Muxes := 1     
-	   2 Input      2 Bit        Muxes := 1     
+	   2 Input      2 Bit        Muxes := 67    
+	   5 Input      2 Bit        Muxes := 64    
+	   4 Input      2 Bit        Muxes := 1     
 	   3 Input      2 Bit        Muxes := 2     
-	   2 Input      1 Bit        Muxes := 47    
+	   2 Input      1 Bit        Muxes := 177   
 	  11 Input      1 Bit        Muxes := 2     
+	   5 Input      1 Bit        Muxes := 64    
 ---------------------------------------------------------------------------------
 Finished RTL Component Statistics 
 ---------------------------------------------------------------------------------
@@ -492,7 +572,23 @@ Detailed RTL Component Info :
 Module ctrl 
 Detailed RTL Component Info : 
 +---Muxes : 
-	   2 Input      4 Bit        Muxes := 2     
+	   2 Input      3 Bit        Muxes := 2     
+Module branch_predictor 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      2 Bit       Adders := 3     
++---Registers : 
+	               32 Bit    Registers := 64    
+	               24 Bit    Registers := 64    
+	                2 Bit    Registers := 64    
+	                1 Bit    Registers := 64    
++---Muxes : 
+	   2 Input     32 Bit        Muxes := 1     
+	   5 Input      2 Bit        Muxes := 64    
+	   2 Input      2 Bit        Muxes := 66    
+	   4 Input      2 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 129   
+	   5 Input      1 Bit        Muxes := 64    
 Module if_stage 
 Detailed RTL Component Info : 
 +---Adders : 
@@ -500,19 +596,21 @@ Detailed RTL Component Info :
 +---Registers : 
 	               32 Bit    Registers := 1     
 +---Muxes : 
-	   2 Input     32 Bit        Muxes := 2     
+	   2 Input     32 Bit        Muxes := 3     
 Module ifid_reg 
 Detailed RTL Component Info : 
 +---Registers : 
-	               32 Bit    Registers := 3     
+	               32 Bit    Registers := 4     
+	                1 Bit    Registers := 1     
 +---Muxes : 
-	   2 Input      1 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 2     
 Module id_stage 
 Detailed RTL Component Info : 
 +---Adders : 
-	   2 Input     32 Bit       Adders := 1     
+	   2 Input     32 Bit       Adders := 2     
 +---Muxes : 
-	   2 Input     32 Bit        Muxes := 10    
+	   2 Input     32 Bit        Muxes := 11    
+	   4 Input     32 Bit        Muxes := 1     
 	  18 Input      8 Bit        Muxes := 1     
 	   2 Input      5 Bit        Muxes := 2     
 	   3 Input      3 Bit        Muxes := 1     
@@ -574,11 +672,11 @@ Detailed RTL Component Info :
 Module Loongarch32_Lite_FullSyS 
 Detailed RTL Component Info : 
 +---Registers : 
-	               32 Bit    Registers := 2     
+	               32 Bit    Registers := 3     
 	                8 Bit    Registers := 3     
 	                1 Bit    Registers := 3     
 +---Muxes : 
-	   2 Input     32 Bit        Muxes := 3     
+	   2 Input     32 Bit        Muxes := 1     
 	   2 Input     14 Bit        Muxes := 1     
 	   2 Input      1 Bit        Muxes := 1     
 ---------------------------------------------------------------------------------
@@ -606,72 +704,41 @@ INFO: [Synth 8-5544] ROM "p_0_out" won't be mapped to Block RAM because address 
 INFO: [Synth 8-5544] ROM "p_0_out" won't be mapped to Block RAM because address size (4) smaller than threshold (5)
 INFO: [Synth 8-5544] ROM "p_0_out" won't be mapped to Block RAM because address size (4) smaller than threshold (5)
 INFO: [Synth 8-5544] ROM "p_0_out" won't be mapped to Block RAM because address size (4) smaller than threshold (5)
-INFO: [Synth 8-5546] ROM "regs_reg[0]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[1]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[2]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[3]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[4]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[5]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[6]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[7]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[8]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[9]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[10]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[11]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[12]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[13]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[14]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[15]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[16]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[17]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[18]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[19]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[20]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[21]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[22]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[23]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[24]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[25]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[26]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[27]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[28]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[29]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[30]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5546] ROM "regs_reg[31]" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][1] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][0] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][3] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][2] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][5] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][4] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][7] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][6] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][9] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][8] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][11] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][10] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][13] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][12] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][15] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][14] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][17] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][16] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][19] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][18] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][21] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][20] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][23] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][22] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][25] )
+INFO: [Synth 8-4471] merging register 'ifid_reg0/id_debug_wb_pc_reg[31:0]' into 'ifid_reg0/id_pc_reg[31:0]' [D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.srcs/sources_1/new/ifid_reg.sv:33]
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][24] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][27] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][26] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][29] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][20] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][28] )
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][31] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][22] )
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][30] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][18] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][26] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][31] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][23] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][19] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][27] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][21] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][29] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][25] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][6] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][8] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][9] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][10] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][11] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][12] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][13] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][14] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][15] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][16] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (inst/\Loongarch32_Lite_FullSyS0/cpu0 /regfile0/\regs_reg[0][17] )
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:17:42 ; elapsed = 00:19:14 . Memory (MB): peak = 1192.855 ; gain = 895.910
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:18:26 ; elapsed = 00:19:08 . Memory (MB): peak = 1213.191 ; gain = 917.398
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start ROM, RAM, DSP and Shift Register Reporting
@@ -707,13 +774,13 @@ Report RTL Partitions:
 Start Applying XDC Timing Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:17:50 ; elapsed = 00:19:23 . Memory (MB): peak = 1192.855 ; gain = 895.910
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:18:31 ; elapsed = 00:19:14 . Memory (MB): peak = 1213.191 ; gain = 917.398
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Timing Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:18:20 ; elapsed = 00:19:56 . Memory (MB): peak = 1219.055 ; gain = 922.109
+Finished Timing Optimization : Time (s): cpu = 00:19:02 ; elapsed = 00:19:46 . Memory (MB): peak = 1267.398 ; gain = 971.605
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start ROM, RAM, DSP and Shift Register Reporting
@@ -739,7 +806,7 @@ Report RTL Partitions:
 Start Technology Mapping
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:18:25 ; elapsed = 00:20:01 . Memory (MB): peak = 1267.168 ; gain = 970.223
+Finished Technology Mapping : Time (s): cpu = 00:19:09 ; elapsed = 00:19:53 . Memory (MB): peak = 1345.242 ; gain = 1049.449
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -763,7 +830,7 @@ Start Final Netlist Cleanup
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:18:27 ; elapsed = 00:20:03 . Memory (MB): peak = 1267.168 ; gain = 970.223
+Finished IO Insertion : Time (s): cpu = 00:19:11 ; elapsed = 00:19:55 . Memory (MB): peak = 1345.242 ; gain = 1049.449
 ---------------------------------------------------------------------------------
 
 Report Check Netlist: 
@@ -776,7 +843,7 @@ Report Check Netlist:
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:18:27 ; elapsed = 00:20:03 . Memory (MB): peak = 1267.168 ; gain = 970.223
+Finished Renaming Generated Instances : Time (s): cpu = 00:19:11 ; elapsed = 00:19:55 . Memory (MB): peak = 1345.242 ; gain = 1049.449
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -788,25 +855,25 @@ Report RTL Partitions:
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:18:28 ; elapsed = 00:20:04 . Memory (MB): peak = 1267.168 ; gain = 970.223
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:19:12 ; elapsed = 00:19:57 . Memory (MB): peak = 1345.242 ; gain = 1049.449
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:18:28 ; elapsed = 00:20:04 . Memory (MB): peak = 1267.168 ; gain = 970.223
+Finished Renaming Generated Ports : Time (s): cpu = 00:19:12 ; elapsed = 00:19:57 . Memory (MB): peak = 1345.242 ; gain = 1049.449
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:18:28 ; elapsed = 00:20:04 . Memory (MB): peak = 1267.168 ; gain = 970.223
+Finished Handling Custom Attributes : Time (s): cpu = 00:19:12 ; elapsed = 00:19:57 . Memory (MB): peak = 1345.242 ; gain = 1049.449
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:18:28 ; elapsed = 00:20:04 . Memory (MB): peak = 1267.168 ; gain = 970.223
+Finished Renaming Generated Nets : Time (s): cpu = 00:19:12 ; elapsed = 00:19:57 . Memory (MB): peak = 1345.242 ; gain = 1049.449
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -822,18 +889,18 @@ Report Cell Usage:
 +------+----------+------+
 |      |Cell      |Count |
 +------+----------+------+
-|1     |CARRY4    |    52|
-|2     |LUT1      |    36|
-|3     |LUT2      |   119|
-|4     |LUT3      |   217|
-|5     |LUT4      |   267|
-|6     |LUT5      |   336|
-|7     |LUT6      |  2563|
-|8     |MUXF7     |   804|
-|9     |MUXF8     |   287|
+|1     |CARRY4    |    69|
+|2     |LUT1      |    35|
+|3     |LUT2      |   207|
+|4     |LUT3      |   333|
+|5     |LUT4      |   356|
+|6     |LUT5      |   447|
+|7     |LUT6      |  4412|
+|8     |MUXF7     |  1484|
+|9     |MUXF8     |   623|
 |10    |RAM256X1S |  2048|
-|11    |FDCE      |    79|
-|12    |FDRE      |  1460|
+|11    |FDCE      |   111|
+|12    |FDRE      |  5233|
 |13    |FDSE      |    15|
 +------+----------+------+
 
@@ -841,9 +908,9 @@ Report Instance Areas:
 +------+----------------------------------------+-------------------------------------------+------+
 |      |Instance                                |Module                                     |Cells |
 +------+----------------------------------------+-------------------------------------------+------+
-|1     |top                                     |                                           |  8283|
-|2     |  inst                                  |top                                        |  8283|
-|3     |    Loongarch32_Lite_FullSyS0           |Loongarch32_Lite_FullSyS                   |  8283|
+|1     |top                                     |                                           | 15373|
+|2     |  inst                                  |top                                        | 15373|
+|3     |    Loongarch32_Lite_FullSyS0           |Loongarch32_Lite_FullSyS                   | 15373|
 |4     |      data_ram0                         |data_ram                                   |  3087|
 |5     |        U0                              |dist_mem_gen_v8_0_12                       |  3087|
 |6     |          \synth_options.dist_mem_inst  |dist_mem_gen_v8_0_12_synth                 |  3087|
@@ -852,48 +919,49 @@ Report Instance Areas:
 |9     |        U0                              |dist_mem_gen_v8_0_12__parameterized1       |  1195|
 |10    |          \synth_options.dist_mem_inst  |dist_mem_gen_v8_0_12_synth__parameterized0 |  1195|
 |11    |            \gen_rom.rom_inst           |rom                                        |  1195|
-|12    |      cpu0                              |Loongarch32_Lite                           |  3664|
-|13    |        exemem_reg0                     |exemem_reg                                 |   465|
-|14    |        id_stage0                       |id_stage                                   |    15|
-|15    |        idexe_reg0                      |idexe_reg                                  |   346|
-|16    |        if_stage0                       |if_stage                                   |    40|
-|17    |        ifid_reg0                       |ifid_reg                                   |   286|
-|18    |        memwb_reg0                      |memwb_reg                                  |   553|
-|19    |        regfile0                        |regfile                                    |  1959|
-|20    |      ext_uart_r                        |async_receiver                             |    80|
-|21    |        tickgen                         |BaudTickGen                                |    50|
-|22    |      ext_uart_t                        |async_transmitter                          |    70|
-|23    |        tickgen                         |BaudTickGen__parameterized0                |    39|
-|24    |      seg_cs_data_gen0                  |x7seg                                      |    77|
+|12    |      cpu0                              |Loongarch32_Lite                           | 10724|
+|13    |        exemem_reg0                     |exemem_reg                                 |   540|
+|14    |        id_stage0                       |id_stage                                   |    27|
+|15    |        idexe_reg0                      |idexe_reg                                  |   365|
+|16    |        if_stage0                       |if_stage                                   |  6401|
+|17    |          branch_predictor0             |branch_predictor                           |  6328|
+|18    |        ifid_reg0                       |ifid_reg                                   |   862|
+|19    |        memwb_reg0                      |memwb_reg                                  |   542|
+|20    |        regfile0                        |regfile                                    |  1987|
+|21    |      ext_uart_r                        |async_receiver                             |    79|
+|22    |        tickgen                         |BaudTickGen                                |    48|
+|23    |      ext_uart_t                        |async_transmitter                          |    69|
+|24    |        tickgen                         |BaudTickGen__parameterized0                |    37|
+|25    |      seg_cs_data_gen0                  |x7seg                                      |   107|
 +------+----------------------------------------+-------------------------------------------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:18:28 ; elapsed = 00:20:04 . Memory (MB): peak = 1267.168 ; gain = 970.223
+Finished Writing Synthesis Report : Time (s): cpu = 00:19:12 ; elapsed = 00:19:57 . Memory (MB): peak = 1345.242 ; gain = 1049.449
 ---------------------------------------------------------------------------------
-Synthesis finished with 0 errors, 0 critical warnings and 274 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:02:57 ; elapsed = 00:19:53 . Memory (MB): peak = 1267.168 ; gain = 964.457
-Synthesis Optimization Complete : Time (s): cpu = 00:18:28 ; elapsed = 00:20:04 . Memory (MB): peak = 1267.168 ; gain = 970.223
+Synthesis finished with 0 errors, 0 critical warnings and 278 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:07:20 ; elapsed = 00:19:49 . Memory (MB): peak = 1345.242 ; gain = 1019.125
+Synthesis Optimization Complete : Time (s): cpu = 00:19:12 ; elapsed = 00:19:57 . Memory (MB): peak = 1345.242 ; gain = 1049.449
 INFO: [Project 1-571] Translating synthesized netlist
-INFO: [Netlist 29-17] Analyzing 3191 Unisim elements for replacement
-INFO: [Netlist 29-28] Unisim Transformation completed in 2 CPU seconds
+INFO: [Netlist 29-17] Analyzing 4224 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 1 CPU seconds
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.014 . Memory (MB): peak = 1270.867 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.010 . Memory (MB): peak = 1345.242 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
   A total of 2048 instances were transformed.
   RAM256X1S => RAM256X1S (MUXF7, MUXF7, MUXF8, RAMS64E, RAMS64E, RAMS64E, RAMS64E): 2048 instances
 
 INFO: [Common 17-83] Releasing license: Synthesis
-178 Infos, 101 Warnings, 0 Critical Warnings and 0 Errors encountered.
+218 Infos, 101 Warnings, 0 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:18:34 ; elapsed = 00:20:12 . Memory (MB): peak = 1270.867 ; gain = 982.379
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.011 . Memory (MB): peak = 1270.867 ; gain = 0.000
+synth_design: Time (s): cpu = 00:19:17 ; elapsed = 00:20:02 . Memory (MB): peak = 1345.242 ; gain = 1057.008
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.013 . Memory (MB): peak = 1345.242 ; gain = 0.000
 WARNING: [Constraints 18-5210] No constraints selected for write.
 Resolution: This message can indicate that there are no constraints for the design, or it can indicate that the used_in flags are set such that the constraints are ignored. This later case is used when running synth_design to not write synthesis constraints to the resulting checkpoint. Instead, project constraints are read when the synthesized design is opened.
-INFO: [Common 17-1381] The checkpoint 'D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.runs/design_1_top_0_0_synth_1/design_1_top_0_0.dcp' has been generated.
-INFO: [Coretcl 2-1174] Renamed 23 cell refs.
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.015 . Memory (MB): peak = 1270.867 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.runs/design_1_top_0_0_synth_1/design_1_top_0_0.dcp' has been generated.
+INFO: [Coretcl 2-1174] Renamed 24 cell refs.
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.009 . Memory (MB): peak = 1345.242 ; gain = 0.000
 WARNING: [Constraints 18-5210] No constraints selected for write.
 Resolution: This message can indicate that there are no constraints for the design, or it can indicate that the used_in flags are set such that the constraints are ignored. This later case is used when running synth_design to not write synthesis constraints to the resulting checkpoint. Instead, project constraints are read when the synthesized design is opened.
-INFO: [Common 17-1381] The checkpoint 'D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.runs/design_1_top_0_0_synth_1/design_1_top_0_0.dcp' has been generated.
+INFO: [Common 17-1381] The checkpoint 'D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.runs/design_1_top_0_0_synth_1/design_1_top_0_0.dcp' has been generated.
 INFO: [runtcl-4] Executing : report_utilization -file design_1_top_0_0_utilization_synth.rpt -pb design_1_top_0_0_utilization_synth.pb
-INFO: [Common 17-206] Exiting Vivado at Mon Jan 26 23:30:01 2026...
+INFO: [Common 17-206] Exiting Vivado at Wed Jan 28 21:19:26 2026...

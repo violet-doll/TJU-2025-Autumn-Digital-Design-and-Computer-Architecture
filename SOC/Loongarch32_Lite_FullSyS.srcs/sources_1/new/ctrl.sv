@@ -19,8 +19,8 @@ module ctrl (
         if (cpu_rst_n == `RST_ENABLE) begin
             stall = 6'b000000;
         end else if (stallreq_from_mem == `TRUE_V) begin
-            // MEM阶段ROM冲突: 冻结PC/IF/ID (让MEM完成ROM访问)
-            stall = 6'b000011;
+            // MEM阶段ROM冲突: 冻结PC/IF/ID/EXE (防止分支指令在MEM访问期间执行)
+            stall = 6'b000111;
         end else if (stallreq_from_id == `TRUE_V) begin
             // ID阶段请求: 冻结PC/IF/ID
             stall = 6'b000111;

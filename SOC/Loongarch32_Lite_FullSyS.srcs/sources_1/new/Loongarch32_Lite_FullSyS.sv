@@ -195,7 +195,7 @@ module Loongarch32_Lite_FullSyS (
     );
 
     // 分发ROM输出
-    assign inst = rom_out_raw;
+    assign inst = is_rom_access ? 32'h0 : rom_out_raw;
 
     // 如果是数据访问，rom_rdata 将获取 ROM 的输出值
     wire [31:0] rom_rdata = rom_out_raw;

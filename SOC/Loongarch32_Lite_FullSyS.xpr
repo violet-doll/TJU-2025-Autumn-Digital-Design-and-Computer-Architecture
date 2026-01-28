@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="39" Path="D:/vivado_project/a/SOC/Loongarch32_Lite_FullSyS.xpr">
+<Project Version="7" Minor="39" Path="D:/vivado_project/TJU-2025/SOC/Loongarch32_Lite_FullSyS.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="cc3b600ceb454082930f61ffd9d1ccae"/>
@@ -117,6 +117,13 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PSRCDIR/sources_1/new/branch_predictor.sv">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <File Path="$PSRCDIR/sources_1/new/ctrl.sv">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -221,11 +228,11 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
-        <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_cg_fpga_0_0/design_1_cg_fpga_0_0.xci">
-          <Proxy FileSetName="design_1_cg_fpga_0_0"/>
-        </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_clk_wiz_0_0/design_1_clk_wiz_0_0.xci">
           <Proxy FileSetName="design_1_clk_wiz_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_cg_fpga_0_0/design_1_cg_fpga_0_0.xci">
+          <Proxy FileSetName="design_1_cg_fpga_0_0"/>
         </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_top_0_0/design_1_top_0_0.xci">
           <Proxy FileSetName="design_1_top_0_0"/>

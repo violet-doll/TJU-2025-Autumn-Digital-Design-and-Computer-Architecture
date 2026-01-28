@@ -11,6 +11,9 @@ module id_stage (
     input wire [`INST_ADDR_BUS] id_pc_i,
     input wire [`INST_ADDR_BUS] id_debug_wb_pc,
     input wire [`INST_BUS] id_inst_i,
+    input wire id_pred_taken_i,
+    input wire [`INST_ADDR_BUS] id_pred_target_i,
+    input wire id_hold_i,  // 当ID阶段被暂停时不进行分支决策/训练
 
     // 寄存器堆读取数据
     input wire [`REG_BUS] rd1,
@@ -20,6 +23,7 @@ module id_stage (
     input wire                 exe_wreg_i,
     input wire [`REG_ADDR_BUS] exe_wa_i,
     input wire [     `REG_BUS] exe_wd_i,
+    input wire [   `ALUOP_BUS] exe_aluop_i,  // 用于检测Load指令
     input wire                 mem_wreg_i,
     input wire [`REG_ADDR_BUS] mem_wa_i,
     input wire [     `REG_BUS] mem_wd_i,
@@ -42,6 +46,16 @@ module id_stage (
     // 分支输出
     output wire                  id_branch_taken_o,
     output wire [`INST_ADDR_BUS] id_branch_target_o,
+
+    // 预测校验/恢复输出
+    output wire                  id_flush_o,
+    output wire [`INST_ADDR_BUS] id_redirect_pc_o,
+
+    // BP更新接口
+    output wire                  bp_update_en_o,
+    output wire [`INST_ADDR_BUS] bp_update_pc_o,
+    output wire                  bp_update_taken_o,
+    output wire [`INST_ADDR_BUS] bp_update_target_o,
 
     output [`INST_ADDR_BUS] debug_wb_pc
 );
@@ -166,14 +180,17 @@ module id_stage (
     //--------------------------------------------------------------------------
     // 提前分支判断 (减少分支惩罚)
     //--------------------------------------------------------------------------
-    // 分支源操作数前推: EXE > MEM > 原始值
+    // 判断EXE阶段是否是Load指令（Load指令的数据尚未就绪，不能前推）
+    wire exe_is_load = (exe_aluop_i == `LoongArch32_LD_B) || (exe_aluop_i == `LoongArch32_LD_W);
+
+    // 分支源操作数前推: EXE > MEM > 原始值（排除Load指令）
     wire [`REG_BUS] branch_src1 = 
-        (exe_wreg_i && (exe_wa_i != `REG_NOP) && (exe_wa_i == ra1)) ? exe_wd_i :
+        (exe_wreg_i && !exe_is_load && (exe_wa_i != `REG_NOP) && (exe_wa_i == ra1)) ? exe_wd_i :
         (mem_wreg_i && (mem_wa_i != `REG_NOP) && (mem_wa_i == ra1)) ? mem_wd_i :
         rd1;
 
     wire [`REG_BUS] branch_src2 = 
-        (exe_wreg_i && (exe_wa_i != `REG_NOP) && (exe_wa_i == ra2)) ? exe_wd_i :
+        (exe_wreg_i && !exe_is_load && (exe_wa_i != `REG_NOP) && (exe_wa_i == ra2)) ? exe_wd_i :
         (mem_wreg_i && (mem_wa_i != `REG_NOP) && (mem_wa_i == ra2)) ? mem_wd_i :
         rd2;
 
@@ -184,12 +201,49 @@ module id_stage (
     wire is_branch = inst_beq | inst_bne | inst_blt;
     wire [31:0] branch_target = id_pc_i + imm_b16;
 
-    assign id_branch_taken_o = is_branch && (
+    // 暂停时不对分支做决定（避免Load-Use冒险时用错误的数据判断）
+    wire branch_resolve_en = ~id_hold_i;
+
+    // 检测分支操作数是否与EXE阶段Load指令冲突（额外安全检查）
+    wire branch_has_load_dep = exe_is_load && is_branch && 
+        (((exe_wa_i == ra1) && (ra1 != 5'd0)) || 
+         ((exe_wa_i == ra2) && (ra2 != 5'd0)));
+
+    assign id_branch_taken_o = branch_resolve_en && is_branch && !branch_has_load_dep && (
         (inst_beq && rs_eq_rd) ||
         (inst_bne && !rs_eq_rd) ||
         (inst_blt && rs_lt_rd)
     );
 
     assign id_branch_target_o = id_branch_taken_o ? branch_target : `ZERO_WORD;
+
+    //--------------------------------------------------------------------------
+    // 分支预测校验与恢复
+    //--------------------------------------------------------------------------
+    wire pred_taken = id_pred_taken_i;
+    wire real_taken = id_branch_taken_o;
+    wire pred_target_match = (id_pred_target_i == branch_target);
+
+    wire mispredict_taken = real_taken && !pred_taken;
+    wire mispredict_not_taken = !real_taken && pred_taken;
+    wire mispredict_target = real_taken && pred_taken && !pred_target_match;
+
+    // 只有在分支可以正确判断时才产生flush（排除Load-Use冒险的情况）
+    assign id_flush_o = branch_resolve_en && !branch_has_load_dep && 
+                        (mispredict_taken | mispredict_not_taken | mispredict_target);
+
+    assign id_redirect_pc_o = branch_resolve_en ? (
+                              mispredict_taken  ? branch_target :
+                              mispredict_target ? branch_target :
+                              mispredict_not_taken ? (id_pc_i + 4) : `ZERO_WORD) : `ZERO_WORD;
+
+    //--------------------------------------------------------------------------
+    // BP更新(分支与误预测非分支)
+    //--------------------------------------------------------------------------
+    // 只有在分支可以正确判断时才训练（排除Load依赖的情况）
+    assign bp_update_en_o = branch_resolve_en && is_branch && !branch_has_load_dep;
+    assign bp_update_pc_o = id_pc_i;
+    assign bp_update_taken_o = real_taken;
+    assign bp_update_target_o = branch_target;
 
 endmodule

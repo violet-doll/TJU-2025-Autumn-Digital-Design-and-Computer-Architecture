@@ -36,6 +36,10 @@ module Loongarch32_Lite (
     // IF/ID 流水线信号
     wire [`WORD_BUS] id_pc_i;
     wire [`INST_BUS] id_inst_i;
+    wire if_pred_taken;
+    wire [`WORD_BUS] if_pred_target;
+    wire id_pred_taken;
+    wire [`WORD_BUS] id_pred_target;
 
     // ID阶段寄存器堆读取信号
     wire [`REG_ADDR_BUS] ra1;
@@ -46,6 +50,14 @@ module Loongarch32_Lite (
     // ID阶段分支信号
     wire id_branch_taken;
     wire [31:0] id_branch_target;
+    wire id_flush;
+    wire [`WORD_BUS] id_redirect_pc;
+
+    // BP更新信号(ID->IF)
+    wire bp_update_en;
+    wire [`INST_ADDR_BUS] bp_update_pc;
+    wire bp_update_taken;
+    wire [`INST_ADDR_BUS] bp_update_target;
 
     // ID/EXE 流水线信号
     wire [`ALUOP_BUS] id_aluop_o;
@@ -140,14 +152,20 @@ module Loongarch32_Lite (
     // IF阶段: 取指
     //--------------------------------------------------------------------------
     if_stage if_stage0 (
-        .cpu_clk_50M    (cpu_clk_50M),
-        .cpu_rst_n      (cpu_rst_n),
-        .stall          (stall),
-        .pc             (pc),
-        .iaddr          (iaddr),
-        .branch_taken_i (id_branch_taken),
-        .branch_target_i(id_branch_target),
-        .debug_wb_pc    (if_debug_wb_pc)
+        .cpu_clk_50M       (cpu_clk_50M),
+        .cpu_rst_n         (cpu_rst_n),
+        .stall             (stall),
+        .pc                (pc),
+        .iaddr             (iaddr),
+        .branch_taken_i    (id_flush),
+        .branch_target_i   (id_redirect_pc),
+        .bp_update_en_i    (bp_update_en),
+        .bp_update_pc_i    (bp_update_pc),
+        .bp_update_taken_i (bp_update_taken),
+        .bp_update_target_i(bp_update_target),
+        .debug_wb_pc       (if_debug_wb_pc),
+        .if_pred_taken     (if_pred_taken),
+        .if_pred_target    (if_pred_target)
     );
 
     //--------------------------------------------------------------------------
@@ -157,13 +175,17 @@ module Loongarch32_Lite (
         .cpu_clk_50M(cpu_clk_50M),
         .cpu_rst_n(cpu_rst_n),
         .stall(stall),
-        .flush(id_branch_taken),
+        .flush(id_flush),
         .inst(inst),
         .if_pc(pc),
         .if_debug_wb_pc(if_debug_wb_pc),
+        .if_pred_taken(if_pred_taken),
+        .if_pred_target(if_pred_target),
         .id_inst(id_inst_i),
         .id_pc(id_pc_i),
-        .id_debug_wb_pc(id_debug_wb_pc_i)
+        .id_debug_wb_pc(id_debug_wb_pc_i),
+        .id_pred_taken(id_pred_taken),
+        .id_pred_target(id_pred_target)
     );
 
     //--------------------------------------------------------------------------
@@ -173,6 +195,9 @@ module Loongarch32_Lite (
         .id_pc_i           (id_pc_i),
         .id_inst_i         (id_inst_i),
         .id_debug_wb_pc    (id_debug_wb_pc_i),
+        .id_pred_taken_i   (id_pred_taken),
+        .id_pred_target_i  (id_pred_target),
+        .id_hold_i         (stall[1]),
         .rd1               (rd1),
         .rd2               (rd2),
         .ra1               (ra1),
@@ -188,12 +213,21 @@ module Loongarch32_Lite (
         .exe_wreg_i        (exe_wreg_i),
         .exe_wa_i          (exe_wa_i),
         .exe_wd_i          (exe_wd_o),
+        .exe_aluop_i       (exe_aluop_i),       // 传递EXE阶段aluop用于Load检测
         .mem_wreg_i        (mem_wreg_i),
         .mem_wa_i          (mem_wa_i),
         .mem_wd_i          (mem_dreg_o),
         // 分支输出
         .id_branch_taken_o (id_branch_taken),
         .id_branch_target_o(id_branch_target),
+        // 预测校验/恢复输出
+        .id_flush_o        (id_flush),
+        .id_redirect_pc_o  (id_redirect_pc),
+        // BP更新
+        .bp_update_en_o    (bp_update_en),
+        .bp_update_pc_o    (bp_update_pc),
+        .bp_update_taken_o (bp_update_taken),
+        .bp_update_target_o(bp_update_target),
         .debug_wb_pc       (id_debug_wb_pc_o)
     );
 
