@@ -4,6 +4,7 @@
 // Module: id_stage
 // Description: 译码阶段 - 指令译码、寄存器读取、分支判断
 //              支持提前分支计算(减少分支惩罚至1周期)
+//              [新增] Load-Use冒险检测与流水线暂停请求
 // Author: TJU Digital Design Course
 //==============================================================================
 module id_stage (
@@ -57,9 +58,11 @@ module id_stage (
     output wire                  bp_update_taken_o,
     output wire [`INST_ADDR_BUS] bp_update_target_o,
 
+    // [新增] 流水线暂停请求 (Load-Use冒险)
+    output wire stallreq_from_id,
+
     output [`INST_ADDR_BUS] debug_wb_pc
 );
-
     //--------------------------------------------------------------------------
     // 指令字节序转换 (小端转大端)
     //--------------------------------------------------------------------------
@@ -69,19 +72,17 @@ module id_stage (
     //--------------------------------------------------------------------------
     // 指令字段提取
     //--------------------------------------------------------------------------
-    wire [16:0] op17 = inst[31:15];  // 3R-type操作码
-    wire [9:0]  op10 = inst[31:22];  // 2RI12-type操作码
-    wire [6:0]  op7  = inst[31:25];  // I20-type操作码
-    wire [5:0]  op6  = inst[31:26];  // B-type操作码
+    wire [16:0] op17 = inst[31:15]; // 3R-type操作码
+    wire [9:0]  op10 = inst[31:22]; // 2RI12-type操作码
+    wire [6:0]  op7  = inst[31:25]; // I20-type操作码
+    wire [5:0]  op6  = inst[31:26]; // B-type操作码
 
     wire [4:0]  rd   = inst[4:0];
     wire [4:0]  rj   = inst[9:5];
     wire [4:0]  rk   = inst[14:10];
-
     wire [11:0] imm12 = inst[21:10];
     wire [15:0] imm16 = inst[25:10];
     wire [19:0] imm20 = inst[24:5];
-
     //--------------------------------------------------------------------------
     // 指令译码
     //--------------------------------------------------------------------------
@@ -94,7 +95,6 @@ module id_stage (
     wire inst_ld_w  = (op10 == 10'b0010100010);
     wire inst_st_b  = (op10 == 10'b0010100100);
     wire inst_st_w  = (op10 == 10'b0010100110);
-
     // 3R-type
     wire inst_add_w = (op17 == 17'h00020);
     wire inst_mul_w = (op17 == 17'h00038);
@@ -109,11 +109,9 @@ module id_stage (
     wire inst_beq = (op6 == 6'h16);
     wire inst_bne = (op6 == 6'h17);
     wire inst_blt = (op6 == 6'h18);
-
     // I20-type
     wire inst_lu12i_w   = (op7 == 7'h0A);
     wire inst_pcaddu12i = (op7 == 7'h0E);
-
     //--------------------------------------------------------------------------
     // ALU控制信号生成
     //--------------------------------------------------------------------------
@@ -144,11 +142,9 @@ module id_stage (
 
     // 写寄存器使能 (Store和Branch指令不写寄存器)
     assign id_wreg_o = !(inst_st_b | inst_st_w | inst_beq | inst_bne | inst_blt);
-
     // 立即数扩展控制
     assign id_immsel = inst_andi | inst_addiw;
     assign id_sext = inst_addiw;
-
     //--------------------------------------------------------------------------
     // 寄存器读地址
     //--------------------------------------------------------------------------
@@ -165,7 +161,6 @@ module id_stage (
 
     wire [31:0] imm32;
     assign imm32 = (id_sext == `TRUE_V) ? imm_s12 : imm_u12;
-
     //--------------------------------------------------------------------------
     // 操作数选择
     //--------------------------------------------------------------------------
@@ -175,40 +170,49 @@ module id_stage (
         (inst_add_w | inst_mul_w | inst_mulh_w | inst_div_w | inst_mod_w | inst_or | inst_xor | inst_srl_w | inst_beq | inst_bne | inst_blt) ? rd2 :
         (inst_andi | inst_ori) ? imm_u12 :
         (inst_lu12i_w | inst_pcaddu12i) ? imm_s20 : imm_s12;
-
     // 分支偏移量 / Store数据
     wire [31:0] imm_b16 = {{14{imm16[15]}}, imm16, 2'b0};
     assign id_rkd_value_o = (inst_beq | inst_bne | inst_blt) ? imm_b16 : rd2;
-
     // 写目的寄存器地址
     assign id_wa_o = rd;
 
     assign debug_wb_pc = id_debug_wb_pc;
 
     //--------------------------------------------------------------------------
-    // 提前分支判断 (减少分支惩罚)
+    // Load-Use 冒险检测逻辑 [新增]
     //--------------------------------------------------------------------------
-    // 判断EXE阶段是否是Load指令（Load指令的数据尚未就绪，不能前推）
+    // 判断EXE阶段是否是Load指令
     wire exe_is_load = (exe_aluop_i == `LoongArch32_LD_B) || (exe_aluop_i == `LoongArch32_LD_W);
 
+    // 判断当前指令是否真的需要读取源寄存器
+    // lu12i_w 和 pcaddu12i 不读取 ra1 (rj)
+    wire id_uses_src1 = !(inst_lu12i_w | inst_pcaddu12i);
+    // ra2 如果不为0，说明当前指令类型需要读取 ra2 (由上方 ra2 赋值逻辑保证)
+    wire id_uses_src2 = (ra2 != 5'd0);
+
+    // 如果EXE阶段是Load，且其写回地址与当前ID阶段的源寄存器冲突，则请求暂停
+    assign stallreq_from_id = exe_is_load && (exe_wa_i != 5'd0) && (
+        (id_uses_src1 && (ra1 == exe_wa_i)) || 
+        (id_uses_src2 && (ra2 == exe_wa_i))
+    );
+
+    //--------------------------------------------------------------------------
+    // 提前分支判断 (减少分支惩罚)
+    //--------------------------------------------------------------------------
     // 分支源操作数前推: EXE > MEM > 原始值（排除Load指令）
     wire [`REG_BUS] branch_src1 = 
         (exe_wreg_i && !exe_is_load && (exe_wa_i != `REG_NOP) && (exe_wa_i == ra1)) ? exe_wd_i :
         (mem_wreg_i && (mem_wa_i != `REG_NOP) && (mem_wa_i == ra1)) ? mem_wd_i :
         rd1;
-
     wire [`REG_BUS] branch_src2 = 
         (exe_wreg_i && !exe_is_load && (exe_wa_i != `REG_NOP) && (exe_wa_i == ra2)) ? exe_wd_i :
         (mem_wreg_i && (mem_wa_i != `REG_NOP) && (mem_wa_i == ra2)) ? mem_wd_i :
         rd2;
-
     // 分支比较
     wire rs_eq_rd = (branch_src1 == branch_src2);
     wire rs_lt_rd = ($signed(branch_src1) < $signed(branch_src2));
-
     wire is_branch = inst_beq | inst_bne | inst_blt;
     wire [31:0] branch_target = id_pc_i + imm_b16;
-
     // 暂停时不对分支做决定（避免Load-Use冒险时用错误的数据判断）
     wire branch_resolve_en = ~id_hold_i;
 
@@ -222,7 +226,6 @@ module id_stage (
         (inst_bne && !rs_eq_rd) ||
         (inst_blt && rs_lt_rd)
     );
-
     assign id_branch_target_o = id_branch_taken_o ? branch_target : `ZERO_WORD;
 
     //--------------------------------------------------------------------------
@@ -235,16 +238,13 @@ module id_stage (
     wire mispredict_taken = real_taken && !pred_taken;
     wire mispredict_not_taken = !real_taken && pred_taken;
     wire mispredict_target = real_taken && pred_taken && !pred_target_match;
-
     // 只有在分支可以正确判断时才产生flush（排除Load-Use冒险的情况）
     assign id_flush_o = branch_resolve_en && !branch_has_load_dep && 
                         (mispredict_taken | mispredict_not_taken | mispredict_target);
-
     assign id_redirect_pc_o = branch_resolve_en ? (
                               mispredict_taken  ? branch_target :
                               mispredict_target ? branch_target :
                               mispredict_not_taken ? (id_pc_i + 4) : `ZERO_WORD) : `ZERO_WORD;
-
     //--------------------------------------------------------------------------
     // BP更新(分支与误预测非分支)
     //--------------------------------------------------------------------------

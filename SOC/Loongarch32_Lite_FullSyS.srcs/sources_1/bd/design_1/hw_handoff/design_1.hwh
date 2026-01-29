@@ -1,39 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Wed Jan 28 20:59:06 2026" VIVADOVERSION="2018.3">
+<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Wed Jan 28 23:55:44 2026" VIVADOVERSION="2018.3">
 
   <SYSTEMINFO ARCH="zynq" BOARD="tul.com.tw:pynq-z2:part0:1.0" DEVICE="7z020" NAME="design_1" PACKAGE="clg400" SPEEDGRADE="-1"/>
 
   <EXTERNALPORTS>
-    <PORT DIR="IO" LEFT="53" NAME="FIXED_IO_0_mio" RIGHT="0" SIGIS="undef" SIGNAME="cg_fpga_0_FIXED_IO_mio">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="cg_fpga_0" PORT="FIXED_IO_mio"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="IO" NAME="FIXED_IO_0_ddr_vrn" SIGIS="undef" SIGNAME="cg_fpga_0_FIXED_IO_ddr_vrn">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="cg_fpga_0" PORT="FIXED_IO_ddr_vrn"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="IO" NAME="FIXED_IO_0_ddr_vrp" SIGIS="undef" SIGNAME="cg_fpga_0_FIXED_IO_ddr_vrp">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="cg_fpga_0" PORT="FIXED_IO_ddr_vrp"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="IO" NAME="FIXED_IO_0_ps_srstb" SIGIS="undef" SIGNAME="cg_fpga_0_FIXED_IO_ps_srstb">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="cg_fpga_0" PORT="FIXED_IO_ps_srstb"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="IO" NAME="FIXED_IO_0_ps_clk" SIGIS="undef" SIGNAME="cg_fpga_0_FIXED_IO_ps_clk">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="cg_fpga_0" PORT="FIXED_IO_ps_clk"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="IO" NAME="FIXED_IO_0_ps_porb" SIGIS="undef" SIGNAME="cg_fpga_0_FIXED_IO_ps_porb">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="cg_fpga_0" PORT="FIXED_IO_ps_porb"/>
-      </CONNECTIONS>
-    </PORT>
     <PORT DIR="IO" NAME="DDR_0_cas_n" SIGIS="undef" SIGNAME="cg_fpga_0_DDR_cas_n">
       <CONNECTIONS>
         <CONNECTION INSTANCE="cg_fpga_0" PORT="DDR_cas_n"/>
@@ -107,6 +77,36 @@
     <PORT DIR="IO" LEFT="3" NAME="DDR_0_dqs_p" RIGHT="0" SIGIS="undef" SIGNAME="cg_fpga_0_DDR_dqs_p">
       <CONNECTIONS>
         <CONNECTION INSTANCE="cg_fpga_0" PORT="DDR_dqs_p"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="IO" LEFT="53" NAME="FIXED_IO_0_mio" RIGHT="0" SIGIS="undef" SIGNAME="cg_fpga_0_FIXED_IO_mio">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="cg_fpga_0" PORT="FIXED_IO_mio"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="IO" NAME="FIXED_IO_0_ddr_vrn" SIGIS="undef" SIGNAME="cg_fpga_0_FIXED_IO_ddr_vrn">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="cg_fpga_0" PORT="FIXED_IO_ddr_vrn"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="IO" NAME="FIXED_IO_0_ddr_vrp" SIGIS="undef" SIGNAME="cg_fpga_0_FIXED_IO_ddr_vrp">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="cg_fpga_0" PORT="FIXED_IO_ddr_vrp"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="IO" NAME="FIXED_IO_0_ps_srstb" SIGIS="undef" SIGNAME="cg_fpga_0_FIXED_IO_ps_srstb">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="cg_fpga_0" PORT="FIXED_IO_ps_srstb"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="IO" NAME="FIXED_IO_0_ps_clk" SIGIS="undef" SIGNAME="cg_fpga_0_FIXED_IO_ps_clk">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="cg_fpga_0" PORT="FIXED_IO_ps_clk"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="IO" NAME="FIXED_IO_0_ps_porb" SIGIS="undef" SIGNAME="cg_fpga_0_FIXED_IO_ps_porb">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="cg_fpga_0" PORT="FIXED_IO_ps_porb"/>
       </CONNECTIONS>
     </PORT>
   </EXTERNALPORTS>

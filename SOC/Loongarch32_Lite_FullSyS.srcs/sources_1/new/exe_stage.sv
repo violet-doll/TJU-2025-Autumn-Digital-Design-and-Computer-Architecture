@@ -85,36 +85,65 @@ module exe_stage (
     wire [`REG_BUS] mul_lo_res = mul_res[31:0];
     wire [`REG_BUS] mul_hi_res = mul_res[63:32];
 
-    // 除法状态机（试商法，32周期）
+    // 基4 (Radix-4) 除法器 (16周期)
     reg div_busy;
     reg div_done;
-    reg [5:0] div_cnt;
-    reg [63:0] div_temp;
+    reg [4:0] div_cnt;  // 计数器范围 0-15，只需5位
+    reg [63:0] div_temp;  // 高32位为余数R，低32位为剩余被除数
     reg [31:0] div_divisor;
-    reg [31:0] div_q_work;
+    reg [31:0] div_q_work;  // 累积商
     reg [31:0] div_q_res;
     reg [31:0] div_r_res;
     reg div_sign_q;
     reg div_sign_r;
 
+    // 符号处理输入
     wire dividend_sign = alu_src1[31];
     wire divisor_sign = alu_src2[31];
     wire [31:0] dividend_abs = dividend_sign ? (~alu_src1 + 1'b1) : alu_src1;
     wire [31:0] divisor_abs = divisor_sign ? (~alu_src2 + 1'b1) : alu_src2;
     wire div_zero = (alu_src2 == 32'b0);
-
     wire div_start = is_div_inst && !div_busy && !div_done;
 
-    wire [63:0] div_temp_shift = {div_temp[62:0], 1'b0};
-    wire div_ge = (div_temp_shift[63:32] >= div_divisor);
-    wire [63:0] div_temp_next  = div_ge ? {div_temp_shift[63:32] - div_divisor, div_temp_shift[31:0]} : div_temp_shift;
-    wire [31:0] div_q_next = {div_q_work[30:0], div_ge};
+    // --- Radix-4 核心组合逻辑 ---
+    // 预计算除数的倍数 (扩展到34位以防溢出比较)
+    wire [33:0] div_x1 = {2'b0, div_divisor};
+    wire [33:0] div_x2 = {1'b0, div_divisor, 1'b0};  // x2
+    wire [33:0] div_x3 = div_x1 + div_x2;  // x3
 
+    // 移位: 左移2位，取出高位作为当前部分余数(Partial Remainder)
+    // div_temp[63:32] 是当前余数，[31:0] 是剩余被除数
+    // 移位后，新的部分余数包含原余数移位后的值 + 被除数最高2位
+    wire [63:0] div_shift2 = {div_temp[61:0], 2'b0};
+    wire [33:0] r_raw = div_shift2[63:32];
+
+    // 并行比较
+    wire ge_x3 = (r_raw >= div_x3);
+    wire ge_x2 = (r_raw >= div_x2);
+    wire ge_x1 = (r_raw >= div_x1);
+
+    // 确定商的当前2位 (Quotient Bits)
+    wire [1:0] q_bits = ge_x3 ? 2'b11 : ge_x2 ? 2'b10 : ge_x1 ? 2'b01 : 2'b00;
+
+    // 确定需要减去的倍数
+    wire [33:0] sub_val = ge_x3 ? div_x3 : ge_x2 ? div_x2 : ge_x1 ? div_x1 : 34'b0;
+
+    // 计算下一次的余数和整体寄存器状态
+    // 新余数 = (部分余数 - 选定倍数)
+    wire [31:0] r_next = r_raw[31:0] - sub_val[31:0];
+
+    // 更新 div_temp: 高32位放新余数，低32位是移位后的被除数
+    wire [63:0] div_temp_next_r4 = {r_next, div_shift2[31:0]};
+
+    // 更新商寄存器: 左移2位，填入新的2位商
+    wire [31:0] div_q_next_r4 = {div_q_work[29:0], q_bits};
+
+    // --- 时序逻辑 ---
     always @(posedge cpu_clk_50M) begin
         if (cpu_rst_n == `RST_ENABLE) begin
             div_busy    <= 1'b0;
             div_done    <= 1'b0;
-            div_cnt     <= 6'd0;
+            div_cnt     <= 5'd0;
             div_temp    <= 64'b0;
             div_divisor <= 32'b0;
             div_q_work  <= 32'b0;
@@ -126,12 +155,13 @@ module exe_stage (
             if (div_zero) begin
                 div_busy  <= 1'b0;
                 div_done  <= 1'b1;
-                div_q_res <= 32'hFFFF_FFFF;  // 按约定除0返回全1
+                div_q_res <= 32'hFFFF_FFFF;
                 div_r_res <= alu_src1;
             end else begin
                 div_busy    <= 1'b1;
                 div_done    <= 1'b0;
-                div_cnt     <= 6'd0;
+                div_cnt     <= 5'd0;
+                // 初始化：高32位为0，低32位为被除数绝对值
                 div_temp    <= {32'b0, dividend_abs};
                 div_divisor <= divisor_abs;
                 div_q_work  <= 32'b0;
@@ -139,14 +169,19 @@ module exe_stage (
                 div_sign_r  <= dividend_sign;
             end
         end else if (div_busy) begin
-            div_temp   <= div_temp_next;
-            div_q_work <= div_q_next;
+            // 核心计算步骤
+            div_temp   <= div_temp_next_r4;
+            div_q_work <= div_q_next_r4;
             div_cnt    <= div_cnt + 1'b1;
-            if (div_cnt == 6'd31) begin
-                div_busy  <= 1'b0;
-                div_done  <= 1'b1;
-                div_q_res <= div_sign_q ? (~div_q_next + 1'b1) : div_q_next;
-                div_r_res <= div_sign_r ? (~div_temp_next[63:32] + 1'b1) : div_temp_next[63:32];
+
+            // 计数到15即完成 (0~15 共16次迭代，每次2位，共32位)
+            if (div_cnt == 5'd15) begin
+                div_busy <= 1'b0;
+                div_done <= 1'b1;
+                // 修正结果符号
+                div_q_res <= div_sign_q ? (~div_q_next_r4 + 1'b1) : div_q_next_r4;
+                // 余数在 div_temp_next_r4 的高32位
+                div_r_res <= div_sign_r ? (~div_temp_next_r4[63:32] + 1'b1) : div_temp_next_r4[63:32];
             end
         end else begin
             div_done <= 1'b0;

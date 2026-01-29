@@ -5,8 +5,7 @@
       "device": "xc7z020clg400-1",
       "name": "design_1",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2018.3",
-      "validated": "true"
+      "tool_version": "2018.3"
     },
     "design_tree": {
       "cg_fpga_0": "",
@@ -16,67 +15,11 @@
     "interface_ports": {
       "DDR_0": {
         "mode": "Master",
-        "vlnv": "xilinx.com:interface:ddrx_rtl:1.0",
-        "parameters": {
-          "AXI_ARBITRATION_SCHEME": {
-            "value": "TDM",
-            "value_src": "const_prop"
-          },
-          "BURST_LENGTH": {
-            "value": "8",
-            "value_src": "const_prop"
-          },
-          "CAN_DEBUG": {
-            "value": "false",
-            "value_src": "default"
-          },
-          "CAS_LATENCY": {
-            "value": "11",
-            "value_src": "const_prop"
-          },
-          "CAS_WRITE_LATENCY": {
-            "value": "11",
-            "value_src": "const_prop"
-          },
-          "CS_ENABLED": {
-            "value": "true",
-            "value_src": "const_prop"
-          },
-          "DATA_MASK_ENABLED": {
-            "value": "true",
-            "value_src": "const_prop"
-          },
-          "DATA_WIDTH": {
-            "value": "8",
-            "value_src": "const_prop"
-          },
-          "MEMORY_TYPE": {
-            "value": "COMPONENTS",
-            "value_src": "const_prop"
-          },
-          "MEM_ADDR_MAP": {
-            "value": "ROW_COLUMN_BANK",
-            "value_src": "const_prop"
-          },
-          "SLOT": {
-            "value": "Single",
-            "value_src": "const_prop"
-          },
-          "TIMEPERIOD_PS": {
-            "value": "1250",
-            "value_src": "const_prop"
-          }
-        }
+        "vlnv": "xilinx.com:interface:ddrx_rtl:1.0"
       },
       "FIXED_IO_0": {
         "mode": "Master",
-        "vlnv": "xilinx.com:display_processing_system7:fixedio_rtl:1.0",
-        "parameters": {
-          "CAN_DEBUG": {
-            "value": "false",
-            "value_src": "default"
-          }
-        }
+        "vlnv": "xilinx.com:display_processing_system7:fixedio_rtl:1.0"
       }
     },
     "components": {
@@ -119,21 +62,7 @@
         "ports": {
           "clk": {
             "type": "clk",
-            "direction": "I",
-            "parameters": {
-              "CLK_DOMAIN": {
-                "value": "/clk_wiz_0_clk_out1",
-                "value_src": "ip_prop"
-              },
-              "FREQ_HZ": {
-                "value": "50000000",
-                "value_src": "ip_prop"
-              },
-              "PHASE": {
-                "value": "0.0",
-                "value_src": "ip_prop"
-              }
-            }
+            "direction": "I"
           },
           "locked": {
             "direction": "I"
@@ -178,16 +107,16 @@
       }
     },
     "interface_nets": {
-      "cg_fpga_0_DDR": {
-        "interface_ports": [
-          "DDR_0",
-          "cg_fpga_0/DDR"
-        ]
-      },
       "cg_fpga_0_FIXED_IO": {
         "interface_ports": [
           "FIXED_IO_0",
           "cg_fpga_0/FIXED_IO"
+        ]
+      },
+      "cg_fpga_0_DDR": {
+        "interface_ports": [
+          "DDR_0",
+          "cg_fpga_0/DDR"
         ]
       }
     },
