@@ -1,16 +1,12 @@
 `include "defines.v"
 
-//==============================================================================
-// Module: idexe_reg
-// Description: ID/EXE流水线寄存器 - 锁存译码阶段数据
-// Author: TJU Digital Design Course
-//==============================================================================
+// 译码/执行寄存器
 module idexe_reg (
     input wire cpu_clk_50M,
     input wire cpu_rst_n,
     input wire [5:0] stall,
 
-    // 来自ID阶段
+    // 来自译码
     input wire [`ALUTYPE_BUS] id_alutype,
     input wire [`ALUOP_BUS] id_aluop,
     input wire [`REG_BUS] id_src1,
@@ -22,7 +18,7 @@ module idexe_reg (
     input wire [`REG_ADDR_BUS] id_ra1,
     input wire [`REG_ADDR_BUS] id_ra2,
 
-    // 送至EXE阶段
+    // 送至执行
     output reg [`ALUTYPE_BUS] exe_alutype,
     output reg [`ALUOP_BUS] exe_aluop,
     output reg [`REG_BUS] exe_src1,
@@ -49,7 +45,7 @@ module idexe_reg (
             exe_ra1         <= `REG_NOP;
             exe_ra2         <= `REG_NOP;
         end else if (stall[2] == `TRUE_V && stall[3] == `FALSE_V) begin
-            // 暂停ID/EXE但EXE/MEM继续: 插入气泡
+            // 插入气泡
             exe_alutype     <= `NOP;
             exe_aluop       <= `LoongArch32_SLL;
             exe_wa          <= `REG_NOP;
@@ -61,7 +57,7 @@ module idexe_reg (
             exe_ra1         <= `REG_NOP;
             exe_ra2         <= `REG_NOP;
         end else if (stall[2] == `TRUE_V && stall[3] == `TRUE_V) begin
-            // ID/EXE和EXE/MEM都暂停: 保持当前值
+            // 保持
             exe_alutype     <= exe_alutype;
             exe_aluop       <= exe_aluop;
             exe_src1        <= exe_src1;
@@ -73,7 +69,7 @@ module idexe_reg (
             exe_ra1         <= exe_ra1;
             exe_ra2         <= exe_ra2;
         end else begin
-            // 正常传递
+            // 传递
             exe_alutype     <= id_alutype;
             exe_aluop       <= id_aluop;
             exe_src1        <= id_src1;

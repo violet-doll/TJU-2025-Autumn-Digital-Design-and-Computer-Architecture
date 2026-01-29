@@ -1,21 +1,17 @@
-//==============================================================================
-// Module: top
-// Description: FPGA顶层封装模块
-// Author: TJU Digital Design Course
-//==============================================================================
+// 椤跺眰灏佽
 module top(
-    input clk,          // 50MHz
-    input locked,       // PLL锁定信号
+    input clk,
+    input locked,
     
-    input        rxd,   // UART接收
-    output       txd,   // UART发送
+    input        rxd,
+    output       txd,
     
-    input  [31:0] sw_1,      // 拨码开关组1
-    input  [31:0] sw_2,      // 拨码开关组2
-    output [31:0] led,       // LED灯
-    output [3:0]  seg_cs,    // 数码管片选
-    output [7:0]  seg_data,  // 数码管段码
-    input  [7:0]  btn        // 按钮
+    input  [31:0] sw_1,
+    input  [31:0] sw_2,
+    output [31:0] led,
+    output [3:0]  seg_cs,
+    output [7:0]  seg_data,
+    input  [7:0]  btn
 );
 
     Loongarch32_Lite_FullSyS Loongarch32_Lite_FullSyS0 (

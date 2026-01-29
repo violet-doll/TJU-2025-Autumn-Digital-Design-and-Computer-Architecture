@@ -1,39 +1,32 @@
 `include "defines.v"
 
-//==============================================================================
-// Module: regfile
-// Description: 32x32位通用寄存器堆 (支持WB-ID旁路)
-// Author: TJU Digital Design Course
-//==============================================================================
+// 寄存器堆
 module regfile (
     input wire cpu_clk_50M,
     input wire cpu_rst_n,
 
-    // 写端口
     input wire [`REG_ADDR_BUS] wa,
     input wire [     `REG_BUS] wd,
     input wire                 we,
 
-    // 读端口1
     input  wire [`REG_ADDR_BUS] ra1,
     output reg  [     `REG_BUS] rd1,
 
-    // 读端口2
     input  wire [`REG_ADDR_BUS] ra2,
     output reg  [     `REG_BUS] rd2
 );
 
-    // 32个32位通用寄存器
+    // 寄存器数组
     reg [`REG_BUS] regs[0:`REG_NUM-1];
 
-    // 写操作
+    // 写入
     always @(posedge cpu_clk_50M) begin
         if (cpu_rst_n == `RST_ENABLE) begin
             regs[0]  <= `ZERO_WORD;
             regs[1]  <= `ZERO_WORD;
             regs[2]  <= `ZERO_WORD;
             regs[3]  <= `ZERO_WORD;
-            regs[4]  <= 32'h01010101;  // 测试用非零初值
+            regs[4]  <= 32'h01010101;
             regs[5]  <= `ZERO_WORD;
             regs[6]  <= `ZERO_WORD;
             regs[7]  <= `ZERO_WORD;
@@ -66,19 +59,19 @@ module regfile (
         end
     end
 
-    // 读端口1 (支持WB-ID旁路)
+    // 读口1
     always @(*) begin
         if (cpu_rst_n == `RST_ENABLE) rd1 <= `ZERO_WORD;
         else if (ra1 == `REG_NOP) rd1 <= `ZERO_WORD;
-        else if ((we == `WRITE_ENABLE) && (wa == ra1) && (wa != 5'h0)) rd1 <= wd;  // WB-ID旁路
+        else if ((we == `WRITE_ENABLE) && (wa == ra1) && (wa != 5'h0)) rd1 <= wd;
         else rd1 <= regs[ra1];
     end
 
-    // 读端口2 (支持WB-ID旁路)
+    // 读口2
     always @(*) begin
         if (cpu_rst_n == `RST_ENABLE) rd2 <= `ZERO_WORD;
         else if (ra2 == `REG_NOP) rd2 <= `ZERO_WORD;
-        else if ((we == `WRITE_ENABLE) && (wa == ra2) && (wa != 5'h0)) rd2 <= wd;  // WB-ID旁路
+        else if ((we == `WRITE_ENABLE) && (wa == ra2) && (wa != 5'h0)) rd2 <= wd;
         else rd2 <= regs[ra2];
     end
 

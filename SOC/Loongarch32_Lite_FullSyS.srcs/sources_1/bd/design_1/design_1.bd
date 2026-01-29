@@ -178,16 +178,16 @@
       }
     },
     "interface_nets": {
-      "cg_fpga_0_FIXED_IO": {
-        "interface_ports": [
-          "FIXED_IO_0",
-          "cg_fpga_0/FIXED_IO"
-        ]
-      },
       "cg_fpga_0_DDR": {
         "interface_ports": [
           "DDR_0",
           "cg_fpga_0/DDR"
+        ]
+      },
+      "cg_fpga_0_FIXED_IO": {
+        "interface_ports": [
+          "FIXED_IO_0",
+          "cg_fpga_0/FIXED_IO"
         ]
       }
     },

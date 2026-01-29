@@ -1,7 +1,7 @@
 module BaudTickGen (
     input clk,
     enable,
-    output logic tick  // generate a tick at the specified baud rate * oversampling
+    output logic tick
 );
     parameter ClkFrequency = 50000000;
     parameter Baud = 9600;
@@ -13,11 +13,9 @@ module BaudTickGen (
             while (v >> log2) log2 = log2 + 1;
         end
     endfunction
-    localparam AccWidth = log2(ClkFrequency / Baud) + 8;  // +/- 2% max timing error over a byte
+    localparam AccWidth = log2(ClkFrequency / Baud) + 8;
     logic [AccWidth:0] Acc = 0;
-    localparam ShiftLimiter = log2(
-        Baud * Oversampling >> (31 - AccWidth)
-    );  // this makes sure Inc calculation doesn't overflow
+    localparam ShiftLimiter = log2(Baud * Oversampling >> (31 - AccWidth));
     localparam Inc = ((Baud*Oversampling << (AccWidth-ShiftLimiter))+(ClkFrequency>>(ShiftLimiter+1)))/(ClkFrequency>>ShiftLimiter);
     always @(posedge clk)
         if (enable) Acc <= Acc[AccWidth-1:0] + Inc[AccWidth:0];
