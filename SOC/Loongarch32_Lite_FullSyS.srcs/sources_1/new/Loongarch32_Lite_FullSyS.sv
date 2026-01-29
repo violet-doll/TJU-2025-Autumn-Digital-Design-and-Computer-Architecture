@@ -60,6 +60,21 @@ module Loongarch32_Lite_FullSyS (
 
     assign led = led_reg;  // LED 输出由寄存器控制
 
+
+    // 数码管控制寄存器
+    logic [31:0] seg_reg_lo;
+    logic [31:0] seg_reg_hi;
+
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (~rst_n) begin
+            seg_reg_lo <= 32'h0;
+            seg_reg_hi <= 32'h0;
+        end else if (data_sram_en & (data_sram_we != 4'b0000)) begin
+            if (is_seg_lo) seg_reg_lo <= data_sram_wdata;
+            if (is_seg_hi) seg_reg_hi <= data_sram_wdata;
+        end
+    end
+
     //--------------------------------------------------------------------------
     // CPU核心接口信号
     //--------------------------------------------------------------------------
@@ -88,7 +103,14 @@ module Loongarch32_Lite_FullSyS (
     // LED 和拨码开关 MMIO
     assign is_led_access = (data_sram_addr == 32'hbfd00400);  // LED控制寄存器
     wire        is_switch_access = (data_sram_addr == 32'hbfd00404);  // 拨码开关寄存器
-    wire        is_gpio_access = is_led_access | is_switch_access;
+
+    // 数码管 MMIO 地址定义
+    wire        is_seg_lo = (data_sram_addr == 32'hbfd00410);  // 数码管 0-7
+    wire        is_seg_hi = (data_sram_addr == 32'hbfd00414);  // 数码管 8
+    wire        is_seg_access = is_seg_lo | is_seg_hi;
+
+    // 将 is_seg_access 加入 GPIO 访问列表，防止同时写入 RAM
+    wire        is_gpio_access = is_led_access | is_switch_access | is_seg_access;
 
     // ROM访问判定: 0x8000_xxxx
     wire        is_rom_access = data_sram_en & (data_sram_addr[31:16] == 16'h8000);
@@ -214,10 +236,12 @@ module Loongarch32_Lite_FullSyS (
     // 开关读取数据
     wire [31:0] switch_rdata = sw_1_ff;  // 读取拨码开关组1的同步值
 
-    assign data_sram_rdata = is_uart_data    ? uart_rx_data :
-                             is_uart_stat    ? uart_status :
+    assign data_sram_rdata = is_uart_data     ? uart_rx_data :
+                             is_uart_stat     ? uart_status :
                              is_switch_access ? switch_rdata :
-                             is_rom_access   ? rom_rdata_swapped :
+                             is_seg_lo        ? seg_reg_lo :   
+                             is_seg_hi        ? seg_reg_hi :
+                             is_rom_access    ? rom_rdata_swapped : 
                              ram_rdata_swapped;
 
     //--------------------------------------------------------------------------
@@ -242,29 +266,14 @@ module Loongarch32_Lite_FullSyS (
     //--------------------------------------------------------------------------
     // 数码管显示
     //--------------------------------------------------------------------------
-    // 数码管0-1: UART接收数据
-    assign seg_wdata[0] = ext_uart_buffer[3:0];
-    assign seg_wdata[1] = ext_uart_buffer[7:4];
-
-    // 数码管2-6: 拨码开关2
-    logic [31:0] sw_2_ff;
-    always_ff @(posedge clk or negedge rst_n) begin
-        if (~rst_n) sw_2_ff <= 0;
-        else sw_2_ff <= sw_2;
-    end
-    assign seg_wdata[2] = sw_2_ff[3:0];
-    assign seg_wdata[3] = sw_2_ff[7:4];
-    assign seg_wdata[4] = sw_2_ff[11:8];
-    assign seg_wdata[5] = sw_2_ff[15:12];
-    assign seg_wdata[6] = sw_2_ff[19:16];
-
-    // 数码管7-8: 按钮状态
-    logic [7:0] btn_ff;
-    always_ff @(posedge clk or negedge rst_n) begin
-        if (~rst_n) btn_ff <= 0;
-        else btn_ff <= btn;
-    end
-    assign seg_wdata[7] = btn_ff[3:0];
-    assign seg_wdata[8] = btn_ff[7:4];
+    assign seg_wdata[0] = seg_reg_lo[3:0];
+    assign seg_wdata[1] = seg_reg_lo[7:4];
+    assign seg_wdata[2] = seg_reg_lo[11:8];
+    assign seg_wdata[3] = seg_reg_lo[15:12];
+    assign seg_wdata[4] = seg_reg_lo[19:16];
+    assign seg_wdata[5] = seg_reg_lo[23:20];
+    assign seg_wdata[6] = seg_reg_lo[27:24];
+    assign seg_wdata[7] = seg_reg_lo[31:28];
+    assign seg_wdata[8] = seg_reg_hi[3:0];
 
 endmodule

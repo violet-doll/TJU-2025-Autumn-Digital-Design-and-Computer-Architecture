@@ -1,51 +1,64 @@
-# LoongArch32 五级流水线
+# LoongArch32 五级流水线处理器 (LoongArch32_Lite)
 
-## 关键模块（按功能）
-- CPU核心顶层：Loongarch32_Lite.sv
-- SoC顶层与外设集成：Loongarch32_Lite_FullSyS.sv
-- 顶层封装：top.v
-- 五级流水线阶段：if_stage.sv、id_stage.sv、exe_stage.sv、mem_stage.sv、wb_stage.sv
-- 流水线寄存器：ifid_reg.sv、idexe_reg.sv、exemem_reg.sv、memwb_reg.sv
-- 冒险处理：forwarding_unit.sv、ctrl.sv
-- 分支预测：branch_predictor.sv（BTB+2-bit BHT，64项）
-- 寄存器堆：regfile.sv（含WB→ID旁路）
-- 外设与显示：async_receiver.sv、async_transmitter.sv、BaudTickGen.sv、x7seg.sv
-- 全局宏定义：defines.v
+本项目实现了一个基于 LoongArch32 架构的五级流水线 CPU，并在 SoC 环境下进行了验证。
 
-## 五级流水线设计
-- IF（取指）：PC更新优先级为“预测修正 > 预测跳转 > 顺序PC+4”，并输出预测结果。
-- ID（译码）：完成指令译码、寄存器读取、立即数生成；分支在ID阶段提前比较并生成目标地址，带前推；产生误预测冲刷与重定向PC。
-- EXE（执行）：ALU 运算与乘除法支持，除法/取模为多周期（约32周期）并请求流水线暂停；支持对ALU与Store数据的前推。
-- MEM（访存）：支持字节/字访问的 Load/Store，按地址低两位处理字节对齐与符号扩展。
-- WB（写回）：将结果写回寄存器堆，并提供调试接口信号。
+## 1. 基础功能实现 (实验基本要求)
+本部分实现了课程要求的精简指令集子集，构建了完整的五级静态流水线（IF, ID, EXE, MEM, WB）。
 
-## 已支持指令（核心子集）
-- 算术与逻辑：add.w、addi.w、and/andi、or/ori、xor、sltui、srl.w
-- 乘除法：mul.w、mulh.w、div.w、mod.w
-- 访存：ld.b、ld.w、st.b、st.w
-- 分支与PC相关：beq、bne、blt、lu12i.w、pcaddu12i
+### 基础指令集支持
+实现了 LoongArch32 基础整数指令：
+- **算术与逻辑**：`add.w`, `addi.w`, `and`, `andi`, `or`, `ori`, `xor`, `srl.w`, `sll.w`
+- **访存指令**：`ld.b`, `ld.w`, `st.b`, `st.w` (支持字节/字读写)
+- **分支跳转**：`beq`, `bne`, `blt` (基础条件分支)
+- **其他**：`lu12i.w`, `pcaddu12i`
 
-## 冒险与控制策略
-- 数据前推：MEM/WB→EXE 前推，Store 数据通路支持前推。
-- Load-Use 暂停：ID检测到EXE阶段为Load且存在寄存器相关时暂停PC/IF/ID。
-- 多周期运算暂停：DIV/MOD执行期间冻结全流水线以保持EXE状态。
-- ROM结构冲突暂停：MEM访问ROM地址时暂停前级避免资源冲突。
+### 流水线控制
+- **数据冒险**：实现了完整的 Forwarding (前推) 机制。
+- **结构冒险**：实现了 Load-Use 暂停检测与流水线停顿。
 
-## 分支预测与恢复
-- 预测器：直接映射 BTB + 2位饱和计数器 BHT（64项）。
-- 更新：ID阶段分支可正确判断时训练预测器；发生误预测时冲刷流水线并重定向PC。
+---
 
-## 存储与外设映射
-- PC 初始地址：0x8000_0000
-- 指令ROM：0x8000_0000 区域（单端口ROM，IF/MEM仲裁）
-- 数据RAM：除ROM/UART/GPIO之外的访问
-- UART：
-  - 数据寄存器：0xBFD0_03F8
-  - 状态寄存器：0xBFD0_03FC（bit0=TX Ready, bit1=RX Ready）
-- GPIO：
-  - LED：0xBFD0_0400（可写）
-  - 拨码开关：0xBFD0_0404（可读）
+## 2. 额外扩展功能 (Extra Features)
+本部分包含了在实验基础要求之上，**额外自主实现**的关键指令与硬件特性，显著增强了处理器的功能完备性和运算性能。
 
-## 备注
-- 指令与数据字节序在ROM/RAM接口处进行转换，以匹配实验环境的小端数据布局。
-- UART默认 50MHz/9600 波特率。
+### (1) 函数调用与间接跳转支持 (`bl`, `jirl`)
+为了支持更复杂的程序控制流（如函数调用和返回），额外实现了以下两条核心指令：
+- **`bl` (Branch with Link)**：
+  - 功能：相对地址跳转，并将返回地址 (PC+4) 保存到 `$r1` 寄存器。
+  - 作用：实现子程序（函数）调用。
+- **`jirl` (Jump Indirect with Link)**：
+  - 功能：寄存器间接跳转。目标地址为 `rj + offset`，并将返回地址保存到 `rd`。
+  - 作用：实现子程序返回（当 `rd=0`, `rj=1` 时）或动态跳转表。
+
+### (2) 高级分支预测系统 (Branch Prediction)
+为了降低控制冒险带来的流水线停顿，实现了一个混合分支预测器：
+- **BTB (Branch Target Buffer)**：直接映射的跳转目标缓冲，用于缓存分支指令的目标地址。
+- **BHT (Branch History Table)**：基于 2-bit 饱和计数器的动态方向预测。
+- **RAS (Return Address Stack)**：**[特色优化]** 实现了硬件返回地址栈。针对函数调用 (`bl`) 和返回 (`jirl`) 指令进行了专门优化，支持嵌套函数调用的精确预测。
+
+### (3) 硬件乘除法与取模支持
+为了提升数值计算能力，额外集成了硬件乘法器和除法器，支持以下指令：
+- **乘法指令**：
+  - `mul.w`：有符号乘法，获取结果的低 32 位。
+  - `mulh.w`：有符号乘法，获取结果的高 32 位（支持 64 位乘法结果）。
+- **除法与取模指令**：
+  - `div.w`：有符号除法。
+  - `mod.w`：有符号取模。
+  - **性能优化**：除法器并未采用简单的单周期或慢速迭代，而是采用了 **Radix-4 (基4)** 算法进行优化，将计算延迟从 32 周期降低至约 16 周期，并支持流水线暂停机制以等待计算完成。
+
+---
+
+## 3. 架构优化 (Architecture Improvements)
+
+### 高级分支预测
+- 实现了 **BTB (跳转目标缓冲)** + **BHT (2-bit 饱和计数器)** 的混合预测机制。
+- 结合上文提到的 **RAS**，构成了完整的分支预测系统，有效降低了控制冒险带来的流水线空泡。
+
+### SoC 总线仲裁
+- 针对 FPGA 单端口 Block RAM 的限制，实现了 **IF/MEM 仲裁策略**。当取指和访存同时请求指令 ROM 时，优先满足访存需求，保证了 `ld/st` 指令访问常量区的正确性。
+
+## 4. 模块清单
+- **核心逻辑**：`Loongarch32_Lite.sv` (顶层), `*_stage.sv` (各流水级), `ctrl.sv` (控制), `forwarding_unit.sv` (前推).
+- **运算扩展**：`exe_stage.sv` (内含 Radix-4 除法器与乘法逻辑).
+- **预测扩展**：`branch_predictor.sv` (含 BTB, BHT, RAS).
+- **SoC 集成**：`Loongarch32_Lite_FullSyS.sv` (集成 UART, LED, 数码管, 拨码开关).
