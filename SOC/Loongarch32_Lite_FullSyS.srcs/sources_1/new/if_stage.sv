@@ -19,6 +19,9 @@ module if_stage (
     input wire                  bp_update_taken_i,
     input wire [`INST_ADDR_BUS] bp_update_target_i,
 
+    input wire bp_update_is_call_i,
+    input wire bp_update_is_ret_i,
+
     output logic [`INST_ADDR_BUS] pc,          // 当前PC值
     output       [`INST_ADDR_BUS] iaddr,       // 指令地址
     output       [`INST_ADDR_BUS] debug_wb_pc, // 调试用PC
@@ -36,16 +39,22 @@ module if_stage (
     wire [`INST_ADDR_BUS] bp_target;
 
     branch_predictor branch_predictor0 (
-        .cpu_clk_50M    (cpu_clk_50M),
-        .cpu_rst_n      (cpu_rst_n),
-        .pc_i           (pc),
-        .hit_o          (bp_hit),
-        .pred_taken_o   (bp_pred_taken),
-        .target_o       (bp_target),
+        .cpu_clk_50M (cpu_clk_50M),
+        .cpu_rst_n   (cpu_rst_n),
+        .pc_i        (pc),
+        .hit_o       (bp_hit),
+        .pred_taken_o(bp_pred_taken),
+        .target_o    (bp_target),
+
+        // 更新端口
         .update_en_i    (bp_update_en_i),
         .update_pc_i    (bp_update_pc_i),
         .update_taken_i (bp_update_taken_i),
-        .update_target_i(bp_update_target_i)
+        .update_target_i(bp_update_target_i),
+
+        // [New] 连接 RAS 信号
+        .update_is_call_i(bp_update_is_call_i),
+        .update_is_ret_i (bp_update_is_ret_i)
     );
 
     assign if_pred_taken = bp_pred_taken;
